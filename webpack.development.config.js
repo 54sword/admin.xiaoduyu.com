@@ -131,7 +131,7 @@ module.exports = {
     new HtmlwebpackPlugin({
       filename: path.resolve(__dirname, 'dist/index.ejs'),
       template: 'src/view/index.html',
-      // public_path: config.public_path + '/',
+      public_path: config.public_path + '/',
       // cdn: config.qiniu.url + '/',
       // meta: '<%- meta %>',
       htmlDom: '<%- html %>',
