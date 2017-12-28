@@ -1,5 +1,6 @@
 import express from 'express'
 import bodyParser from 'body-parser'
+import cookieParser from 'cookie-parser'
 import compress from 'compression'
 
 // 服务端渲染依赖
@@ -10,6 +11,8 @@ import { StaticRouter, matchPath } from 'react-router'
 import { Provider } from 'react-redux'
 
 import configureStore from '../src/store'
+import { loadUserInfo } from '../src/actions/user'
+
 // 路由组件
 import { RouteArr, Router } from '../src/router'
 
@@ -66,6 +69,8 @@ if (process.env.NODE_ENV === 'development') runWebpack()
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(cookieParser(config.auth_cookie_name));
+
 app.use(compress())
 app.use(express.static(__dirname + '/../dist'))
 
@@ -87,9 +92,43 @@ app.use(function (req, res, next) {
   next()
 })
 
+app.use('/sign', (function(){
+
+  var router = express.Router();
+
+  router.post('/in', (req, res)=>{
+    let accessToken = req.body.access_token || null;
+
+    if (!accessToken) return res.send({ success: false })
+
+    // let expires = req.body.expires;
+    res.cookie(config.auth_cookie_name, accessToken, { path: '/', httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 30 })
+    res.send({ success: true })
+  })
+
+  router.post('/out', (req, res)=>{
+    res.clearCookie(config.auth_cookie_name)
+    res.send({ success: true })
+  })
+
+  return router
+
+}()))
+
 app.get('*', async function(req, res){
 
   const store = configureStore({})
+
+  let accessToken = req.cookies[config.auth_cookie_name] || null
+        // expires = req.cookies['expires'] || 0
+
+  if (accessToken) {
+
+    let result = await loadUserInfo({ accessToken })(store.dispatch, store.getState)
+
+    // let result = await store.dispatch({ loadUserInfo })
+    // console.log(result);
+  }
 
   // const context = {
   //   'test': 'test'

@@ -5,6 +5,8 @@ let config = {
   host: 'localhost',
   port: 4000,
 
+  auth_cookie_name: 'admin.xiaoduyu.com',
+
   // css modules
   class_scoped_name: '[hash:base64:3]',
 

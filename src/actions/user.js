@@ -1,4 +1,5 @@
 import Ajax from '../common/ajax'
+import Promise from 'promise'
 
 function setUser(userinfo) {
   return { type: 'SET_USER', userinfo }
@@ -8,11 +9,33 @@ export function removeAccessToken() {
   return { type: 'REMOVE_ACCESS_TOKEN' }
 }
 
-export function loadUserInfo({ accessToken = null, callback = ()=>{} }) {
+export const loadUserInfo = ({ accessToken = null, callback = ()=>{} }) => {
   return (dispatch, getState) => {
 
     accessToken = accessToken || getState().user.accessToken
 
+    return new Promise(async (resolve, reject) => {
+
+      return Ajax({
+        url: '/user',
+        type: 'post',
+        headers: { AccessToken: accessToken }
+        // callback: (res) => {
+        //   if (res && res.success) {
+        //     dispatch({ type: 'SET_USER', userinfo: res.data })
+        //   }
+        //   callback(res)
+        // }
+      }).then(res => {
+        if (res && res.success) {
+          dispatch({ type: 'SET_USER', userinfo: res.data })
+        }
+        resolve(res)
+      }).catch(reject)
+
+    })
+
+    /*
     return Ajax({
       url: '/user',
       type: 'post',
@@ -24,6 +47,7 @@ export function loadUserInfo({ accessToken = null, callback = ()=>{} }) {
         callback(res)
       }
     })
+    */
 
   }
 }

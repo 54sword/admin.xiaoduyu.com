@@ -18,6 +18,8 @@ module.exports = {
 
   entry: {
     app: [
+      // 让客户端支持 async 和 await
+      './node_modules/babel-polyfill/dist/polyfill.min.js',
       './client/index',
       'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true'
       // 'webpack-hot-middleware/client?noInfo=true&reload=true'

@@ -2,6 +2,7 @@
 import config from '../../config'
 import errors from '../../config/errors'
 import axios from 'axios'
+import Promise from 'promise'
 
 const converterErrorInfo = (res) => {
 
@@ -34,7 +35,9 @@ const converterErrorInfo = (res) => {
 
 }
 
-const AJAX = ({ api_url = '', url = '', type = 'get', params = {}, data = {}, headers = {}, callback = ()=>{} }) => {
+const AJAX = ({ api_url = '', url = '', type = 'get', params = {}, data = {}, headers = {} }) => {
+
+  return new Promise((resolve, reject) => {
 
   let option = {
     url: config.api_url + '/' + config.api_verstion + url,
@@ -66,49 +69,36 @@ const AJAX = ({ api_url = '', url = '', type = 'get', params = {}, data = {}, he
 
   // console.log(option);
   // console.log(token);
-  if (config.debug && console.debug) console.debug('请求: ', option)
+  // if (config.debug && console.debug) console.debug('请求: ', option)
 
   return axios(option).then(resp => {
-    if (config.debug && console.debug) console.debug('返回: ', resp)
+    // if (config.debug && console.debug) console.debug('返回: ', resp)
 
     if (resp && resp.data) {
       let res = resp.data
       res = converterErrorInfo(res)
-      callback(res)
+      // callback(res)
+      resolve(res)
     } else {
-      callback(null)
+      reject(null)
     }
 
   })
   .catch(function (error) {
-    if (config.debug && console.debug) console.error('返回: ', error)
+    // if (config.debug && console.debug) console.error('返回: ', error)
 
     if (error && error.response && error.response.data) {
-
-      /*
-      if (error.response.status == 401 && option.data.access_token) {
-        AJAX({
-          url: '/exchange-new-token',
-          type: 'post',
-          data: { access_token: option.data.access_token },
-          callback: (res)=>{
-            console.log('执行到了这了');
-            // console.log(res);
-            callback(null)
-          }
-        })
-        return
-      }
-      */
-
       let res = error.response.data
       res = converterErrorInfo(res)
-      callback(res)
+      // callback(res)
+      resolve(res)
     } else {
-      callback(null)
+      reject(null)
     }
 
-  });
+  })
+
+  })
 }
 
 export default AJAX

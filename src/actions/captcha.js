@@ -13,14 +13,13 @@ export function addCaptcha(data, callback) {
   }
 }
 
-export function getCaptchaId(callback) {
+export const getCaptchaId = () => {
   return (dispatch, getState) => {
-    let accessToken = getState().user.accessToken
-    return Ajax({
-      url:'/get-captcha-id',
-      type: 'get',
-      headers: { AccessToken: accessToken },
-      callback
+    return new Promise(async (resolve, reject) => {
+      Ajax({
+        url: '/get-captcha-id',
+        headers: { AccessToken: getState().user.accessToken }
+      }).then(resolve).catch(reject)
     })
   }
 }

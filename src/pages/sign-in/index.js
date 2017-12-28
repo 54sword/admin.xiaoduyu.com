@@ -4,7 +4,7 @@ import { Route, Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { signIn } from '../../actions/account'
+import { signIn, saveSignInCookie } from '../../actions/account'
 import { getCaptchaId } from '../../actions/captcha'
 
 // import Promise from 'promise'
@@ -30,26 +30,19 @@ export class SignIn extends React.PureComponent {
     this.getCaptcha()
   }
 
-  getCaptcha() {
-    const self = this
+  async getCaptcha() {
     const { getCaptchaId } = this.props
-    getCaptchaId((res)=>{
-
-      console.log(res);
-
-      if (res && res.success && res.data) {
-        self.setState({
-          captchaId: res.data
-        })
-      }
-    })
+    let result = await getCaptchaId()
+    if (result && result.success && result.data) {
+      this.setState({ captchaId: result.data })
+    }
   }
 
-  submit(event) {
+  async submit(event) {
 
     event.preventDefault()
 
-    const { signIn } = this.props
+    const { signIn, saveSignInCookie } = this.props
     const { account, password, submit, captcha } = this.refs
     const { captchaId } = this.state
 
@@ -62,13 +55,25 @@ export class SignIn extends React.PureComponent {
     let data = {
       email: account.value.indexOf('@') != -1 ? account.value : '',
       phone: account.value.indexOf('@') == -1 ? account.value : '',
-      password: password.value
+      password: password.value,
+      captcha: captcha && captcha.value || '',
+      captcha_id: captchaId || ''
     }
 
-    if (captcha) data.captcha = captcha.value
-    if (captchaId) data.captcha_id = captchaId
+    let result = await signIn({ data })
 
-    signIn({
+    submit.value = '登录'
+    submit.disabled = false
+
+    console.log(result);
+
+    if (result && result.success) {
+      result = await saveSignInCookie()
+      console.log(result);
+    }
+
+    /*
+    let result = signIn({
       data,
       callback: (result) => {
 
@@ -88,6 +93,7 @@ export class SignIn extends React.PureComponent {
       // }, 100)
 
     }})
+    */
 
 
     return false
@@ -100,7 +106,7 @@ export class SignIn extends React.PureComponent {
     return(<div styleName="container">
 
       <h2>登陆小度鱼后台</h2>
-      
+
       <form className="form" onSubmit={this.submit}>
         <input ref="account" type="text" placeholder="Email or Phone"/>
         <input ref="password" type="password" placeholder="Password"/>
@@ -122,7 +128,8 @@ SignIn = CSSModules(SignIn, styles)
 
 SignIn.propTypes = {
   signIn: PropTypes.func.isRequired,
-  getCaptchaId: PropTypes.func.isRequired
+  getCaptchaId: PropTypes.func.isRequired,
+  saveSignInCookie: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state, props) => {
@@ -133,7 +140,8 @@ const mapStateToProps = (state, props) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     signIn: bindActionCreators(signIn, dispatch),
-    getCaptchaId: bindActionCreators(getCaptchaId, dispatch)
+    getCaptchaId: bindActionCreators(getCaptchaId, dispatch),
+    saveSignInCookie: bindActionCreators(saveSignInCookie, dispatch)
   }
 }
 

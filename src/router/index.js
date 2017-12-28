@@ -97,6 +97,10 @@ const routeArr = [
     // head: Head,
     loadData: ({ store, match }) => {
       console.log('登陆');
+
+
+      console.log(store.getState());
+
       return new Promise(function (resolve, reject) {
         resolve({ code:200 });
       })
@@ -119,34 +123,34 @@ const routeArr = [
 
 let router = () => (
   <div className="flex-center">
-    <div className="container-wider">
-      <div className="flex-left flex-wrap units-gap-big">
+      <div className="container-wider">
+        <div className="flex-left flex-wrap units-gap-big">
 
-        <Switch className="unit-1-4 unit-1-on-mobile">
-          {routeArr.map((route, index) => (
-            <Route
-              key={index}
-              path={route.path}
-              exact={route.exact}
-              component={route.head}
-              />
-          ))}
-        </Switch>
+          <Switch className="unit-1-4 unit-1-on-mobile">
+            {routeArr.map((route, index) => (
+              <Route
+                key={index}
+                path={route.path}
+                exact={route.exact}
+                component={route.head}
+                />
+            ))}
+          </Switch>
 
-        <Switch className="unit-3-4 unit-1-on-mobile">
-          {routeArr.map((route, index) => (
-            <Route
-              key={index}
-              path={route.path}
-              exact={route.exact}
-              component={route.component}
-              />
-          ))}
-        </Switch>
+          <Switch className="unit-3-4 unit-1-on-mobile">
+            {routeArr.map((route, index) => (
+              <Route
+                key={index}
+                path={route.path}
+                exact={route.exact}
+                component={route.component}
+                />
+            ))}
+          </Switch>
 
+        </div>
       </div>
     </div>
-  </div>
 )
 
 export const RouteArr = routeArr
