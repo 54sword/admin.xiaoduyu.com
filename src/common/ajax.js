@@ -2,7 +2,8 @@
 import config from '../../config'
 import errors from '../../config/errors'
 import axios from 'axios'
-import Promise from 'promise'
+// import Promise from 'promise'
+
 
 const converterErrorInfo = (res) => {
 
@@ -35,70 +36,62 @@ const converterErrorInfo = (res) => {
 
 }
 
-const AJAX = ({ api_url = '', url = '', type = 'get', params = {}, data = {}, headers = {} }) => {
-
-  return new Promise((resolve, reject) => {
+const AJAX = ({ domain = config.api_url, url = '', type = 'get', data = {}, headers = {} }) => {
 
   let option = {
-    url: config.api_url + '/' + config.api_verstion + url,
+    url: domain + '/' + config.api_verstion + url,
     method: type
   }
 
-  if (!api_url) option.url = config.api_url + '/' + config.api_verstion + url
-  if (api_url) option.url = api_url + url
-
   if (type == 'get') {
-    params._t = new Date().getTime()
-    option.params = params
+    data._t = new Date().getTime()
+    option.params = data
   } else if (type == 'post') {
     option.data = data
   }
 
-  // let token
-
   if (headers && headers.AccessToken) {
     option.headers = headers
-    // token = headers.AccessToken
   }
 
   if (type == 'post' && headers.AccessToken) {
     option.data.access_token = headers.AccessToken
-    // token = option.data.access_token
     delete option.headers
   }
 
-  // console.log(option);
-  // console.log(token);
-  // if (config.debug && console.debug) console.debug('请求: ', option)
+
+  if (__DEV__) console.debug(option)
 
   return axios(option).then(resp => {
-    // if (config.debug && console.debug) console.debug('返回: ', resp)
+    if (__DEV__) console.debug(resp.data)
 
     if (resp && resp.data) {
       let res = resp.data
       res = converterErrorInfo(res)
-      // callback(res)
-      resolve(res)
+      // resolve(res)
+      return res
     } else {
-      reject(null)
+      return null
+      // reject(null)
     }
 
   })
   .catch(function (error) {
-    // if (config.debug && console.debug) console.error('返回: ', error)
+    if (__DEV__) console.debug(error.response.data)
 
     if (error && error.response && error.response.data) {
       let res = error.response.data
       res = converterErrorInfo(res)
-      // callback(res)
-      resolve(res)
+      return res
+      // resolve(res)
     } else {
-      reject(null)
+      return null
+      // reject(null)
     }
 
   })
 
-  })
+  // })
 }
 
 export default AJAX

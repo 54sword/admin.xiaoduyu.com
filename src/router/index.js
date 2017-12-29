@@ -98,8 +98,8 @@ const routeArr = [
     loadData: ({ store, match }) => {
       console.log('登陆');
 
-
-      console.log(store.getState());
+      
+      // console.log(store.getState());
 
       return new Promise(function (resolve, reject) {
         resolve({ code:200 });
