@@ -9,23 +9,17 @@ export function removeAccessToken() {
   return { type: 'REMOVE_ACCESS_TOKEN' }
 }
 
-export const loadUserInfo = ({ accessToken = null, callback = ()=>{} }) => {
+export const loadUserInfo = ({ accessToken = null }) => {
   return (dispatch, getState) => {
 
     accessToken = accessToken || getState().user.accessToken
 
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
 
-      return Ajax({
+      Ajax({
         url: '/user',
         type: 'post',
         headers: { AccessToken: accessToken }
-        // callback: (res) => {
-        //   if (res && res.success) {
-        //     dispatch({ type: 'SET_USER', userinfo: res.data })
-        //   }
-        //   callback(res)
-        // }
       }).then(res => {
         if (res && res.success) {
           dispatch({ type: 'SET_USER', userinfo: res.data })
@@ -34,20 +28,6 @@ export const loadUserInfo = ({ accessToken = null, callback = ()=>{} }) => {
       }).catch(reject)
 
     })
-
-    /*
-    return Ajax({
-      url: '/user',
-      type: 'post',
-      headers: { AccessToken: accessToken },
-      callback: (res) => {
-        if (res && res.success) {
-          dispatch(setUser(res.data))
-        }
-        callback(res)
-      }
-    })
-    */
 
   }
 }

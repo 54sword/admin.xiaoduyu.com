@@ -4,11 +4,12 @@ import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import runtime from 'serviceworker-webpack-plugin/lib/runtime'
 
-
 // import '../src/pages/mobi.min.css'
 
 import configureStore from '../src/store'
 import { Router } from '../src/router'
+
+import { getProfile } from '../src/reducers/user'
 
 if ('serviceWorker' in navigator) {
   const registration = runtime.register();
@@ -25,10 +26,16 @@ if (__DEV__) {
   document.getElementById('app').innerHTML = ''
 }
 
+const me = getProfile(store.getState())
+
+// console.log(me);
+
+const _Router = Router({ userinfo: me })
+
 ReactDOM.hydrate((
   <Provider store={store}>
     <BrowserRouter>
-      <Router />
+      <_Router />
     </BrowserRouter>
   </Provider>
 ), document.getElementById('app'))

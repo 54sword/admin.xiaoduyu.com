@@ -21,108 +21,68 @@ import Head from '../components/head'
 // actions
 // import { update } from '../actions/account'
 
+let signIn = false
+
 // 登录验证
 function requireAuth(Layout, props) {
 
   // console.log(props);
-
-  if (true) { // 未登录
-    return <Redirect to="/sign-in" />;
+  if (!signIn) { // 未登录
+    return <Redirect to="/sign-in" />
   } else {
     return <Layout {...props} />
   }
 }
+
+// console.log(SignIn.WrappedComponent.defaultProps.component);
 
 const routeArr = [
   {
     path: '/',
     exact: true,
     component: props => requireAuth(Home, props),
-    head: Head,
-    loadData: ({ store, match }) => {
-      console.log('首页');
-
-      return new Promise(function (resolve, reject) {
-        // setTimeout(function () {
-          // store.dispatch(update('777'))
-          resolve({ code:200, resr: '123' });
-        // }, 3000);
-      })
-
-    }
+    head: Head
   },
   {
     path: '/posts',
     exact: true,
     component: props => requireAuth(Posts, props),
-    head: Head,
-    loadData: ({ store, match }) => {
-      console.log('帖子');
-      return new Promise(function (resolve, reject) {
-        resolve({ code:200 });
-      })
-    }
+    head: Head
   },
-
   {
     path: '/posts/:id',
     exact: true,
     component: props => requireAuth(PostsDetail, props),
-    head: Head,
-    loadData: ({ store, match }) => {
-      console.log('帖子详情');
-      return new Promise(function (resolve, reject) {
-        resolve({ code:200 });
-      })
-    }
+    head: Head
   },
-
   {
     path: '/topics',
     exact: true,
     component: props => requireAuth(Topics, props),
-    head: Head,
-    loadData: ({ store, match }) => {
-      console.log('话题');
-      return new Promise(function (resolve, reject) {
-        resolve({ code:200 });
-      })
-    }
+    head: Head
   },
-
   {
     path: '/sign-in',
     exact: true,
-    component: SignIn,
-    // head: Head,
-    loadData: ({ store, match }) => {
-      console.log('登陆');
-
-      
-      // console.log(store.getState());
-
-      return new Promise(function (resolve, reject) {
-        resolve({ code:200 });
-      })
-    }
+    component: SignIn
   },
-
   {
     path: '**',
-    component: NotFound,
-    // head: Head,
-    loadData: ({ store, match }) => {
-      console.log('页面不存在');
-      return new Promise(function (resolve, reject) {
-        resolve({ code:404 });
-      })
-    }
+    component: NotFound
   }
 ]
 
 
-let router = () => (
-  <div className="flex-center">
+let router = ({ userinfo }) => {
+
+  // console.log('----');
+  // console.log(userinfo);
+
+  if (userinfo) {
+    signIn = true
+  }
+
+  return () => (<div className="flex-center">
       <div className="container-wider">
         <div className="flex-left flex-wrap units-gap-big">
 
@@ -150,8 +110,8 @@ let router = () => (
 
         </div>
       </div>
-    </div>
-)
+    </div>)
+}
 
 export const RouteArr = routeArr
 export const Router = router

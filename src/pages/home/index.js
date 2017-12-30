@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 // import { update } from '../../actions/account'
 // import { getAccessToken } from '../../reducers/account'
+import Promise from 'promise'
 
 import { withRouter } from 'react-router-dom'
 
@@ -11,6 +12,8 @@ import Shell from '../shell'
 
 // 纯组件
 export class Home extends React.Component {
+
+
 
   constructor(props) {
     super(props)

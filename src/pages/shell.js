@@ -1,14 +1,37 @@
 import React from 'react'
 import { Route, Link } from 'react-router-dom'
 
-// import PropTypes from 'prop-types'
+import PropTypes from 'prop-types'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 // import { update } from '../../actions/account'
 
 import parseUrl from '../common/parse-url'
 
+import connectReudx from '../common/connect-redux'
+
 const Shell = (Component) => {
+
+  Component = connectReudx(Component)
+
+  /*
+  if (Component.mapStateToProps &&
+    Component.mapDispatchToProps ) {
+
+    Component = connect(Component.mapStateToProps,
+      (dispatch)=>{
+
+        let actions = {}
+
+        for (let i in Component.actions) {
+          actions[i] = bindActionCreators(Component.actions[i], dispatch)
+        }
+
+        return actions
+
+      })(Component)
+  }
+  */
 
   class Shell extends React.Component {
 
@@ -19,11 +42,14 @@ const Shell = (Component) => {
     // 组件加载完成
     componentWillMount() {
 
-      // console.log(this.props.staticContext);
+      // if (this.props.staticContext) {
+      //   console.log(this.props.staticContext);
+      //   console.log(this.props);
+      // }
 
       const { search } = this.props.location
       this.props.location.params = search ? parseUrl(search) : null
-      // console.log('进入组件')
+      console.log('进入组件')
     }
 
     // 组件加载完成
@@ -52,15 +78,17 @@ const Shell = (Component) => {
 
   }
 
-  // Shell.defaultProps = {
-  //   component: _component
-  // }
+  Shell.defaultProps = {
+    loadData: Component.loadData || null
+    // component: Component
+  }
 
   Shell.contextTypes = {
-    // router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired
   }
 
   Shell.propTypes = {
+
   }
 
   const mapStateToProps = (state) => {
@@ -75,7 +103,13 @@ const Shell = (Component) => {
     }
   }
 
-  return connect(mapStateToProps, mapDispatchToProps)(Shell)
+  // console.log(Component.WrappedComponent);
+
+
+
+  Shell = connect(mapStateToProps, mapDispatchToProps)(Shell)
+
+  return Shell
 }
 
 

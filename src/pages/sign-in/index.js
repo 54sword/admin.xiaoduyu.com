@@ -1,21 +1,51 @@
 import React from 'react'
 import { Route, Link } from 'react-router-dom'
 
-import PropTypes from 'prop-types'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
+// import PropTypes from 'prop-types'
+// import { bindActionCreators } from 'redux'
+// import { connect } from 'react-redux'
 import { signIn, saveSignInCookie } from '../../actions/account'
 import { getCaptchaId } from '../../actions/captcha'
+import { getProfile } from '../../reducers/user'
 
-// import Promise from 'promise'
+import Promise from 'promise'
 //
 import CSSModules from 'react-css-modules'
 import styles from './style.scss'
 
 import config from '../../../config'
 
+import Shell from '../shell'
+
+// import connectReudx from '../../common/connect-redux'
+
 // 纯组件
-export class SignIn extends React.PureComponent {
+export class SignIn extends React.Component {
+
+
+  static loadData({ store, match, userinfo }) {
+
+    return new Promise(function (resolve, reject) {
+
+      // console.log(userinfo);
+
+      // setTimeout(function () {
+        // store.dispatch(update('777'))
+        resolve({ code:200, resr: '123' });
+      // }, 3000);
+    })
+
+  }
+
+  // 异步操作
+  static actions = { signIn, getCaptchaId, saveSignInCookie }
+
+  // 从 state 从获取数据到 props
+  static mapStateToProps(state, props) {
+    return {
+      profile: getProfile(state)
+    }
+  }
 
   constructor(props) {
     super(props)
@@ -27,6 +57,9 @@ export class SignIn extends React.PureComponent {
   }
 
   componentDidMount() {
+
+    console.log(this);
+
     this.getCaptcha()
   }
 
@@ -64,8 +97,6 @@ export class SignIn extends React.PureComponent {
 
     submit.value = '登录'
     submit.disabled = false
-
-    console.log(result);
 
     if (result && result.success) {
       result = await saveSignInCookie()
@@ -126,15 +157,32 @@ export class SignIn extends React.PureComponent {
 SignIn = CSSModules(SignIn, styles)
 
 
-SignIn.propTypes = {
-  signIn: PropTypes.func.isRequired,
-  getCaptchaId: PropTypes.func.isRequired,
-  saveSignInCookie: PropTypes.func.isRequired
+SignIn.defaultProps = {
+  test: '123'
+  /*
+  mapStateToProps: (state, props) => {
+    return {}
+  },
+  mapDispatchToProps: (dispatch) => {
+    return {
+      signIn: bindActionCreators(signIn, dispatch),
+      getCaptchaId: bindActionCreators(getCaptchaId, dispatch),
+      saveSignInCookie: bindActionCreators(saveSignInCookie, dispatch)
+    }
+  }
+  */
 }
 
+// SignIn = connectReudx(SignIn)
+
+// SignIn.propTypes = {
+//   signIn: PropTypes.func.isRequired,
+//   getCaptchaId: PropTypes.func.isRequired,
+//   saveSignInCookie: PropTypes.func.isRequired
+// }
+/*
 const mapStateToProps = (state, props) => {
-  return {
-  }
+  return {}
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -145,6 +193,6 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-SignIn = connect(mapStateToProps,mapDispatchToProps)(SignIn)
-
-export default SignIn
+SignIn = connect(mapStateToProps, mapDispatchToProps)(SignIn)
+*/
+export default Shell(SignIn)

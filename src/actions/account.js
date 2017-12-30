@@ -6,7 +6,8 @@ export const saveSignInCookie = () => {
     let accessToken = getState().user.accessToken
     return new Promise(async (resolve, reject) => {
       Ajax({
-        api_url: window.location.origin,
+        domain: window.location.origin,
+        apiVerstion: '',
         url: '/sign/in',
         type: 'post',
         data: { access_token:accessToken }

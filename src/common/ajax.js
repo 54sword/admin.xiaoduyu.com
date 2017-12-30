@@ -36,10 +36,17 @@ const converterErrorInfo = (res) => {
 
 }
 
-const AJAX = ({ domain = config.api_url, url = '', type = 'get', data = {}, headers = {} }) => {
+const AJAX = ({
+    domain = config.api_url,
+    apiVerstion = '/' + config.api_verstion,
+    url = '',
+    type = 'get',
+    data = {},
+    headers = {}
+  }) => {
 
   let option = {
-    url: domain + '/' + config.api_verstion + url,
+    url: domain + apiVerstion + url,
     method: type
   }
 
@@ -60,10 +67,10 @@ const AJAX = ({ domain = config.api_url, url = '', type = 'get', data = {}, head
   }
 
 
-  if (__DEV__) console.debug(option)
+  if (typeof __DEV__ != 'undefined') console.debug(option)
 
   return axios(option).then(resp => {
-    if (__DEV__) console.debug(resp.data)
+    if (typeof __DEV__ != 'undefined') console.debug(resp.data)
 
     if (resp && resp.data) {
       let res = resp.data
@@ -77,7 +84,7 @@ const AJAX = ({ domain = config.api_url, url = '', type = 'get', data = {}, head
 
   })
   .catch(function (error) {
-    if (__DEV__) console.debug(error.response.data)
+    if (typeof __DEV__ != 'undefined') console.debug(error.response.data)
 
     if (error && error.response && error.response.data) {
       let res = error.response.data

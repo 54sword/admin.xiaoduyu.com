@@ -6,8 +6,8 @@ import compress from 'compression'
 // 服务端渲染依赖
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
-import { StaticRouter, matchPath } from 'react-router'
-// import { matchPath } from 'react-router-dom'
+import { StaticRouter } from 'react-router'
+import { matchPath } from 'react-router-dom'
 import { Provider } from 'react-redux'
 
 import configureStore from '../src/store'
@@ -21,31 +21,6 @@ import { RouteArr, Router } from '../src/router'
 import config from '../config'
 
 const app = express()
-
-
-// https
-
-/*
-var fs = require('fs');
-var http = require('http');
-var https = require('https');
-var privateKey  = fs.readFileSync('./https/private.pem', 'utf8');
-var certificate = fs.readFileSync('./https/file.crt', 'utf8');
-var credentials = {key: privateKey, cert: certificate};
-var httpServer = http.createServer(app);
-var httpsServer = https.createServer(credentials, app);
-
-var PORT = 18080;
-var SSLPORT = config.port;
-
-httpServer.listen(PORT, function() {
-    console.log('HTTP Server is running on: http://localhost:%s', PORT);
-});
-httpsServer.listen(SSLPORT, function() {
-    console.log('HTTPS Server is running on: https://localhost:%s', SSLPORT);
-});
-*/
-
 
 // webpack热更新
 const runWebpack = ()=>{
@@ -73,7 +48,7 @@ app.use(cookieParser(config.auth_cookie_name));
 
 app.use(compress())
 app.use(express.static(__dirname + '/../dist'))
-
+app.use(express.static(__dirname + '/../public'))
 
 app.use(function (req, res, next) {
   // 计算页面加载完成花费的时间
@@ -122,20 +97,20 @@ app.get('*', async function(req, res){
   let accessToken = req.cookies[config.auth_cookie_name] || null
         // expires = req.cookies['expires'] || 0
 
+  let context = {}
+  let userinfo = null
+
   if (accessToken) {
-
     let result = await loadUserInfo({ accessToken })(store.dispatch, store.getState)
-
-    // let result = await store.dispatch({ loadUserInfo })
-    // console.log(result);
+    if (result.success) {
+      userinfo = result.data
+    }
   }
-
-  // const context = {
-  //   'test': 'test'
-  // }
 
   let _route = null,
       _match = null
+
+  // console.log(matchPath(req.url.split('?')[0], RouteArr))
 
   RouteArr.some(route => {
     let match = matchPath(req.url.split('?')[0], route)
@@ -146,48 +121,48 @@ app.get('*', async function(req, res){
     }
   })
 
-  // if (!_route || !_match) {
-  //   let reduxState = JSON.stringify(store.getState())
-  //   res.status(404)
-  //   res.render('../dist/index.ejs', { html: '', reduxState })
-  //   res.end()
-  //   return
-  // }
+  // console.log(_match);
+  // console.log(_route.component.WrappedComponent);
 
-  // let result = null
+  // console.log(_route.component.WrappedComponent.defaultProps.component);
 
-  // if (_route && _match && _route.loadData) {
-  let context = await _route.loadData({ store, match: _match })
-  // }
+  if (
+    _match &&
+    _route &&
+    _route.component &&
+    _route.component.WrappedComponent &&
+    _route.component.WrappedComponent.defaultProps &&
+    // _route.component.WrappedComponent.defaultProps.component &&
+    _route.component.WrappedComponent.defaultProps.loadData
+  ) {
+    context = await _route.component.WrappedComponent.defaultProps.loadData({ store, match: _match, userinfo })
+  }
+
+  const _Router = Router({ userinfo })
+
+  console.log(context);
 
   let html = ReactDOMServer.renderToString(
     <Provider store={store}>
       <StaticRouter location={req.url} context={context}>
-        <Router />
+        <_Router />
       </StaticRouter>
     </Provider>
   )
 
-  // console.log(html);
-
   let reduxState = JSON.stringify(store.getState()).replace(/</g, '\\x3c');
 
-  // if (context.url) {
-  //   res.writeHead(301, {
-  //     Location: context.url
-  //   })
-  //   res.end()
-  // } else {
-  //
-
-  // if (process.env.NODE_ENV === 'development') {
-  //   html = ''
-  // }
-
+  if (context.code) {
+    if (context.code == 301) {
+      res.writeHead(301, { Location: context.url })
+      res.end()
+      return
+    }
     res.status(context.code)
-    res.render('../dist/index.ejs', { html, reduxState })
-    res.end()
-  // }
+  }
+
+  res.render('../dist/index.ejs', { html, reduxState })
+  res.end()
 })
 
 app.listen(config.port);
