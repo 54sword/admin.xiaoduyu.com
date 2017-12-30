@@ -1,24 +1,15 @@
 .head{
-  background-color: yellow;
-  color:#fff;
 
+  list-style-type: none;
 
-  ul {
-    margin:0 auto;
-    width: 800px;
-  }
-
-  .nava{
-    margin:0 auto;
-    width: 800px;
+  a {
+    color:#333;
+    text-decoration: none;
   }
 
   :global .active{
-    background:green;
+    color:green;
+    font-weight: bold;
   }
 
-}
-
-.ttt{
-  background-color: red;
 }

@@ -1,14 +1,15 @@
 import React from 'react'
 import { Route, Link } from 'react-router-dom'
-import PropTypes from 'prop-types'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import { update } from '../../actions/account'
+// import PropTypes from 'prop-types'
+// import { bindActionCreators } from 'redux'
+// import { connect } from 'react-redux'
+// import { update } from '../../actions/account'
 // import { getAccessToken } from '../../reducers/account'
 
 import CSSModules from 'react-css-modules'
 import styles from './style.scss'
 
+import Shell from '../shell'
 
 // 纯组件
 export class PostsDetail extends React.Component {
@@ -64,22 +65,22 @@ export class PostsDetail extends React.Component {
 }
 
 PostsDetail = CSSModules(PostsDetail, styles)
+//
+// PostsDetail.propTypes = {
+//   update: PropTypes.func.isRequired
+// }
+//
+// const mapStateToProps = (state, props) => {
+//   return {
+//   }
+// }
+//
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     update: bindActionCreators(update, dispatch)
+//   }
+// }
+//
+// PostsDetail = connect(mapStateToProps,mapDispatchToProps)(PostsDetail)
 
-PostsDetail.propTypes = {
-  update: PropTypes.func.isRequired
-}
-
-const mapStateToProps = (state, props) => {
-  return {
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    update: bindActionCreators(update, dispatch)
-  }
-}
-
-PostsDetail = connect(mapStateToProps,mapDispatchToProps)(PostsDetail)
-
-export default PostsDetail
+export default Shell(PostsDetail)

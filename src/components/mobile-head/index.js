@@ -9,15 +9,15 @@ export class Head extends React.Component {
   constructor(props) {
     super(props)
   }
-
+  
   render() {
-    return(
-        <ul styleName="head">
+    return(<div styleName="head">
+        <ul>
           <li><NavLink exact to="/">Home1333333555</NavLink></li>
           <li><NavLink exact to="/posts">Posts</NavLink></li>
           <li><NavLink exact to="/topics">Topics</NavLink></li>
         </ul>
-      )
+      </div>)
   }
 
 }

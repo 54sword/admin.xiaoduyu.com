@@ -100,7 +100,10 @@ export class SignIn extends React.Component {
 
     if (result && result.success) {
       result = await saveSignInCookie()
-      console.log(result);
+      // console.log(result);
+      if (result.success) {
+        location.reload()
+      }
     }
 
     /*
