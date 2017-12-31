@@ -34,12 +34,10 @@ export class Home extends React.Component {
     // const { accessToken } = this.props.accessToken
 
     return(<div>
-      <div>
         <div>当前注册用户：</div>
         <div>帖子总数1：</div>
         <div>评论总数2：</div>
         <div>恢复总数2：</div>
-      </div>
     </div>)
   }
 

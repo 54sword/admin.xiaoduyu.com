@@ -111,27 +111,27 @@ export function loadPostsList({ name, filters = {}, callback = ()=>{}, restart =
 
     let headers = accessToken ? { 'AccessToken': accessToken } : null
 
-    return Ajax({
+    Ajax({
       url: '/posts',
-      params: filters,
-      headers,
-      callback: (res) => {
+      data: filters,
+      headers
+    }).then(res => {
 
-        if (!res || !res.success) {
-          callback(res)
-          return
-        }
-
-        postsList.more = res.data.length < postsList.filters.per_page ? false : true
-        postsList.data = postsList.data.concat(processPostsList(res.data))
-        postsList.filters = filters
-        postsList.count = 0
-        postsList.loading = false
-
-        dispatch({ type: 'SET_POSTS_LIST_BY_NAME', name, data: postsList })
+      if (!res || !res.success) {
         callback(res)
+        return
       }
-    })
+
+      postsList.more = res.data.length < postsList.filters.per_page ? false : true
+      postsList.data = postsList.data.concat(processPostsList(res.data))
+      postsList.filters = filters
+      postsList.count = 0
+      postsList.loading = false
+
+      dispatch({ type: 'SET_POSTS_LIST_BY_NAME', name, data: postsList })
+      callback(res)
+
+  })
 
   }
 }

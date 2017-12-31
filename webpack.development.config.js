@@ -8,8 +8,8 @@ var ServiceWorkerWebpackPlugin = require('serviceworker-webpack-plugin')
 var config = require('./config')
 
 const extractSass = new ExtractTextPlugin({
-  filename: "[name].css"
-  // disable: true
+  filename: "[name].css",
+  disable: true
 })
 
 module.exports = {
