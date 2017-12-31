@@ -4,6 +4,7 @@ import { Route, Switch, Redirect } from 'react-router-dom'
 
 import '../common/mobi.min.css'
 import '../pages/global.scss'
+import '../common/load-demand'
 
 // pages
 import Home from '../pages/home'
@@ -25,6 +26,9 @@ let signIn = false
 
 // 登录验证
 function requireAuth(Layout, props) {
+
+  console.log(signIn);
+
   if (!signIn) { // 未登录
     return <Redirect to="/sign-in" />
   } else {
@@ -38,12 +42,12 @@ const triggerEnter = (Layout, props) => {
 }
 
 const routeArr = [
-  { path: '/', exact: true, component: props => requireAuth(Home, props), head: Head },
-  { path: '/posts', exact: true, component: props => requireAuth(Posts, props), head: Head },
-  { path: '/posts/:id', exact: true, component: props => requireAuth(PostsDetail, props), head: Head },
-  { path: '/topics', exact: true, component: props => requireAuth(Topics, props), head: Head },
+  { path: '/', exact: true, component: props => requireAuth(Home, props), head: Head, sidebar: Sidebar },
+  { path: '/posts', exact: true, component: props => requireAuth(Posts, props), head: Head, sidebar: Sidebar  },
+  { path: '/posts/:id', exact: true, component: props => requireAuth(PostsDetail, props), head: Head, sidebar: Sidebar  },
+  { path: '/topics', exact: true, component: props => requireAuth(Topics, props), head: Head, sidebar: Sidebar  },
   { path: '/sign-in', exact: true, component: props => triggerEnter(SignIn, props) },
-  { path: '**', component: NotFound, head: Head }
+  { path: '**', component: NotFound }
 ]
 
 let router = ({ userinfo }) => {
@@ -63,14 +67,22 @@ let router = ({ userinfo }) => {
         <div className="flex-center">
           <div className="container-fluid">
             <div className="flex-left flex-wrap units-gap-big top-gap">
-              <div className="unit-0 hide-on-mobile" style={{width:'200px'}}>
+
+              <Switch>
+                {routeArr.map((route, index) => (
+                  <Route key={index} path={route.path} exact={route.exact} component={route.sidebar} />
+                ))}
+              </Switch>
+
+              {/* <div className="unit-0 hide-on-mobile" style={{width:'200px'}}>
                 <Sidebar />
-              </div>
+              </div> */}
+
               <div className="unit">
                 <Switch>
-                  {routeArr.map((route, index) => (
-                    <Route key={index} path={route.path} exact={route.exact} component={route.component} />
-                  ))}
+                  {routeArr.map((route, index) => {
+                    if (route.component) return <Route key={index} path={route.path} exact={route.exact} component={route.component} />
+                  })}
                 </Switch>
               </div>
             </div>

@@ -9,11 +9,19 @@ import Promise from 'promise'
 import { withRouter } from 'react-router-dom'
 
 import Shell from '../shell'
+import Meta from '../../components/meta'
 
 // 纯组件
 export class Home extends React.Component {
 
 
+  static loadData({ store, match, userinfo }) {
+
+    return new Promise(function (resolve, reject) {
+        resolve({ code:200, resr: '123' });
+    })
+
+  }
 
   constructor(props) {
     super(props)
@@ -22,6 +30,11 @@ export class Home extends React.Component {
   }
 
   componentWillMount() {
+    // this.props.setMeta({
+    //   title: '小度鱼后台管理'
+    // })
+
+      console.log('服务端渲染');
 
   }
 
@@ -34,6 +47,11 @@ export class Home extends React.Component {
     // const { accessToken } = this.props.accessToken
 
     return(<div>
+        <Meta
+          meta={{
+            title: '122222'
+          }}
+        />
         <div>当前注册用户：</div>
         <div>帖子总数1：</div>
         <div>评论总数2：</div>

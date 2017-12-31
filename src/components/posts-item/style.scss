@@ -1,35 +1,43 @@
-// @import "../../containers/global/base.scss";
+
 
 .box{
-  margin-bottom: 10px;
-  border-radius: 4px;
-  overflow: hidden;
+  // margin-bottom: 10px;
+  // border-radius: 4px;
+  // overflow: hidden;
   // border-bottom: 1px solid #efefef;
 }
 
 .item{
-  position: relative;
-  background-color: #fff;
-  padding:15px 20px 15px 20px;
-
-  // @include boxSizing();
-  &:hover{
-    background-color: rgba(255,255,255,.7);
-    // @include cursorHand;
+  width: 100%;
+  margin:0px;
+  border-collapse:collapse;
+  border-spacing:0;
+  border-left:1px solid #d8d8d8;
+  border-top:1px solid #d8d8d8;
+  th,td{
+    border-right:1px solid #d8d8d8;
+    // border-bottom:1px solid #888;
+    padding:15px;
+  }
+  th{
+    font-weight:bold;
+    background:#ccc;
   }
 }
 
 .head{
+
   font-size: 12px;
   z-index: 999;
-  margin-bottom: 10px;
+  // margin-bottom: 10px;
   padding-left:50px;
 
   .avatar{
-
     position: absolute;
-    top: 15px;
-    left: 20px;
+    margin:0 0 0 -50px;
+    // position: absolute;
+    // top: 15px;
+    // left: 20px;
     width: 40px;
     height: 40px;
     background-color: #efefef;
@@ -123,20 +131,6 @@
   margin-top: 2px;
 
 
-
-  /*
-  .images{
-    > div{
-      display: inline-block;
-      margin-right:10px;
-      margin-top:10px;
-    }
-    img{
-      max-height:150px;
-      // box-shadow: 0px 0px 1px rgba(0,0,0,.3);
-    }
-  }
-  */
 }
 
 .content-have-img{
@@ -203,8 +197,13 @@
   border-top:1px solid #efefef;
   background-color: #fff;
 
-  // @include boxSizing();
   &:hover{
     background-color: rgba(255,255,255,.7);
   }
+}
+
+.actions{
+  background-color: #fff;
+  // width: 30%;
+  // border-left:1px solid #efefef;
 }

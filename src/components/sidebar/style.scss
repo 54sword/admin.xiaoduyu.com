@@ -1,5 +1,6 @@
 .head{
-
+  position: fixed;
+  width: 180px;
   list-style-type: none;
 
   padding:0px;
@@ -9,7 +10,7 @@
     padding:0px;
     margin:0px;
   }
-
+  
   a {
     display: block;
     padding:10px;

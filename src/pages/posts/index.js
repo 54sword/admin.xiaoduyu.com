@@ -26,16 +26,44 @@ export class Posts extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      title: '12312313'
     }
   }
 
-  componentDidMount() {
-    // this.props.update('ttt')
-    // console.log(this.props.location.params);
+  componentWillMount() {
+    this.props.setMeta({
+      title: '帖子'
+    })
   }
 
   render() {
     return(<div>
+      <div>
+        <div>
+          排序
+          <select>
+            <option>创建日期</option>
+            <option>排序日期</option>
+          </select>
+        </div>
+
+        <div>
+          状态
+          <select>
+            <option>所有</option>
+            <option>正常</option>
+            <option>弱化</option>
+            <option>删除</option>
+          </select>
+        </div>
+
+        <div>
+          ID<input type="text" placeholder="请输入id" />
+        </div>
+
+        <button>搜索</button>
+
+      </div>
       <PostsList name="home" filters={{}} />
     </div>)
   }

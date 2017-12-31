@@ -22,6 +22,7 @@ let config = {
 if (process.env.NODE_ENV == 'development') {
   config.debug = true
   config.class_scoped_name = '[name]_[local]__[hash:base64:5]'
+  config.api_url = 'http://localhost:3000'
 }
 
 module.exports = config

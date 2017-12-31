@@ -21,9 +21,12 @@ export class Topics extends React.PureComponent {
     }
   }
 
-  componentDidMount() {
+  componentWillMount() {
     // this.props.update('qqq')
     // console.log(this);
+    this.props.setMeta({
+      title: '话题'
+    })
   }
 
   render() {

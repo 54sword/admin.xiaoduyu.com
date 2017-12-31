@@ -2,6 +2,7 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
 import compress from 'compression'
+import DocumentMeta from 'react-document-meta'
 
 // 服务端渲染依赖
 import React from 'react'
@@ -94,8 +95,11 @@ app.get('*', async function(req, res){
 
   const store = configureStore({})
 
+  console.log(store.getState())
+
   let accessToken = req.cookies[config.auth_cookie_name] || null
         // expires = req.cookies['expires'] || 0
+
 
   let context = {}
   let userinfo = null
@@ -140,7 +144,9 @@ app.get('*', async function(req, res){
 
   const _Router = Router({ userinfo })
 
-  console.log(context);
+  // console.log(context);
+
+
 
   let html = ReactDOMServer.renderToString(
     <Provider store={store}>
@@ -161,7 +167,10 @@ app.get('*', async function(req, res){
     res.status(context.code)
   }
 
-  res.render('../dist/index.ejs', { html, reduxState })
+  // 获取页面的meta，嵌套到模版中
+  let meta = DocumentMeta.renderAsHTML()
+
+  res.render('../dist/index.ejs', { meta, html, reduxState })
   res.end()
 })
 

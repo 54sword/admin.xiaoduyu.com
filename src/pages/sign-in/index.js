@@ -4,7 +4,7 @@ import { Route, Link } from 'react-router-dom'
 // import PropTypes from 'prop-types'
 // import { bindActionCreators } from 'redux'
 // import { connect } from 'react-redux'
-import { signIn, saveSignInCookie } from '../../actions/account'
+import { signIn, saveSignInCookie } from '../../actions/sign'
 import { getCaptchaId } from '../../actions/captcha'
 import { getProfile } from '../../reducers/user'
 
@@ -22,6 +22,9 @@ import Shell from '../shell'
 // 纯组件
 export class SignIn extends React.Component {
 
+  static meta = {
+    title: '登陆'
+  }
 
   static loadData({ store, match, userinfo }) {
 
@@ -56,10 +59,11 @@ export class SignIn extends React.Component {
     this.getCaptcha = this.getCaptcha.bind(this)
   }
 
+  componentWillMount() {
+    console.log('服务端渲染');
+  }
+
   componentDidMount() {
-
-    console.log(this);
-
     this.getCaptcha()
   }
 

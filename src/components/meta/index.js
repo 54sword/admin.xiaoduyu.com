@@ -4,10 +4,10 @@ import DocumentMeta from 'react-document-meta'
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { getUnreadNotice } from '../../reducers/user'
+// import { getUnreadNotice } from '../../reducers/user'
 
-import config from '../../../config'
-import weixin from '../../common/weixin'
+// import config from '../../../config'
+// import weixin from '../../common/weixin'
 
 export class Meta extends Component {
 
@@ -17,18 +17,19 @@ export class Meta extends Component {
 
   render() {
 
-    const { unreadNotice } = this.props
+    // const { unreadNotice } = this.props
 
     let meta = {
-      title: config.name,
-      description: config.description
+      // title: '122222',
+      // description: '33333'
     }
+
 
     if (this.props.meta) {
       meta = this.props.meta
-      meta.title += ' - '+config.name
+      // meta.title += ' - '+config.name
     }
-
+      /*
     if (unreadNotice.length > 0) {
       meta.title = '('+unreadNotice.length+')' + meta.title
     }
@@ -45,6 +46,7 @@ export class Meta extends Component {
       }
       oHead.appendChild(oScript)
     }
+    */
 
     return (
       <DocumentMeta {...meta} />
@@ -53,12 +55,12 @@ export class Meta extends Component {
 }
 
 Meta.propTypes = {
-  unreadNotice: PropTypes.array.isRequired
+  // unreadNotice: PropTypes.array.isRequired
 }
 
 const mapStateToProps = (state) => {
   return {
-    unreadNotice: getUnreadNotice(state)
+    // unreadNotice: getUnreadNotice(state)
   }
 }
 

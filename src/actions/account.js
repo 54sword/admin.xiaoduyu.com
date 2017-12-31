@@ -1,6 +1,7 @@
 import Ajax from '../common/ajax'
 import Promise from 'promise'
 
+/*
 export const saveSignInCookie = () => {
   return (dispatch, getState) => {
     let accessToken = getState().user.accessToken
@@ -31,6 +32,7 @@ export const signIn = ({ data }) => {
     })
   }
 }
+*/
 
 export function resetPassword({ currentPassword, newPassword, callback }) {
   return (dispatch, getState) => {

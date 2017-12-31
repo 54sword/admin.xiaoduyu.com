@@ -118,7 +118,7 @@ module.exports = {
       template: 'src/view/index.html',
       // public_path: config.public_path + '/',
       // cdn: config.qiniu.url + '/',
-      // meta: '<%- meta %>',
+      meta: '<%- meta %>',
       htmlDom: '<%- html %>',
       reduxState: '<%- reduxState %>'
     }),

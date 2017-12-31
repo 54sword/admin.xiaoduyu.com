@@ -25,33 +25,50 @@ export function addAccessToken({ expires, access_token }) {
   return { type: 'ADD_ACCESS_TOKEN', expires, access_token }
 }
 
-export const saveSignInCookie = ({ access_token, callback = ()=> {} }) => {
-  Ajax({
-    api_url: domain_name,
-    url: '/sign/in',
-    type: 'post',
-    data: { access_token },
-    callback
-  })
-}
-
-export function signout({ callback = ()=>{} }) {
-  return dispatch => {
-
-    return Ajax({
-      api_url: domain_name,
-      url: '/sign/out',
-      type: 'post',
-      callback: () => {
-        // console.log('123123');
-        callback()
-      }})
-
-    // cookie.remove(auth_cookie_name, { path: '/' })
-    // cookie.remove('expires', { path: '/' })
-    // return { type: 'REMOVE_ACCESS_TOKEN' }
+export const saveSignInCookie = () => {
+  return (dispatch, getState) => {
+    let accessToken = getState().user.accessToken
+    return new Promise(async (resolve, reject) => {
+      Ajax({
+        domain: window.location.origin,
+        apiVerstion: '',
+        url: '/sign/in',
+        type: 'post',
+        data: { access_token:accessToken }
+      }).then(resolve).catch(reject)
+    })
   }
 }
+
+// 登录
+export const signIn = ({ data }) => {
+  return dispatch => {
+    return new Promise(async (resolve, reject) => {
+      Ajax({ url: '/signin', type: 'post', data })
+      .then(res => {
+        if (res && res.success) {
+          dispatch({ type: 'ADD_ACCESS_TOKEN', access_token: res.data.access_token })
+        }
+        resolve(res)
+      })
+      .catch(reject)
+    })
+  }
+}
+
+export const signOut = () => {
+  return dispatch => {
+    return new Promise(async (resolve, reject) => {
+      Ajax({
+        domain: window.location.origin,
+        apiVerstion: '',
+        url: '/sign/out',
+        type: 'post'
+      }).then(resolve).catch(reject)
+    })
+  }
+}
+
 
 // 登录
 export function signin(data, callback = ()=>{}) {

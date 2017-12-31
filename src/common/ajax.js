@@ -45,6 +45,10 @@ const AJAX = ({
     headers = {}
   }) => {
 
+  // if (typeof apiVerstion == 'undefined') {
+  //   apiVerstion = '/' + config.api_verstion
+  // }
+
   let option = {
     url: domain + apiVerstion + url,
     method: type

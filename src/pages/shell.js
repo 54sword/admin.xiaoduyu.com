@@ -1,6 +1,7 @@
 import React from 'react'
 import { Route, Link } from 'react-router-dom'
 
+
 import PropTypes from 'prop-types'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -37,6 +38,12 @@ const Shell = (Component) => {
 
     constructor(props) {
       super(props)
+      this.state = {
+        meta: {
+          title:'test'
+        }
+      }
+      this.setMeta = this.setMeta.bind(this)
     }
 
     // 组件加载完成
@@ -47,9 +54,12 @@ const Shell = (Component) => {
       //   console.log(this.props);
       // }
 
+      const self = this
       const { search } = this.props.location
       this.props.location.params = search ? parseUrl(search) : null
       console.log('进入组件')
+
+
     }
 
     // 组件加载完成
@@ -67,12 +77,18 @@ const Shell = (Component) => {
       // console.log('组件加载被卸载');
     }
 
+
+    setMeta(meta) {
+      // this.state.meta = meta
+    }
+
     render() {
 
-      // console.log(this);
+      const { meta } = this.state
 
       return (<div>
-        <Component {...this.props} />
+        {/* <DocumentMeta {...meta} /> */}
+        <Component {...this.props} setMeta={this.setMeta} />
       </div>)
     }
 
@@ -80,7 +96,6 @@ const Shell = (Component) => {
 
   Shell.defaultProps = {
     loadData: Component.loadData || null
-    // component: Component
   }
 
   Shell.contextTypes = {

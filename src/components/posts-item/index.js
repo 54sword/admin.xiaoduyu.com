@@ -1,6 +1,7 @@
 import React, { Component, PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { Link, browserHistory } from 'react-router'
+import { browserHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 
 // import { DateDiff } from '../../common/date'
 
@@ -40,16 +41,13 @@ export class PostsItem extends PureComponent {
   render () {
     const { posts, displayFollow, displayDate, displayTopic, commentOption } = this.props
 
-    return (<div>{posts.title}</div>)
-    
-    return (<div styleName="box">
+    return (<div><table styleName="item">
+      <tbody>
 
-      {/* posts */}
-      <div styleName="item" onClick={this.clickPostsItem}>
+      <tr  onClick={this.clickPostsItem}>
+        <td style={{width:'80%'}}>
 
         <div styleName="head">
-
-          {/*displayFollow ? <div styleName="right"><FollowPosts posts={posts} /></div> : null*/}
 
           {typeof posts.user_id == 'object' ?
             <div styleName="info">
@@ -78,45 +76,26 @@ export class PostsItem extends PureComponent {
         </div>
 
         <div styleName="title">
-          <Link to={`/posts/${posts._id}`} ref="title" onClick={this.stopPropagation}>{posts.title}</Link>
+          <Link to={`/posts/${posts._id}`} onClick={this.stopPropagation}>{posts.title}</Link>
         </div>
 
-        <div styleName={posts.images && posts.images.length && posts.content_summary.length > 100 ? "content-have-img" : "content"}>
-
-          {posts.images && posts.images.length && posts.content_summary.length > 100 ?
-            <div styleName="images" className="load-demand" data-load-demand={`<div style="background-image:url(${posts.images[0]})" />`}>
-            </div>
-            : null}
-
+        <div styleName="content">
           {posts.content_summary}
-
-          {/*posts.images && posts.images.length ?
-            <div styleName="images">
-              {posts.images.map(image=>{
-                return (<div key={image} className="load-demand" data-load-demand={`<img src="${image}" />`}></div>)
-              })}
-            </div>
-            : null*/}
         </div>
+        </td>
+        
+        <td styleName="actions" style={{width:'20%'}}>
+          <ul>
+            <li><a href="#">弱化（不出现在首页）</a></li>
+            <li><a href="#">删除</a></li>
+          </ul>
+        </td>
+      </tr>
 
-      </div>
 
-      {/* comment */}
-      {/*posts.comment && posts.comment.length ?
-        <div styleName="comment-list">
-        {posts.comment.map(comment=>{
-          return (<div key={comment._id}>
-            <CommentItem comment={comment} {...commentOption} style={"min"} />
-          </div>)
-        })}
-        </div>
-        : null*/}
+      </tbody>
 
-        {/*posts.comment && posts.comment.length < posts.comment_count ?
-          <Link styleName='view-more-comment' to={`/posts/${posts._id}`}>还有{posts.comment_count - posts.comment.length}评论，查看全部</Link>
-          : null*/}
-
-    </div>)
+    </table></div>)
   }
 
 }
