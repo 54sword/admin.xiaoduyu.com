@@ -1,29 +1,24 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 
+
+import CSSModules from 'react-css-modules'
 import styles from './style.scss'
 
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
 import { getProfile } from '../../reducers/user'
 import { showSign } from '../../actions/sign'
 
-import FollowTopic from './components/follow'
+import connectReudx from '../../common/connect-redux'
+
+// import FollowTopic from './components/follow'
 
 // 样式1
 const medium = ({ topic, me, isSignin, showSign }) => {
-  return (<div className={styles.item}>
+  return (<div styleName="item">
 
-            <div className={styles.right}>
-              {/*!isSignin ? null : <Link to={`/write-posts/${topic._id}?type=2`}>提问</Link>*/}
-              {/*!isSignin ? null : <Link to={`/write-posts/${topic._id}?type=1`}>分享</Link>*/}
-              {me._id && me.role == 100 ? <Link to={`/edit-topic/${topic._id}`}>编辑</Link> : null}
-              <FollowTopic topic={topic} />
-            </div>
-
-            <div className={styles.left}>
-              <Link to={`/topics/${topic._id}`} className={styles.name}>
+            <div styleName="left">
+              <Link to={`/topics/${topic._id}`}>
                 <i className="load-demand" data-load-demand={`<img class=${styles.avatar} src=${topic.avatar} />`}></i>
                 {topic.name}
               </Link>
@@ -34,6 +29,15 @@ const medium = ({ topic, me, isSignin, showSign }) => {
 }
 
 export class TopicItem extends Component {
+
+  static mapStateToProps = (state, props) => {
+    return {
+      me: getProfile(state),
+      isSignin: getProfile(state)._id ? true : false
+    }
+  }
+
+  static mapDispatchToProps = { showSign }
 
   constructor(props) {
     super(props)
@@ -68,17 +72,6 @@ TopicItem.propTypes = {
   showSign: PropTypes.func.isRequired
 }
 
-const mapStateToProps = (state) => {
-  return {
-    me: getProfile(state),
-    isSignin: getProfile(state)._id ? true : false
-  }
-}
+TopicItem = CSSModules(TopicItem, styles)
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    showSign: bindActionCreators(showSign, dispatch)
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(TopicItem)
+export default connectReudx(TopicItem)

@@ -1,16 +1,15 @@
 import React from 'react'
 import { Route, Link } from 'react-router-dom'
 
-import PropTypes from 'prop-types'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
+// import PropTypes from 'prop-types'
+// import { bindActionCreators } from 'redux'
+// import { connect } from 'react-redux'
 // import { update } from '../../actions/account'
 
-import Promise from 'promise'
 
 
 import Shell from '../shell'
-
+import TopicList from '../../components/topic-list'
 
 // 纯组件
 export class Topics extends React.PureComponent {
@@ -34,6 +33,7 @@ export class Topics extends React.PureComponent {
 
       <div>
         <h2>Topics</h2>
+        <TopicList />
       </div>
     </div>)
   }

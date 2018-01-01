@@ -1,5 +1,6 @@
 import React from 'react'
 import { Route, Link } from 'react-router-dom'
+import { ToastContainer, toast } from 'react-toastify'
 
 // import PropTypes from 'prop-types'
 // import { bindActionCreators } from 'redux'
@@ -22,10 +23,6 @@ import Shell from '../shell'
 // 纯组件
 export class SignIn extends React.Component {
 
-  static meta = {
-    title: '登陆'
-  }
-
   static loadData({ store, match, userinfo }) {
 
     return new Promise(function (resolve, reject) {
@@ -40,15 +37,15 @@ export class SignIn extends React.Component {
 
   }
 
-  // 异步操作
-  static actions = { signIn, getCaptchaId, saveSignInCookie }
-
   // 从 state 从获取数据到 props
   static mapStateToProps(state, props) {
     return {
       profile: getProfile(state)
     }
   }
+
+  // 异步操作
+  static mapDispatchToProps = { signIn, getCaptchaId, saveSignInCookie }
 
   constructor(props) {
     super(props)
@@ -102,37 +99,16 @@ export class SignIn extends React.Component {
     submit.value = '登录'
     submit.disabled = false
 
-    if (result && result.success) {
+    if (!result.success && result.error) {
+      toast.warn(result.error)
+    } else if (result && result.success) {
       result = await saveSignInCookie()
-      // console.log(result);
       if (result.success) {
         location.reload()
+      } else {
+        toast.warn('cookie 储存失败')
       }
     }
-
-    /*
-    let result = signIn({
-      data,
-      callback: (result) => {
-
-      submit.value = '登录'
-      submit.disabled = false
-
-      console.log(result);
-
-      // if (!result.success) {
-      //   _self.refreshCaptcha()
-      //   _self.setState({ error: result.error })
-      //   return;
-      // }
-
-      // setTimeout(()=>{
-      //   location.reload()
-      // }, 100)
-
-    }})
-    */
-
 
     return false
   }
@@ -154,6 +130,9 @@ export class SignIn extends React.Component {
           </div> : null}
         <input ref="submit" className="btn" type="submit" value="登录"/>
       </form>
+
+
+      <ToastContainer />
 
 
     </div>)

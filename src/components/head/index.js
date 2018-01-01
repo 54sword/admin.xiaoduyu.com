@@ -2,6 +2,7 @@ import React from 'react'
 import { Link, NavLink } from 'react-router-dom'
 
 import { signOut } from '../../actions/sign'
+import { getProfile } from '../../reducers/user'
 
 import CSSModules from 'react-css-modules'
 import styles from './style.scss'
@@ -10,11 +11,12 @@ import connectReudx from '../../common/connect-redux'
 
 export class Head extends React.Component {
 
-  static mapStateToProps = () => {
-    return {}
+  static mapStateToProps = (state, props) => {
+    return {
+      me: getProfile(state)
+    }
   }
-
-  static actions = { signOut }
+  static mapDispatchToProps = { signOut }
 
   constructor(props) {
     super(props)
@@ -22,24 +24,30 @@ export class Head extends React.Component {
   }
 
   componentDidMount() {
-    console.log(this);
+    // console.log(this);
   }
 
   async signOut() {
     let result = await this.props.signOut()
-    // console.log(result);
-    // console.log('退出成功');
     if (result.success) {
       location.reload()
+    } else {
+      alert('退出失败')
     }
   }
 
   render() {
+
+    const { me } = this.props
+    
     return(<div>
       <div className="flex-center">
         <div styleName="head" className="container-fluid">
           <NavLink exact to="/">小度鱼后台管理</NavLink>
-          <div styleName="right"><a href="javascript:void(0)" onClick={this.signOut}>退出</a></div>
+          <div styleName="right">
+            <a href="#">{me.nickname}</a>
+            <a href="javascript:void(0)" onClick={this.signOut}>退出</a>
+          </div>
         </div>
       </div>
       <div styleName="placeholder"></div>

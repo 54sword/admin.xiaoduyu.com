@@ -16,6 +16,7 @@ import { loadUserInfo } from '../src/actions/user'
 
 // 路由组件
 import { RouteArr, Router } from '../src/router'
+import { initialStateJSON } from '../src/reducers'
 
 
 // 配置
@@ -93,9 +94,9 @@ app.use('/sign', (function(){
 
 app.get('*', async function(req, res){
 
-  const store = configureStore({})
+  const store = configureStore(JSON.parse(initialStateJSON))
 
-  console.log(store.getState())
+  // console.log(store.getState())
 
   let accessToken = req.cookies[config.auth_cookie_name] || null
         // expires = req.cookies['expires'] || 0
@@ -108,7 +109,9 @@ app.get('*', async function(req, res){
     let result = await loadUserInfo({ accessToken })(store.dispatch, store.getState)
     if (result.success) {
       userinfo = result.data
+      // console.log(userinfo);
     }
+    // console.log(store.getState())
   }
 
   let _route = null,
@@ -141,6 +144,8 @@ app.get('*', async function(req, res){
   ) {
     context = await _route.component.WrappedComponent.defaultProps.loadData({ store, match: _match, userinfo })
   }
+
+  // console.log(userinfo);
 
   const _Router = Router({ userinfo })
 

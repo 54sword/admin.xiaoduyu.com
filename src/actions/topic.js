@@ -178,21 +178,20 @@ export function loadTopics({ name, filters = {}, callback = ()=>{} }) {
     return Ajax({
       url: '/topic',
       params: filters,
-      headers,
-      callback: (res)=>{
+      headers
+    }).then((res)=>{
 
-        nodeList.loading = false
+      nodeList.loading = false
 
-        if (res.success) {
-          nodeList.more = res.data.length < nodeList.filters.per_page ? false : true
-          nodeList.data = nodeList.data.concat(res.data)
-          nodeList.filters = filters
-          nodeList.count = 0
-        }
-
-        dispatch({ type: 'SET_TOPIC_LIST_BY_NAME', name, data: nodeList })
-        callback(res)
+      if (res.success) {
+        nodeList.more = res.data.length < nodeList.filters.per_page ? false : true
+        nodeList.data = nodeList.data.concat(res.data)
+        nodeList.filters = filters
+        nodeList.count = 0
       }
+
+      dispatch({ type: 'SET_TOPIC_LIST_BY_NAME', name, data: nodeList })
+      callback(res)
     })
 
   }

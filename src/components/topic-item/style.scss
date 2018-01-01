@@ -1,4 +1,4 @@
-@import "../../containers/global/base.scss";
+
 
 
 
@@ -9,8 +9,7 @@
   // background-color: #fff;
   // min-height: 50px;
   padding:15px 15px 15px 55px;
-  border-bottom:1px solid $light-gray;
-  @include boxSizing();
+  border-bottom:1px solid #efefef;
   // color:#666;
   // margin-bottom: 10px;
   // border-radius: 3px;

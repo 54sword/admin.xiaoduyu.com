@@ -27,9 +27,10 @@ let signIn = false
 // 登录验证
 function requireAuth(Layout, props) {
 
-  console.log(signIn);
+  // console.log(signIn);
 
   if (!signIn) { // 未登录
+    // console.log('未登录');
     return <Redirect to="/sign-in" />
   } else {
     return <Layout {...props} />
@@ -38,22 +39,45 @@ function requireAuth(Layout, props) {
 
 // 进入路由
 const triggerEnter = (Layout, props) => {
-  return signIn ? <Redirect to="/" /> : <Layout {...props} />
+
+  // console.log(signIn);
+
+  if (signIn) { // 未登录
+    // console.log('12313');
+    return <Redirect to="/" />
+  } else {
+    return <Layout {...props} />
+  }
 }
 
+/*
 const routeArr = [
-  { path: '/', exact: true, component: props => requireAuth(Home, props), head: Head, sidebar: Sidebar },
-  { path: '/posts', exact: true, component: props => requireAuth(Posts, props), head: Head, sidebar: Sidebar  },
-  { path: '/posts/:id', exact: true, component: props => requireAuth(PostsDetail, props), head: Head, sidebar: Sidebar  },
-  { path: '/topics', exact: true, component: props => requireAuth(Topics, props), head: Head, sidebar: Sidebar  },
-  { path: '/sign-in', exact: true, component: props => triggerEnter(SignIn, props) },
-  { path: '**', component: NotFound }
+  { path: '/', exact: true, component: props => requireAuth(Home, props), head: Head, sidebar: Sidebar, center: requireAuth },
+  { path: '/posts', exact: true, component: props => requireAuth(Posts, props), head: Head, sidebar: Sidebar, center: requireAuth },
+  { path: '/posts/:id', exact: true, component: props => requireAuth(PostsDetail, props), head: Head, sidebar: Sidebar, center: requireAuth },
+  { path: '/topics', exact: true, component: props => requireAuth(Topics, props), head: Head, sidebar: Sidebar, center: requireAuth },
+  { path: '/sign-in', exact: true, component: props => triggerEnter(SignIn, props), center: triggerEnter },
+  { path: '**', component: NotFound, center: triggerEnter }
+]
+*/
+
+const routeArr = [
+  { path: '/', exact: true, component: Home, head: Head, sidebar: Sidebar, center: requireAuth },
+  { path: '/posts', exact: true, component: Posts, head: Head, sidebar: Sidebar, center: requireAuth },
+  { path: '/posts/:id', exact: true, component: PostsDetail, head: Head, sidebar: Sidebar, center: requireAuth },
+  { path: '/topics', exact: true, component: Topics, head: Head, sidebar: Sidebar, center: requireAuth },
+  { path: '/sign-in', exact: true, component: SignIn, center: triggerEnter },
+  { path: '**', component: NotFound, center: triggerEnter }
 ]
 
 let router = ({ userinfo }) => {
 
+  // console.log(userinfo);
+
   if (userinfo && userinfo._id) {
     signIn = true
+  } else {
+    signIn = false
   }
 
   let _router = (<div>
@@ -81,7 +105,7 @@ let router = ({ userinfo }) => {
               <div className="unit">
                 <Switch>
                   {routeArr.map((route, index) => {
-                    if (route.component) return <Route key={index} path={route.path} exact={route.exact} component={route.component} />
+                    if (route.component) return <Route key={index} path={route.path} exact={route.exact} component={props => route.center(route.component, props)} />
                   })}
                 </Switch>
               </div>

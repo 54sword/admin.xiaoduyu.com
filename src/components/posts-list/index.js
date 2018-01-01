@@ -4,6 +4,7 @@ import { Link } from 'react-router'
 
 // 依赖的外部功能
 import arriveFooter from '../../common/arrive-footer'
+import connectReudx from '../../common/connect-redux'
 
 // actions and reducers
 import { bindActionCreators } from 'redux'
@@ -15,6 +16,15 @@ import { getPostsListByName } from '../../reducers/posts'
 import PostsItem from '../posts-item'
 
 export class PostsList extends Component {
+
+  static mapStateToProps = (state, props) => {
+    const { name } = props
+    return {
+      postsList: getPostsListByName(state, name)
+    }
+  }
+
+  static mapDispatchToProps = { loadPostsList }
 
   constructor(props) {
     super(props)
@@ -88,10 +98,11 @@ export class PostsList extends Component {
 
 PostsList.propTypes = {
   name: PropTypes.string.isRequired,
-  filters: PropTypes.object.isRequired,
-  postsList:  PropTypes.object.isRequired
+  filters: PropTypes.object.isRequired
+  // postsList:  PropTypes.object.isRequired
 }
 
+/*
 const mapStateToProps = (state, props) => {
   const { name } = props
   return {
@@ -106,3 +117,6 @@ const mapDispatchToProps = (dispatch, props) => {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(PostsList)
+*/
+
+export default connectReudx(PostsList)

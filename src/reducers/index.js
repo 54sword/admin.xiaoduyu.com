@@ -13,7 +13,7 @@ import posts from './posts'
 import topic from './topic'
 import comment from './comment'
 import website from './website'
-import postsTypes from './posts-types'
+// import postsTypes from './posts-types'
 import countries from './countries'
 
 let states = {
@@ -28,19 +28,18 @@ let states = {
   posts,
   comment,
   website,
-  postsTypes,
+  // postsTypes,
   countries
 }
 
 let _states = {}
 
 for (let i in states) {
-  _states[i] = states[i]()
+  _states[i] = merge({}, states[i](), {})
 }
 
+_states = JSON.stringify(_states)
 
 export default combineReducers(states)
 
-export const getInitialState = () => {
-  return merge({}, _states, {})
-}
+export const initialStateJSON = _states
