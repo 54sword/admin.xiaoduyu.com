@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Link, browserHistory } from 'react-router'
+import { Link, browserHistory } from 'react-router-dom'
 
 import CSSModules from 'react-css-modules'
 import styles from './style.scss'
@@ -13,8 +13,8 @@ import { getProfile } from '../../reducers/user'
 
 import LikeButton from '../like'
 import HTMLText from '../html-text'
-import BindingPhone from '../binding-phone'
-import CommentEditorModal from '../comment-editor-modal'
+// import BindingPhone from '../binding-phone'
+// import CommentEditorModal from '../comment-editor-modal'
 
 export class CommentItem extends Component {
 
@@ -43,8 +43,8 @@ export class CommentItem extends Component {
       <span><a href="javascript:void(0)" onClick={()=>{ this.show() }}>回复</a></span>*/
 
     return (<div styleName="box">
-      {me && !me.phone ? <BindingPhone show={(s)=>{ this.show = s; }} /> : null}
-      <CommentEditorModal show={(s)=>{ this.show = s; }} />
+      {/*me && !me.phone ? <BindingPhone show={(s)=>{ this.show = s; }} /> : null*/}
+      {/* <CommentEditorModal show={(s)=>{ this.show = s; }} /> */}
       <div
         styleName={summary ? "click-item" : "item"}
         onClick={summary ? ()=>{ browserHistory.push(`/comment/${comment._id}`) } : null}

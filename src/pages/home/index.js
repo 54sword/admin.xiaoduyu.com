@@ -34,7 +34,7 @@ export class Home extends React.Component {
     //   title: '小度鱼后台管理'
     // })
 
-      console.log('服务端渲染');
+      // console.log('服务端渲染');
 
   }
 
@@ -52,6 +52,7 @@ export class Home extends React.Component {
             title: '122222'
           }}
         />
+        <h1>首页</h1>
         <div>当前注册用户：</div>
         <div>帖子总数1：</div>
         <div>评论总数2：</div>

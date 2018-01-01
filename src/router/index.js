@@ -12,6 +12,9 @@ import Posts from '../pages/posts'
 import PostsDetail from '../pages/posts-detail'
 import Topics from '../pages/topics'
 import SignIn from '../pages/sign-in'
+import People from '../pages/people'
+import Comment from '../pages/comment'
+import Notification from '../pages/notification'
 import NotFound from '../pages/not-found'
 
 // components
@@ -66,6 +69,10 @@ const routeArr = [
   { path: '/posts', exact: true, component: Posts, head: Head, sidebar: Sidebar, center: requireAuth },
   { path: '/posts/:id', exact: true, component: PostsDetail, head: Head, sidebar: Sidebar, center: requireAuth },
   { path: '/topics', exact: true, component: Topics, head: Head, sidebar: Sidebar, center: requireAuth },
+  { path: '/people', exact: true, component: People, head: Head, sidebar: Sidebar, center: requireAuth },
+  { path: '/comment', exact: true, component: Comment, head: Head, sidebar: Sidebar, center: requireAuth },
+  { path: '/notification', exact: true, component: Notification, head: Head, sidebar: Sidebar, center: requireAuth },
+
   { path: '/sign-in', exact: true, component: SignIn, center: triggerEnter },
   { path: '**', component: NotFound, center: triggerEnter }
 ]

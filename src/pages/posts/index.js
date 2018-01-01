@@ -25,6 +25,7 @@ export class Posts extends React.Component {
 
   render() {
     return(<div>
+      <h1>帖子</h1>
       <div>
         <div>
           排序
@@ -33,7 +34,7 @@ export class Posts extends React.Component {
             <option>排序日期</option>
           </select>
         </div>
-        
+
         <div>
           状态
           <select>

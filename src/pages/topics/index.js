@@ -32,7 +32,7 @@ export class Topics extends React.PureComponent {
     return(<div>
 
       <div>
-        <h2>Topics</h2>
+        <h1>话题</h1>
         <TopicList />
       </div>
     </div>)

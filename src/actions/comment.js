@@ -240,8 +240,8 @@ export function loadCommentList({ name, filters = {}, callback = ()=>{} }) {
     return Ajax({
       url: '/comments',
       params: filters,
-      headers,
-      callback: (res) => {
+      headers
+    }).then(res => {
 
         if (!res || !res.success) {
           callback(res)
@@ -258,7 +258,7 @@ export function loadCommentList({ name, filters = {}, callback = ()=>{} }) {
 
         dispatch({ type: 'SET_COMMENT_LIST_BY_NAME', name, data: commentList })
         callback(res)
-      }
+
     })
 
   };

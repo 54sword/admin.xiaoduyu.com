@@ -1,11 +1,11 @@
-@import "../../containers/global/base.scss";
+// @import "../../containers/global/base.scss";
 
 .item{
 
   > div{
     background-color: #fff;
     padding:15px;
-    border-bottom:1px solid $light-gray;
+    border-bottom:1px solid #efefef;
   }
 
   :global .new{

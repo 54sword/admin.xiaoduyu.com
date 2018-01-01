@@ -33,38 +33,37 @@ export function loadNotifications({ name, filters = {}, callback = ()=>{} }) {
     return Ajax({
       url: '/notifications',
       type: 'post',
-      data: merge({}, filters, { access_token: accessToken }),
-      callback: (res)=>{
+      data: merge({}, filters, { access_token: accessToken })
+    }).then((res)=>{
 
-        list.loading = false
-        list.more = res.data.length < list.filters.per_page ? false : true
-        list.data = list.data.concat(res.data)
-        list.filters = filters
-        list.count = 0
+      list.loading = false
+      list.more = res.data.length < list.filters.per_page ? false : true
+      list.data = list.data.concat(res.data)
+      list.filters = filters
+      list.count = 0
 
-        comment = updateCommentState(comment, res.data)
-        posts = updatePosts(posts, res.data)
-        followPeople = updateFollowPeople(followPeople, me._id, res.data)
+      comment = updateCommentState(comment, res.data)
+      posts = updatePosts(posts, res.data)
+      followPeople = updateFollowPeople(followPeople, me._id, res.data)
 
-        // 如果在未读列表中，将其删除
-        res.data.map(item=>{
-          let _index = unreadNotice.indexOf(item._id)
-          if (_index != -1) unreadNotice.splice(_index, 1)
-        })
+      // 如果在未读列表中，将其删除
+      res.data.map(item=>{
+        let _index = unreadNotice.indexOf(item._id)
+        if (_index != -1) unreadNotice.splice(_index, 1)
+      })
 
-        if (followPeople.count > 0) {
-          me.fans_count = me.fans_count + followPeople.count
-          dispatch({ type: 'SET_USER', userinfo: me })
-          dispatch({ type: 'SET_FOLLOW_PEOPLE', state: followPeople.state })
-        }
-
-        dispatch({ type: 'SET_POSTS', state: posts })
-        dispatch({ type: 'SET_COMMENT', state: comment })
-        dispatch({ type: 'SET_UNREAD_NOTICE', unreadNotice })
-        dispatch({ type: 'SET_NOTIFICATION_LIST_BY_NAME', name, data: list })
-
-        callback(res)
+      if (followPeople.count > 0) {
+        me.fans_count = me.fans_count + followPeople.count
+        dispatch({ type: 'SET_USER', userinfo: me })
+        dispatch({ type: 'SET_FOLLOW_PEOPLE', state: followPeople.state })
       }
+
+      dispatch({ type: 'SET_POSTS', state: posts })
+      dispatch({ type: 'SET_COMMENT', state: comment })
+      dispatch({ type: 'SET_UNREAD_NOTICE', unreadNotice })
+      dispatch({ type: 'SET_NOTIFICATION_LIST_BY_NAME', name, data: list })
+
+      callback(res)
     })
 
   }

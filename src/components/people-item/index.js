@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router'
+// import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 
 import styles from './style.scss'
 
-import FollowButton from '../follow-people'
+// import FollowButton from '../follow-people'
 
 class PeopleItem extends Component {
 
@@ -19,7 +20,7 @@ class PeopleItem extends Component {
       <Link to={`/people/${people._id}`}>
         <div className={styles.item}>
           <span className={styles.follow}>
-            <FollowButton people={people} />
+            {/* <FollowButton people={people} /> */}
           </span>
           <i className="load-demand" data-load-demand={`<img class=${styles.avatar} src=${people.avatar_url} />`}></i>
           <div>{people.nickname}</div>

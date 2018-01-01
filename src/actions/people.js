@@ -30,6 +30,57 @@ export function loadPeopleById({ id, callback = ()=>{} }) {
 }
 
 
+export function loadPeople({ name, filters = {}, callback = ()=>{} }) {
+  return (dispatch, getState) => {
+
+    let accessToken = getState().user.accessToken
+
+    let list = getState().people[name] || {}
+
+    if (typeof(list.more) != 'undefined' && !list.more || list.loading) return
+
+    if (!list.filters) {
+      if (!filters.page) filters.page = 0
+      if (!filters.per_page) filters.per_page = 20
+      list.filters = filters
+    } else {
+      filters = list.filters
+      filters.page = filters.page + 1
+    }
+
+    if (!list.data) list.data = []
+    if (!list.more) list.more = true
+    if (!list.loading) list.loading = true
+
+    dispatch({ type: 'SET_PEOPLE_LIST_BY_NAME', name, data: list })
+
+    return Ajax({
+      url: '/people',
+      type: 'get',
+      data: filters,
+      headers: { AccessToken: accessToken }
+    }).then((res)=>{
+
+      if (res && !res.success) {
+        callback(res)
+        return
+      }
+
+      list.loading = false
+      list.more = res.data.length < list.filters.per_page ? false : true
+      list.data = list.data.concat(res.data)
+      list.filters = filters
+      list.count = 0
+
+      dispatch({ type: 'SET_PEOPLE_LIST_BY_NAME', name, data: list })
+
+      callback(res)
+    })
+
+  }
+}
+
+
 
 /*
 export function loadFollowPeoples({ callback = ()=>{} }) {

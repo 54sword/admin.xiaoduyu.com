@@ -9,13 +9,16 @@ export class Sidebar extends React.Component {
   constructor(props) {
     super(props)
   }
-
+  
   render() {
     return(<div className="unit-0 hide-on-mobile" style={{width:'200px'}}>
         <ul styleName="head">
           <li><NavLink exact to="/">首页</NavLink></li>
           <li><NavLink exact to="/posts">帖子</NavLink></li>
           <li><NavLink exact to="/topics">话题</NavLink></li>
+          <li><NavLink exact to="/people">用户</NavLink></li>
+          <li><NavLink exact to="/comment">评论</NavLink></li>
+          <li><NavLink exact to="/notification">通知</NavLink></li>
         </ul>
       </div>)
   }

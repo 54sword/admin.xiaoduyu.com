@@ -1,4 +1,4 @@
-@import "../../containers/global/base.scss";
+
 
 .box{
   width: 100%;
@@ -11,7 +11,7 @@
   position: relative;
   padding:15px 20px 15px 70px;
   min-height: 40px;
-  border-top:1px solid $light-gray;
+  border-top:1px solid #efefef;
   background-color: #fff;
 }
 
@@ -138,12 +138,12 @@
   @extend .item;
   &:hover{
     background-color: rgba(255,255,255,.7);
-    @include cursorHand;
+    // @include cursorHand;
   }
 }
 
 .view-more-comment{
   width:100%;
-  border-top:1px solid $light-gray;
+  border-top:1px solid #efefef;
   padding:10px 0 10px 0;
 }
