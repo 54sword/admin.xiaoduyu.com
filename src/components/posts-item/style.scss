@@ -21,7 +21,7 @@
   }
   th{
     font-weight:bold;
-    background:#ccc;
+    // background:#ccc;
   }
 }
 
@@ -200,10 +200,4 @@
   &:hover{
     background-color: rgba(255,255,255,.7);
   }
-}
-
-.actions{
-  background-color: #fff;
-  // width: 30%;
-  // border-left:1px solid #efefef;
 }

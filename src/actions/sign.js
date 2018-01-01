@@ -25,6 +25,7 @@ export function addAccessToken({ expires, access_token }) {
   return { type: 'ADD_ACCESS_TOKEN', expires, access_token }
 }
 
+// cookie安全措施，在服务端使用 http only 方式储存cookie
 export const saveSignInCookie = () => {
   return (dispatch, getState) => {
     let accessToken = getState().user.accessToken
@@ -47,7 +48,7 @@ export const signIn = ({ data }) => {
       Ajax({ url: '/signin', type: 'post', data })
       .then(res => {
         if (res && res.success) {
-          dispatch({ type: 'ADD_ACCESS_TOKEN', access_token: res.data.access_token })
+          dispatch(addAccessToken({ access_token: res.data.access_token }))
         }
         resolve(res)
       })

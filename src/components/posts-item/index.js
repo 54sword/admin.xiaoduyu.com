@@ -41,7 +41,13 @@ export class PostsItem extends PureComponent {
   render () {
     const { posts, displayFollow, displayDate, displayTopic, commentOption } = this.props
 
-    return (<div><table styleName="item">
+    let background = '#fff'
+
+    if (posts.weaken) background = '#efefef'
+    if (posts.deleted) background = '#ffe3e3'
+
+    return (<div style={{backgroundColor:background}}>
+      <table styleName="item">
       <tbody>
 
       <tr  onClick={this.clickPostsItem}>
@@ -83,11 +89,11 @@ export class PostsItem extends PureComponent {
           {posts.content_summary}
         </div>
         </td>
-        
-        <td styleName="actions" style={{width:'20%'}}>
+
+        <td style={{width:'20%'}}>
           <ul>
-            <li><a href="#">弱化（不出现在首页）</a></li>
-            <li><a href="#">删除</a></li>
+            <li><a href="#">{posts.weaken ? '已被弱化' : '弱化'}</a></li>
+            <li><a href="#">{posts.deleted ? '已被删除' : '删除'}</a></li>
           </ul>
         </td>
       </tr>

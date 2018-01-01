@@ -15,6 +15,7 @@ module.exports = {
 
   entry: {
     app: [
+      './node_modules/babel-polyfill/dist/polyfill.min.js',
       './client/index'
     ]
   },
@@ -45,6 +46,17 @@ module.exports = {
                 loader: `css-loader?modules&localIdentName=${config.class_scoped_name}`
             }, {
                 loader: "sass-loader"
+            }],
+            // use style-loader in development
+            fallback: "style-loader"
+        })
+      },
+
+      {
+        test: /\.css$/,
+        use: extractSass.extract({
+            use: [{
+                loader: `css-loader`,
             }],
             // use style-loader in development
             fallback: "style-loader"

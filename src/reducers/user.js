@@ -16,7 +16,7 @@ export default function user(state = initialState, action = {}) {
       state.accessToken = action.access_token
       // state.expires = parseInt(action.expires)
       return merge({}, state, {})
-
+      
     case 'REMOVE_ACCESS_TOKEN':
       state.accessToken = ''
       state.expires = 0

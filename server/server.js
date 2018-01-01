@@ -13,6 +13,7 @@ import { Provider } from 'react-redux'
 
 import configureStore from '../src/store'
 import { loadUserInfo } from '../src/actions/user'
+import { addAccessToken } from '../src/actions/sign'
 
 // 路由组件
 import { RouteArr, Router } from '../src/router'
@@ -108,6 +109,7 @@ app.get('*', async function(req, res){
   if (accessToken) {
     let result = await loadUserInfo({ accessToken })(store.dispatch, store.getState)
     if (result.success) {
+      store.dispatch(addAccessToken({ access_token: accessToken }))
       userinfo = result.data
       // console.log(userinfo);
     }
