@@ -2,9 +2,9 @@
 import merge from 'lodash/merge'
 
 let initialState = {
-  other: {
-    data: []
-  }
+  // other: {
+  //   data: []
+  // }
 }
 
 export default function comment(state = initialState, action = {}) {

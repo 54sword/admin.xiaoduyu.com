@@ -84,6 +84,36 @@ export default function posts(state = initialState, action = {}) {
         })
       }
       return merge({}, state, {})
+
+    case 'UPDATE_POST':
+      var { id, data } = action
+      for (let i in state) {
+        state[i].data.map(item => {
+          if (item._id == id) {
+            for (let i in data) item[i] = data[i]
+          }
+        })
+      }
+      return merge({}, state, {})
+    /*
+    case 'UPDATE_POST_DELETE':
+      var { id, status } = action
+      for (let i in state) {
+        state[i].data.map(item => {
+          if (item._id == id) item.deleted = status
+        })
+      }
+      return merge({}, state, {})
+
+    case 'UPDATE_POST_WEAKEN':
+      var { id, status } = action
+      for (let i in state) {
+        state[i].data.map(item => {
+          if (item._id == id) item.weaken = status
+        })
+      }
+      return merge({}, state, {})
+    */
     /*
     case 'UPDATE_ANSWER_LIKE_IN_POSTS':
       var { id, status } = action

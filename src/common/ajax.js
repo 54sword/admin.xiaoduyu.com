@@ -54,6 +54,9 @@ const AJAX = ({
     method: type
   }
 
+  // 管理员查询
+  data.admin = 1
+
   if (type == 'get') {
     data._t = new Date().getTime()
     option.params = data

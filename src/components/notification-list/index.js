@@ -22,7 +22,7 @@ export class NotificationList extends Component {
     this.handleLoad = this.handleLoad.bind(this)
   }
 
-  componentWillMount() {
+  componentDidMount() {
 
     const { notification, name, filters } = this.props
 
@@ -67,8 +67,13 @@ export class NotificationList extends Component {
             {notification.data.map(notice => {
 
               let content = null
-              // let avatar = <img src={notice.sender_id.avatar_url} className={styles.avatar} />
-              let avatar = <i className="load-demand" data-load-demand={`<img class=${styles.avatar} src=${notice.sender_id.avatar_url} />`}></i>
+              let avatar = null
+
+              if (notice.sender_id && notice.sender_id.avatar_url) {
+                avatar = <i className="load-demand" data-load-demand={`<img class=${styles.avatar} src=${notice.sender_id.avatar_url} />`}></i>
+              } else {
+                console.log(notice);
+              }
 
               switch (notice.type) {
 
@@ -106,9 +111,11 @@ export class NotificationList extends Component {
                 case 'reply':
                   content = (<div>
                     <div className={styles.header}>
+                      {/*
                       <div className={styles.actions}>
                         <Link to={`/write-comment?posts_id=${notice.comment_id.posts_id._id}&parent_id=${notice.comment_id.parent_id._id}&reply_id=${notice.comment_id._id}`}>回复</Link>
                       </div>
+                      */}
                       <Link to={`/people/${notice.sender_id._id}`}>{avatar}{notice.sender_id.nickname}</Link>
                       {DateDiff(notice.create_at)} 回复了你的
                       <Link to={`/comment/${notice.comment_id.parent_id._id}`}>
@@ -125,9 +132,11 @@ export class NotificationList extends Component {
                 case 'comment':
                   content = (<div>
                     <div className={styles.header}>
+                      {/*
                       <div className={styles.actions}>
                         <Link to={`/write-comment?posts_id=${notice.comment_id.posts_id._id}&parent_id=${notice.comment_id._id}`}>回复</Link>
                       </div>
+                      */}
                       <Link to={`/people/${notice.sender_id._id}`}>{avatar}{notice.sender_id.nickname}</Link>
                       {DateDiff(notice.create_at)} 评论了你的
                       <Link to={`/posts/${notice.comment_id.posts_id._id}`}>{notice.comment_id.posts_id.title}</Link>

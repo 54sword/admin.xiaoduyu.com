@@ -51,7 +51,7 @@ export function loadNotifications({ name, filters = {}, callback = ()=>{} }) {
         let _index = unreadNotice.indexOf(item._id)
         if (_index != -1) unreadNotice.splice(_index, 1)
       })
-
+      
       if (followPeople.count > 0) {
         me.fans_count = me.fans_count + followPeople.count
         dispatch({ type: 'SET_USER', userinfo: me })

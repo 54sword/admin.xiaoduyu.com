@@ -39,7 +39,7 @@ export class Head extends React.Component {
   render() {
 
     const { me } = this.props
-    
+
     return(<div>
       <div className="flex-center">
         <div styleName="head" className="container-fluid">

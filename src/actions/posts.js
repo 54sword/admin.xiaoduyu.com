@@ -76,6 +76,69 @@ export function updatePostsById({ id, typeId, topicId, title, content, contentHT
   }
 }
 
+
+export function loadPostsList({ name, filters = { query: {}, select: {}, option: {} }, callback = ()=>{}, restart = false }) {
+  return (dispatch, getState) => {
+
+    let accessToken = getState().user.accessToken
+    let postsList = getState().posts[name] || {}
+
+    if (restart) postsList = {}
+
+    if (typeof(postsList.more) != 'undefined' && !postsList.more || postsList.loading) {
+      return callback()
+    }
+
+    if (!postsList.data) postsList.data = []
+
+    if (!postsList.filters) {
+      if (!filters.query) filters.query = {}
+      if (!filters.select) filters.select = {}
+      if (!filters.option) filters.option = {}
+      if (!filters.option.skip) filters.option.skip = 0
+      if (!filters.option.limit) filters.option.limit = 15
+      postsList.filters = filters
+    } else {
+      filters = postsList.filters
+      filters.option.skip += filters.option.limit
+    }
+
+    if (!postsList.more) postsList.more = true
+    if (!postsList.count) postsList.count = 0
+    if (!postsList.loading) postsList.loading = true
+
+    dispatch({ type: 'SET_POSTS_LIST_BY_NAME', name, data: postsList })
+
+    let headers = accessToken ? { 'AccessToken': accessToken } : null
+
+    filters.select = { '__v': 0 }
+
+    Ajax({
+      url: '/posts',
+      type: 'post',
+      data: {
+        'data_json': JSON.stringify(filters)
+      },
+      headers
+    }).then(res => {
+
+      if (!res || !res.success) return callback(res)
+
+      postsList.more = res.data.length < postsList.filters.per_page ? false : true
+      postsList.data = postsList.data.concat(processPostsList(res.data))
+      postsList.filters = filters
+      postsList.count = 0
+      postsList.loading = false
+
+      dispatch({ type: 'SET_POSTS_LIST_BY_NAME', name, data: postsList })
+      callback(res)
+
+    })
+
+  }
+}
+
+/*
 export function loadPostsList({ name, filters = {}, callback = ()=>{}, restart = false }) {
   return (dispatch, getState) => {
 
@@ -135,6 +198,7 @@ export function loadPostsList({ name, filters = {}, callback = ()=>{}, restart =
 
   }
 }
+*/
 
 export function loadPostsById({ id, callback = ()=>{} }) {
   return (dispatch, getState) => {
@@ -167,6 +231,48 @@ export function addViewById({ id, callback = ()=>{ } }) {
     })
   }
 }
+
+
+export function updatePosts({ id, data }) {
+  return (dispatch, getState) => {
+    let accessToken = getState().user.accessToken
+    return Ajax({
+      url: '/posts/update',
+      type: 'post',
+      data: { id, data_json:JSON.stringify(data), access_token: accessToken },
+    }).then((result) => {
+      dispatch({ type: 'UPDATE_POST', id: id, data })
+    })
+  }
+}
+
+/*
+export function updataDelete({ id, status }) {
+  return (dispatch, getState) => {
+    let accessToken = getState().user.accessToken
+    return Ajax({
+      url: '/posts/update-delete',
+      type: 'post',
+      data: { id, status, access_token: accessToken },
+    }).then((result) => {
+      dispatch({ type: 'UPDATE_POST_DELETE', id: id, status: status ? true : false })
+    })
+  }
+}
+
+export function updataWeaken({ id, status }) {
+  return (dispatch, getState) => {
+    let accessToken = getState().user.accessToken
+    return Ajax({
+      url: '/posts/update-weaken',
+      type: 'post',
+      data: { id, status, access_token: accessToken },
+    }).then((result) => {
+      dispatch({ type: 'UPDATE_POST_WEAKEN', id: id, status: status ? true : false })
+    })
+  }
+}
+*/
 
 
 const abstractImages = (str) => {

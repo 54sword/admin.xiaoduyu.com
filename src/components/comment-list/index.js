@@ -28,15 +28,17 @@ export class CommentList extends Component {
       name: name,
       filters: filters
     }
-    this.triggerLoad = this._triggerLoad.bind(this)
+    this.triggerLoad = this.triggerLoad.bind(this)
   }
 
-  componentWillMount() {
+  componentDidMount() {
+
+    // console.log('21333');
 
     const self = this
     const { loadCommentList, commentList } = this.props
 
-    if (!commentList.data) {
+    if (!commentList.data || commentList.data.length == 0) {
       self.triggerLoad()
     }
 
@@ -50,7 +52,7 @@ export class CommentList extends Component {
     // arriveFooter.remove(this.state.name)
   }
 
-  _triggerLoad(callback) {
+  triggerLoad(callback) {
     const { loadCommentList } = this.props
     const { name, filters } = this.state
     loadCommentList({ name, filters })

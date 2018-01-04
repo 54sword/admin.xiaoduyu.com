@@ -15,7 +15,7 @@ let config = {
 
   // api
   api_url: 'https://api.xiaoduyu.com',
-  api_verstion: 'api/v1'
+  api_verstion: 'api/v2'
 }
 
 // 开发环境配置

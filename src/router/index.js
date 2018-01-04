@@ -27,59 +27,43 @@ import Sidebar from '../components/sidebar'
 
 let signIn = false
 
-// 登录验证
+// 登录用户
 function requireAuth(Layout, props) {
-
-  // console.log(signIn);
-
-  if (!signIn) { // 未登录
-    // console.log('未登录');
+  if (!signIn) {
     return <Redirect to="/sign-in" />
   } else {
     return <Layout {...props} />
   }
 }
 
-// 进入路由
-const triggerEnter = (Layout, props) => {
-
-  // console.log(signIn);
-
-  if (signIn) { // 未登录
-    // console.log('12313');
+// 游客
+const requireTourists = (Layout, props) => {
+  if (signIn) {
     return <Redirect to="/" />
   } else {
     return <Layout {...props} />
   }
 }
 
-/*
-const routeArr = [
-  { path: '/', exact: true, component: props => requireAuth(Home, props), head: Head, sidebar: Sidebar, center: requireAuth },
-  { path: '/posts', exact: true, component: props => requireAuth(Posts, props), head: Head, sidebar: Sidebar, center: requireAuth },
-  { path: '/posts/:id', exact: true, component: props => requireAuth(PostsDetail, props), head: Head, sidebar: Sidebar, center: requireAuth },
-  { path: '/topics', exact: true, component: props => requireAuth(Topics, props), head: Head, sidebar: Sidebar, center: requireAuth },
-  { path: '/sign-in', exact: true, component: props => triggerEnter(SignIn, props), center: triggerEnter },
-  { path: '**', component: NotFound, center: triggerEnter }
-]
-*/
+// 普通
+const triggerEnter = (Layout, props) => {
+  return <Layout {...props} />
+}
+
 
 const routeArr = [
-  { path: '/', exact: true, component: Home, head: Head, sidebar: Sidebar, center: requireAuth },
-  { path: '/posts', exact: true, component: Posts, head: Head, sidebar: Sidebar, center: requireAuth },
-  { path: '/posts/:id', exact: true, component: PostsDetail, head: Head, sidebar: Sidebar, center: requireAuth },
-  { path: '/topics', exact: true, component: Topics, head: Head, sidebar: Sidebar, center: requireAuth },
-  { path: '/people', exact: true, component: People, head: Head, sidebar: Sidebar, center: requireAuth },
-  { path: '/comment', exact: true, component: Comment, head: Head, sidebar: Sidebar, center: requireAuth },
-  { path: '/notification', exact: true, component: Notification, head: Head, sidebar: Sidebar, center: requireAuth },
-
-  { path: '/sign-in', exact: true, component: SignIn, center: triggerEnter },
-  { path: '**', component: NotFound, center: triggerEnter }
+  { path: '/',             exact: true, component: Home,         head: Head, sidebar: Sidebar, enter: requireAuth },
+  { path: '/posts',        exact: true, component: Posts,        head: Head, sidebar: Sidebar, enter: requireAuth },
+  { path: '/posts/:id',    exact: true, component: PostsDetail,  head: Head, sidebar: Sidebar, enter: requireAuth },
+  { path: '/topics',       exact: true, component: Topics,       head: Head, sidebar: Sidebar, enter: requireAuth },
+  { path: '/people',       exact: true, component: People,       head: Head, sidebar: Sidebar, enter: requireAuth },
+  { path: '/comment',      exact: true, component: Comment,      head: Head, sidebar: Sidebar, enter: requireAuth },
+  { path: '/notification', exact: true, component: Notification, head: Head, sidebar: Sidebar, enter: requireAuth },
+  { path: '/sign-in',      exact: true, component: SignIn,                                     enter: requireTourists },
+  { path: '**',                         component: NotFound,                                   enter: triggerEnter }
 ]
 
 let router = ({ userinfo }) => {
-
-  // console.log(userinfo);
 
   if (userinfo && userinfo._id) {
     signIn = true
@@ -112,7 +96,7 @@ let router = ({ userinfo }) => {
               <div className="unit">
                 <Switch>
                   {routeArr.map((route, index) => {
-                    if (route.component) return <Route key={index} path={route.path} exact={route.exact} component={props => route.center(route.component, props)} />
+                    if (route.component) return <Route key={index} path={route.path} exact={route.exact} component={props => route.enter(route.component, props)} />
                   })}
                 </Switch>
               </div>

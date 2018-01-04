@@ -199,6 +199,7 @@ export function loadCommentList({ name, filters = {}, callback = ()=>{} }) {
     const accessToken = getState().user.accessToken
     let commentList = getState().comment[name] || {}
 
+
     if (typeof(commentList.more) != 'undefined' && !commentList.more ||
       commentList.loading
     ) {
@@ -239,25 +240,25 @@ export function loadCommentList({ name, filters = {}, callback = ()=>{} }) {
 
     return Ajax({
       url: '/comments',
-      params: filters,
+      data: filters,
       headers
     }).then(res => {
 
-        if (!res || !res.success) {
-          callback(res)
-          return
-        }
-
-        let _commentList = res.data
-
-        commentList.more = res.data.length < commentList.filters.per_page ? false : true
-        commentList.data = commentList.data.concat(processCommentList(_commentList))
-        commentList.filters = filters
-        commentList.count = 0
-        commentList.loading = false
-
-        dispatch({ type: 'SET_COMMENT_LIST_BY_NAME', name, data: commentList })
+      if (!res || !res.success) {
         callback(res)
+        return
+      }
+
+      let _commentList = res.data
+
+      commentList.more = res.data.length < commentList.filters.per_page ? false : true
+      commentList.data = commentList.data.concat(processCommentList(_commentList))
+      commentList.filters = filters
+      commentList.count = 0
+      commentList.loading = false
+
+      dispatch({ type: 'SET_COMMENT_LIST_BY_NAME', name, data: commentList })
+      callback(res)
 
     })
 
