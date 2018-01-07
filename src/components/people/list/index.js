@@ -2,15 +2,15 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
-import arriveFooter from '../../common/arrive-footer'
+import arriveFooter from '../../../common/arrive-footer'
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { loadPeopleList } from '../../actions/people'
-import { getPeopleListByName } from '../../reducers/people'
+import { loadPeopleList } from '../../../actions/people'
+import { getPeopleListByName } from '../../../reducers/people'
 
-import PeopleItem from '../people-item'
-import ListLoading from '../list-loading'
+import PeopleItem from './list-item'
+import ListLoading from '../../list-loading'
 
 export class PeopleList extends Component{
 

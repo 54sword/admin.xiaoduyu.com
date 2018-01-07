@@ -16,9 +16,6 @@ export class Notification extends React.Component {
   }
 
   componentWillMount() {
-    this.props.setMeta({
-      title: '通知'
-    })
   }
 
   render() {

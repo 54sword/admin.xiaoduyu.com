@@ -6,21 +6,37 @@ import styles from './style.scss'
 import Shell from '../shell'
 import PostsList from '../../components/posts-list'
 
+import { loadTopics } from '../../actions/topic'
+import { getTopicListByName } from '../../reducers/topic'
 
-// 纯组件
 export class Posts extends React.Component {
+
+  static mapStateToProps = (state, props) => {
+    return {
+      topicList: getTopicListByName(state, 'posts')
+    }
+  }
+
+  static mapDispatchToProps = { loadTopics }
 
   constructor(props) {
     super(props)
     this.state = {
       timestamp: new Date().getTime(),
-      filters: {},
+      filters: {
+        options: { sort: { sort_by_date: - 1 } }
+      },
       params: {
         sortBy: 'sort_by_date'
       }
     }
     this.submit = this.submit.bind(this)
     this.valueOnChange = this.valueOnChange.bind(this)
+
+  }
+
+  componentDidMount() {
+    this.props.loadTopics({ name: 'posts', filters:{} })
   }
 
   valueOnChange(e, name) {
@@ -34,12 +50,12 @@ export class Posts extends React.Component {
 
   submit(event) {
 
-    event.preventDefault();
+    if (event) event.preventDefault()
 
     let filters = {
       query: {},
       select: {},
-      option: {
+      options: {
         sort: {}
       }
     }
@@ -47,22 +63,12 @@ export class Posts extends React.Component {
     let { params } = this.state
 
     for (let i in params) {
-
       switch (i) {
-        case 'sortBy':
-          filters.option.sort[params[i]] = -1
-          break
-        case 'status':
-          filters.query[params[i]] = true
-          break
-        case 'startDate':
-          filters.query.lte_create_at = params[i]
-          break
-        case 'endDate':
-          filters.query.gte_create_at = params[i]
-          break
-        default:
-          filters.query[i] = params[i]
+        case 'sortBy': filters.options.sort[params[i]] = -1; break
+        case 'status': filters.query[params[i]] = true; break
+        case 'startDate': filters.query.lte_create_at = params[i]; break
+        case 'endDate': filters.query.gte_create_at = params[i]; break
+        default: filters.query[i] = params[i]
       }
     }
 
@@ -72,18 +78,18 @@ export class Posts extends React.Component {
   }
 
   componentWillMount() {
-    this.props.setMeta({
-      title: '帖子'
-    })
   }
 
   render() {
 
     const { filters, timestamp, params } = this.state
     const { sortBy, status, topic_id } = params
+    const { topicList } = this.props
 
     return(<div>
-      <h1>帖子</h1>
+
+        <h1>帖子</h1>
+
         <form className="form" onSubmit={this.submit}>
 
         <div className="flex-left units-gap">
@@ -128,6 +134,9 @@ export class Posts extends React.Component {
           <div className="unit">
             <select onChange={e=>this.valueOnChange(e, 'topic_id')} defaultValue={topic_id}>
               <option value="">所有</option>
+              {topicList.data && topicList.data.map(item=>{
+                return (<option value={item._id} key={item._id}>{item.name}</option>)
+              })}
             </select>
           </div>
         </div>
@@ -150,11 +159,7 @@ export class Posts extends React.Component {
 
       <br /><br />
 
-      <PostsList
-        name="home"
-        timestamp={timestamp}
-        filters={filters}
-        />
+      <PostsList name="home" timestamp={timestamp} filters={filters} />
     </div>)
   }
 

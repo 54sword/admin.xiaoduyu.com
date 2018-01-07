@@ -5,26 +5,22 @@ import { connect } from 'react-redux'
 const connectReudx = (Component) => {
 
   if (!Component.mapStateToProps && !Component.mapDispatchToProps) return Component
-
-
+  
   const mapStateToProps = Component.mapStateToProps || function(){return{}}
   const mapDispatchToProps = Component.mapDispatchToProps || {}
 
-  // if (Component.mapStateToProps && Component.actions ) {
+  Component = connect(mapStateToProps,
+    (dispatch)=>{
 
-    Component = connect(mapStateToProps,
-      (dispatch)=>{
+      let actions = {}
 
-        let actions = {}
+      for (let i in mapDispatchToProps) {
+        actions[i] = bindActionCreators(mapDispatchToProps[i], dispatch)
+      }
 
-        for (let i in mapDispatchToProps) {
-          actions[i] = bindActionCreators(mapDispatchToProps[i], dispatch)
-        }
+      return actions
 
-        return actions
-
-      })(Component)
-  // }
+    })(Component)
 
   return Component
 }

@@ -131,41 +131,32 @@ export function loadTopics({ name, filters = {}, callback = ()=>{} }) {
   return (dispatch, getState) => {
 
     const accessToken = getState().user.accessToken
-    let nodeList = getState().topic[name] || {}
+    let list = getState().topic[name] || {}
 
-    if (typeof(nodeList.more) != 'undefined' && !nodeList.more || nodeList.loading) {
-      return
-    }
+    if (typeof(list.more) != 'undefined' && !list.more || list.loading) return
 
-    if (!nodeList.data) {
-      nodeList.data = []
-    }
+    if (!Reflect.has(list, 'data')) list.data = []
 
-    if (!nodeList.filters) {
+    if (!Reflect.has(list, 'filters')) {
 
-      if (!filters.page) {
-        filters.page = 0
-      }
+      if (!Reflect.has(filters, 'query')) filters.query = {}
+      if (!Reflect.has(filters, 'select')) filters.select = { '__v': 0 }
+      if (!Reflect.has(filters, 'options')) filters.options = {}
+      if (!Reflect.has(filters.options, 'skip')) filters.options.skip = 0
+      if (!Reflect.has(filters.options, 'limit')) filters.options.limit = 15
 
-      if (!filters.per_page) {
-        filters.per_page = 30
-      }
-
-      nodeList.filters = filters
+      list.filters = filters
     } else {
-      filters = nodeList.filters
-      filters.page = filters.page + 1
+      // 如果以及存在筛选条件，那么下次请求，进行翻页
+      filters = list.filters
+      filters.options.skip += filters.options.limit
     }
 
-    if (!nodeList.more) {
-      nodeList.more = true
-    }
+    if (!Reflect.has(list, 'more')) list.more = true
+    // if (!Reflect.has(list, 'count')) list.count = 0
+    if (!Reflect.has(list, 'loading')) list.loading = true
 
-    if (!nodeList.loading) {
-      nodeList.loading = true
-    }
-
-    dispatch({ type: 'SET_TOPIC_LIST_BY_NAME', name, data: nodeList })
+    dispatch({ type: 'SET_TOPIC_LIST_BY_NAME', name, data: list })
 
     let headers = {}
 
@@ -175,22 +166,18 @@ export function loadTopics({ name, filters = {}, callback = ()=>{} }) {
       headers = null
     }
 
-    return Ajax({
-      url: '/topic',
-      params: filters,
-      headers
-    }).then((res)=>{
+    return Ajax({ url: '/topic', data: filters, headers }).then((res)=>{
 
-      nodeList.loading = false
+      list.loading = false
 
       if (res.success) {
-        nodeList.more = res.data.length < nodeList.filters.per_page ? false : true
-        nodeList.data = nodeList.data.concat(res.data)
-        nodeList.filters = filters
-        nodeList.count = 0
+        list.more = res.data.length < filters.options.limit ? false : true
+        list.data = list.data.concat(res.data)
+        list.filters = filters
+        // list.count = 0
       }
 
-      dispatch({ type: 'SET_TOPIC_LIST_BY_NAME', name, data: nodeList })
+      dispatch({ type: 'SET_TOPIC_LIST_BY_NAME', name, data: list })
       callback(res)
     })
 

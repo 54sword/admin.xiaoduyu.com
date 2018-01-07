@@ -9,6 +9,7 @@
 
 .item{
   width: 100%;
+  /*
   margin:0px;
   border-collapse:collapse;
   border-spacing:0;
@@ -23,6 +24,7 @@
     font-weight:bold;
     // background:#ccc;
   }
+  */
 }
 
 .head{
@@ -199,5 +201,11 @@
 
   &:hover{
     background-color: rgba(255,255,255,.7);
+  }
+}
+
+.actions{
+  a{
+    display: block;
   }
 }

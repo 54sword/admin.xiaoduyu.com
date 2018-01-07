@@ -51,33 +51,40 @@ const AJAX = ({
 
   let option = {
     url: domain + apiVerstion + url,
-    method: type
+    method: type,
+    dataType : 'json'
   }
 
   // 管理员查询
-  data.admin = 1
+  // data.admin = 1
 
   if (type == 'get') {
-    data._t = new Date().getTime()
-    option.params = data
+    data._t = parseInt(new Date().getTime()/8000)
+    option.params = JSON.stringify(data)
   } else if (type == 'post') {
-    option.data = data
+    option.data = JSON.stringify(data)
   }
 
   if (headers && headers.AccessToken) {
     option.headers = headers
   }
 
-  if (type == 'post' && headers.AccessToken) {
-    option.data.access_token = headers.AccessToken
-    delete option.headers
+  headers['Accept'] = "application/json"
+  headers['Content-Type'] = "application/json"
+
+  // if (type == 'post' && headers.AccessToken) {
+  //   option.data.access_token = headers.AccessToken
+  //   delete option.headers
+  // }
+
+
+  if (typeof __DEV__ != 'undefined') {
+    console.debug('[发起' + option.method  + '请求] '+option.url, data)
+    // console.debug('[参数]', data)
   }
 
-
-  if (typeof __DEV__ != 'undefined') console.debug(option)
-
   return axios(option).then(resp => {
-    if (typeof __DEV__ != 'undefined') console.debug(resp.data)
+    if (typeof __DEV__ != 'undefined') console.debug('[结果] '+option.url, resp.data)
 
     if (resp && resp.data) {
       let res = resp.data
@@ -91,7 +98,7 @@ const AJAX = ({
 
   })
   .catch(function (error) {
-    if (typeof __DEV__ != 'undefined') console.debug(error.response.data)
+    if (typeof __DEV__ != 'undefined') console.warn('[结果] '+option.url, error.response.data)
 
     if (error && error.response && error.response.data) {
       let res = error.response.data

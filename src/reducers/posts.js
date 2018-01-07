@@ -10,11 +10,6 @@ export default function posts(state = initialState, action = {}) {
       state[name] = data
       return merge({}, state, {})
 
-    // case 'ADD_POSTS':
-    //   var { posts } = action
-    //   state.other.data = posts
-    //   return merge({}, state, {})
-
     case 'SET_POSTS':
       return merge({}, action.state, {})
 
@@ -86,55 +81,15 @@ export default function posts(state = initialState, action = {}) {
       return merge({}, state, {})
 
     case 'UPDATE_POST':
-      var { id, data } = action
+      var { id, update } = action
       for (let i in state) {
         state[i].data.map(item => {
           if (item._id == id) {
-            for (let i in data) item[i] = data[i]
+            for (let i in update) item[i] = update[i]
           }
         })
       }
       return merge({}, state, {})
-    /*
-    case 'UPDATE_POST_DELETE':
-      var { id, status } = action
-      for (let i in state) {
-        state[i].data.map(item => {
-          if (item._id == id) item.deleted = status
-        })
-      }
-      return merge({}, state, {})
-
-    case 'UPDATE_POST_WEAKEN':
-      var { id, status } = action
-      for (let i in state) {
-        state[i].data.map(item => {
-          if (item._id == id) item.weaken = status
-        })
-      }
-      return merge({}, state, {})
-    */
-    /*
-    case 'UPDATE_ANSWER_LIKE_IN_POSTS':
-      var { id, status } = action
-
-      for (let i in state) {
-        let data = state[i].data
-        if (data.length > 0) {
-
-          data.map((question, key)=>{
-            question.answers.map((answer, index)=>{
-              if (answer._id == id) {
-                state[i].data[key].answers[index].like_count += status ? 1 : -1
-                state[i].data[key].answers[index].like = status
-              }
-            })
-          })
-
-        }
-      }
-      return merge({}, state, {})
-      */
 
     default:
       return state;

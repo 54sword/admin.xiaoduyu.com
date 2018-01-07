@@ -13,7 +13,7 @@ import { loadPostsList } from '../../actions/posts'
 import { getPostsListByName } from '../../reducers/posts'
 
 // import ListLoading from '../list-loading'
-import PostsItem from '../posts-item'
+import PostsItem from '../posts/posts-item'
 
 export class PostsList extends Component {
 
@@ -49,9 +49,9 @@ export class PostsList extends Component {
     arriveFooter.remove(name)
   }
 
-  loadDate() {
+  async loadDate() {
     const { name, filters, loadPostsList } = this.props
-    loadPostsList({ name, filters })
+    await loadPostsList({ name, filters })
   }
 
   componentWillReceiveProps(props) {
@@ -99,24 +99,6 @@ export class PostsList extends Component {
 PostsList.propTypes = {
   name: PropTypes.string.isRequired,
   filters: PropTypes.object.isRequired
-  // postsList:  PropTypes.object.isRequired
 }
-
-/*
-const mapStateToProps = (state, props) => {
-  const { name } = props
-  return {
-    postsList: getPostsListByName(state, name)
-  }
-}
-
-const mapDispatchToProps = (dispatch, props) => {
-  return {
-    loadPostsList: bindActionCreators(loadPostsList, dispatch)
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(PostsList)
-*/
 
 export default connectReudx(PostsList)

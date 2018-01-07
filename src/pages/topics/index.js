@@ -6,10 +6,9 @@ import { Route, Link } from 'react-router-dom'
 // import { connect } from 'react-redux'
 // import { update } from '../../actions/account'
 
-
-
 import Shell from '../shell'
-import TopicList from '../../components/topic-list'
+import TopicList from '../../components/topic/list'
+
 
 // 纯组件
 export class Topics extends React.PureComponent {
@@ -21,11 +20,6 @@ export class Topics extends React.PureComponent {
   }
 
   componentWillMount() {
-    // this.props.update('qqq')
-    // console.log(this);
-    this.props.setMeta({
-      title: '话题'
-    })
   }
 
   render() {
@@ -33,7 +27,26 @@ export class Topics extends React.PureComponent {
 
       <div>
         <h1>话题</h1>
-        <TopicList />
+        <TopicList
+          name="topics"
+          filters={{
+            query: {
+              parent_id: { $exists : true }
+            },
+            select: {
+              __v: 0,
+              language: 0,
+              recommend: 0,
+              parent_id: 0
+            },
+            options: {
+              limit: 100,
+              sort: {
+                sort: -1
+              }
+            }
+          }}
+          />
       </div>
     </div>)
   }

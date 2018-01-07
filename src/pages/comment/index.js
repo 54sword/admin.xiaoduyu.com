@@ -4,7 +4,7 @@ import CSSModules from 'react-css-modules'
 import styles from './style.scss'
 
 import Shell from '../shell'
-import CommentList from '../../components/comment-list'
+import CommentList from '../../components/comment/list'
 
 
 // 纯组件
@@ -16,9 +16,6 @@ export class Comment extends React.Component {
   }
 
   componentWillMount() {
-    this.props.setMeta({
-      title: '评论'
-    })
   }
 
   render() {

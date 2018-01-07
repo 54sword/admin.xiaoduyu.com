@@ -1,8 +1,12 @@
 
 // import merge from 'lodash/merge'
 import Ajax from '../common/ajax'
+// import Promise from 'promise'
 
 import { DateDiff } from '../common/date'
+import loadList from './common/load-list'
+
+// console.log(loadList);
 
 // 添加问题
 export function addPosts({ title, detail, detailHTML, topicId, device, type, callback = ()=>{} }) {
@@ -77,128 +81,26 @@ export function updatePostsById({ id, typeId, topicId, title, content, contentHT
 }
 
 
-export function loadPostsList({ name, filters = { query: {}, select: {}, option: {} }, callback = ()=>{}, restart = false }) {
+
+export function loadPostsList({ name, filters = {}, restart = false }) {
   return (dispatch, getState) => {
+    return loadList({
+      dispatch,
+      getState,
 
-    let accessToken = getState().user.accessToken
-    let postsList = getState().posts[name] || {}
+      name,
+      restart,
+      filters,
 
-    if (restart) postsList = {}
+      processList: processPostsList,
 
-    if (typeof(postsList.more) != 'undefined' && !postsList.more || postsList.loading) {
-      return callback()
-    }
-
-    if (!postsList.data) postsList.data = []
-
-    if (!postsList.filters) {
-      if (!filters.query) filters.query = {}
-      if (!filters.select) filters.select = {}
-      if (!filters.option) filters.option = {}
-      if (!filters.option.skip) filters.option.skip = 0
-      if (!filters.option.limit) filters.option.limit = 15
-      postsList.filters = filters
-    } else {
-      filters = postsList.filters
-      filters.option.skip += filters.option.limit
-    }
-
-    if (!postsList.more) postsList.more = true
-    if (!postsList.count) postsList.count = 0
-    if (!postsList.loading) postsList.loading = true
-
-    dispatch({ type: 'SET_POSTS_LIST_BY_NAME', name, data: postsList })
-
-    let headers = accessToken ? { 'AccessToken': accessToken } : null
-
-    filters.select = { '__v': 0 }
-
-    Ajax({
-      url: '/posts',
-      type: 'post',
-      data: {
-        'data_json': JSON.stringify(filters)
-      },
-      headers
-    }).then(res => {
-
-      if (!res || !res.success) return callback(res)
-
-      postsList.more = res.data.length < postsList.filters.per_page ? false : true
-      postsList.data = postsList.data.concat(processPostsList(res.data))
-      postsList.filters = filters
-      postsList.count = 0
-      postsList.loading = false
-
-      dispatch({ type: 'SET_POSTS_LIST_BY_NAME', name, data: postsList })
-      callback(res)
-
+      reducerName: 'posts',
+      api: '/posts',
+      actionType: 'SET_POSTS_LIST_BY_NAME'
     })
-
   }
 }
 
-/*
-export function loadPostsList({ name, filters = {}, callback = ()=>{}, restart = false }) {
-  return (dispatch, getState) => {
-
-    let accessToken = getState().user.accessToken
-    let postsList = getState().posts[name] || {}
-
-    if (restart) {
-      postsList = {}
-    }
-
-    if (typeof(postsList.more) != 'undefined' && !postsList.more || postsList.loading) {
-      callback()
-      return
-    }
-
-    if (!postsList.data) postsList.data = []
-
-    if (!postsList.filters) {
-      if (!filters.per_page) filters.per_page = 30
-      postsList.filters = filters
-    } else {
-      filters = postsList.filters
-      if (postsList.data[postsList.data.length - 1]) {
-        filters.lt_date = new Date(postsList.data[postsList.data.length - 1].sort_by_date).getTime()
-      }
-    }
-
-    if (!postsList.more) postsList.more = true
-    if (!postsList.count) postsList.count = 0
-    if (!postsList.loading) postsList.loading = true
-
-    dispatch({ type: 'SET_POSTS_LIST_BY_NAME', name, data: postsList })
-
-    let headers = accessToken ? { 'AccessToken': accessToken } : null
-
-    Ajax({
-      url: '/posts',
-      data: filters,
-      headers
-    }).then(res => {
-
-      if (!res || !res.success) {
-        callback(res)
-        return
-      }
-
-      postsList.more = res.data.length < postsList.filters.per_page ? false : true
-      postsList.data = postsList.data.concat(processPostsList(res.data))
-      postsList.filters = filters
-      postsList.count = 0
-      postsList.loading = false
-
-      dispatch({ type: 'SET_POSTS_LIST_BY_NAME', name, data: postsList })
-      callback(res)
-
-  })
-
-  }
-}
-*/
 
 export function loadPostsById({ id, callback = ()=>{} }) {
   return (dispatch, getState) => {
@@ -233,15 +135,33 @@ export function addViewById({ id, callback = ()=>{ } }) {
 }
 
 
-export function updatePosts({ id, data }) {
+export function updatePosts({ query = {}, update = {}, options = {} }) {
   return (dispatch, getState) => {
+
     let accessToken = getState().user.accessToken
+
     return Ajax({
       url: '/posts/update',
       type: 'post',
-      data: { id, data_json:JSON.stringify(data), access_token: accessToken },
+      data: { query, update, options },
+      headers: { 'AccessToken': accessToken }
     }).then((result) => {
-      dispatch({ type: 'UPDATE_POST', id: id, data })
+
+      if (result && result.success) {
+
+        dispatch({ type: 'UPDATE_POST', id: query._id, update })
+        let postsList = getState().posts
+
+        for (let i in postsList) {
+          if (postsList[i].data) {
+            postsList[i].data = processPostsList(postsList[i].data)
+          }
+        }
+
+        dispatch({ type: 'UPDATE_POST', state: postsList })
+
+      }
+
     })
   }
 }
@@ -306,6 +226,8 @@ const processPostsList = (list) => {
     posts.content_summary = text
 
     posts._create_at = DateDiff(posts.create_at)
+    posts._sort_by_date = DateDiff(posts.sort_by_date)
+    posts._last_comment_at = DateDiff(posts.last_comment_at)
 
     if (posts.comment) {
       posts.comment.map(function(comment){

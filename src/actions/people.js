@@ -4,6 +4,7 @@
 import Ajax from '../common/ajax'
 import merge from 'lodash/merge'
 
+import loadList from './common/load-list'
 
 export function loadPeopleById({ id, callback = ()=>{} }) {
   return (dispatch, getState) => {
@@ -29,7 +30,48 @@ export function loadPeopleById({ id, callback = ()=>{} }) {
   }
 }
 
+export function loadPeopleList({ name, filters = {}, restart = false }) {
+  return (dispatch, getState) => {
 
+    /*
+    if (!filters.select) {
+      filters.select = {
+        _id: 1,
+        "find_notification_at": 1,
+        "gender": 1,
+        "nickname": 1,
+        "follow_posts_count": 1,
+        "follow_topic_count": 1,
+        "follow_people_count": 1,
+        "fans_count": 1,
+        "comment_count": 1,
+        "posts_count": 1,
+        "source": 1,
+        "brief": 1,
+        "avatar": 1,
+        "nickname_reset_at": 1
+      }
+    }
+    */
+
+    return loadList({
+      dispatch,
+      getState,
+
+      name,
+      restart,
+      filters,
+
+      // processList: processPostsList,
+
+      reducerName: 'people',
+      api: '/people',
+      actionType: 'SET_PEOPLE_LIST_BY_NAME'
+    })
+  }
+}
+
+/*
 export function loadPeople({ name, filters = {}, callback = ()=>{} }) {
   return (dispatch, getState) => {
 
@@ -79,7 +121,7 @@ export function loadPeople({ name, filters = {}, callback = ()=>{} }) {
 
   }
 }
-
+*/
 
 
 /*

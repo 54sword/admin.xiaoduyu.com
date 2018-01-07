@@ -1,11 +1,7 @@
 
 import merge from 'lodash/merge'
 
-let initialState = {
-  // other: {
-  //   data: []
-  // }
-}
+let initialState = {}
 
 export default function topic(state = initialState, action = {}) {
 

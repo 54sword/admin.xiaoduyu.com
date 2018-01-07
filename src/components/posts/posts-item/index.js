@@ -4,8 +4,8 @@ import { browserHistory } from 'react-router'
 import { Link } from 'react-router-dom'
 
 // import { DateDiff } from '../../common/date'
-import { updatePosts } from '../../actions/posts'
-import connectReudx from '../../common/connect-redux'
+import { updatePosts } from '../../../actions/posts'
+import connectReudx from '../../../common/connect-redux'
 
 // sass
 import CSSModules from 'react-css-modules'
@@ -13,8 +13,9 @@ import styles from './style.scss'
 
 // import FollowPosts from '../follow-posts'
 // import CommentItem from '../comment-item'
+import PostsAdminAction from '../../posts/admin-action'
 
-import Keydown from '../../common/keydown'
+import Keydown from '../../../common/keydown'
 
 export class PostsItem extends PureComponent {
 
@@ -59,8 +60,8 @@ export class PostsItem extends PureComponent {
     if (posts.weaken) background = '#efefef'
     if (posts.deleted) background = '#ffe3e3'
 
-    return (<div style={{backgroundColor:background}}>
-      <table styleName="item">
+    return (<div>
+      <table styleName="item" className="table" style={{backgroundColor:background}}>
       <tbody>
 
       <tr>
@@ -85,7 +86,6 @@ export class PostsItem extends PureComponent {
                   {posts.like_count ? <span>{posts.like_count} 个赞</span> : null}
                   {posts.follow_count ? <span>{posts.follow_count}人关注</span> : null}
                   {displayDate ? <span>{posts._create_at}</span> : null}
-                  {displayDate ? <span>{posts.sort_by_date}</span> : null}
                 </div>
               </div>
               : null}
@@ -100,34 +100,8 @@ export class PostsItem extends PureComponent {
         {/* posts end */}
 
         {/* action */}
-        <td style={{width:'20%'}}>
-          <ul>
-            <li>
-              <a href="javascript:void(0)" onClick={(e)=>this.updatePosts(e, { weaken:posts.weaken ? false : true })}>
-                {posts.weaken ? '已被弱化' : '弱化'}
-              </a>
-            </li>
-            <li>
-              <a href="javascript:void(0)" onClick={(e)=>this.updatePosts(e, { recommend:posts.recommend ? false : true })}>
-                {posts.recommend ? '已被推荐' : '推荐'}
-              </a>
-            </li>
-            <li>
-              <a href="javascript:void(0)" onClick={(e)=>this.updatePosts(e, { deleted:posts.deleted ? false : true })}>
-                {posts.deleted ? '已被删除' : '删除'}
-              </a>
-            </li>
-            <li>
-              <a href="javascript:void(0)"
-                onClick={(e)=>this.updatePosts(e, { sort_by_date: new Date().getTime() })}>排前
-              </a>
-            </li>
-            <li>
-              <a href="javascript:void(0)"
-                onClick={(e)=>this.updatePosts(e, { sort_by_date: new Date(new Date(posts.sort_by_date).getTime() - 1000*60*60*24*3).getTime() }) }>排后
-              </a>
-            </li>
-          </ul>
+        <td style={{width:'20%'}} styleName="actions">
+          <PostsAdminAction posts={posts} />
         </td>
         {/* action end */}
 

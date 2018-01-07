@@ -14,9 +14,6 @@ export class People extends React.Component {
   }
 
   componentWillMount() {
-    this.props.setMeta({
-      title: '用户'
-    })
   }
 
   render() {
@@ -26,9 +23,7 @@ export class People extends React.Component {
       </div>
       <PeopleList
         name="home"
-        filters={{
-          select: '_id,nickname,follow_node_count,follow_posts_count,follow_topic_count,comment_count,posts_count,source,brief,avatar,avatar_url,role,blocked,last_sign_at,nickname_reset_at,create_at'
-        }}
+        filters={{}}
         />
     </div>)
   }

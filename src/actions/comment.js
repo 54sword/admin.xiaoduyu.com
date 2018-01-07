@@ -2,6 +2,8 @@
 import Ajax from '../common/ajax'
 import { DateDiff } from '../common/date'
 
+import loadList from './common/load-list'
+
 export function addComment({ posts_id, parent_id, reply_id, contentJSON, contentHTML, deviceId, callback }) {
   return (dispatch, getState) => {
 
@@ -182,10 +184,11 @@ export const loadCommentById = ({ id, callback = () => {} }) => {
 }
 
 const processCommentList = (list) => {
+
   list.map(item=>{
     item._create_at = DateDiff(item.create_at)
-    if (item.reply) {
-      item.reply.map(item=>{
+    if (item.replys && item.replys.map) {
+      item.replys.map(item=>{
         item._create_at = DateDiff(item.create_at)
       })
     }
@@ -193,6 +196,28 @@ const processCommentList = (list) => {
   return list
 }
 
+
+
+export function loadCommentList({ name, filters = {}, restart = false }) {
+  return (dispatch, getState) => {
+    return loadList({
+      dispatch,
+      getState,
+
+      name,
+      restart,
+      filters,
+
+      processList: processCommentList,
+
+      reducerName: 'comment',
+      api: '/comments',
+      actionType: 'SET_COMMENT_LIST_BY_NAME'
+    })
+  }
+}
+
+/*
 export function loadCommentList({ name, filters = {}, callback = ()=>{} }) {
   return (dispatch, getState) => {
 
@@ -264,3 +289,4 @@ export function loadCommentList({ name, filters = {}, callback = ()=>{} }) {
 
   };
 }
+*/
