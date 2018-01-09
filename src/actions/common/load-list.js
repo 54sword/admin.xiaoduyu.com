@@ -11,6 +11,8 @@ export default ({ dispatch, getState, reducerName, name, api, actionType, restar
     // 让列表重新开始
     if (restart) list = {}
 
+    console.log(list);
+
     // 如果没有更新数据，或正在加载中，则拒绝请求
     if (typeof list.more != 'undefined' && !list.more || list.loading) {
       resolve()
@@ -42,13 +44,15 @@ export default ({ dispatch, getState, reducerName, name, api, actionType, restar
 
     let headers = accessToken ? { 'AccessToken': accessToken } : null
 
+
+
     Ajax({
       url: api,
       data: filters,
       headers
     }).then(res => {
 
-      console.log(res);
+      // console.log(res);
 
       if (!res || !res.success) return resolve(res)
 

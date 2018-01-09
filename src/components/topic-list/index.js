@@ -49,6 +49,14 @@ export class TopicList extends Component {
 
   componentWillReceiveProps(props) {
 
+    if (props.timestamp != this.props.timestamp) {
+      this.props = props
+      this.componentDidMount()
+      // const { loadPostsList } = this.props
+      // loadPostsList({ name: props.name, filters: props.filters, restart: true })
+    }
+
+    /*
     const that = this
 
     if (this.props.name != props.name) {
@@ -63,6 +71,7 @@ export class TopicList extends Component {
       }, 10)
 
     }
+    */
   }
 
   _triggerLoad(callback = ()=>{}) {

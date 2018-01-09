@@ -1,6 +1,25 @@
 
 import Ajax from '../common/ajax'
+import Promise from 'promise'
 
+import loadList from './common/load-list'
+
+export function addTopic({ data, callback = ()=>{} }) {
+  return (dispatch, getState) => {
+    const accessToken = getState().user.accessToken
+    return new Promise(async (resolve, reject) => {
+      Ajax({
+        url: '/add-topic',
+        type: 'post',
+        data,
+        headers: { AccessToken: accessToken },
+        callback
+      }).then(resolve).catch(reject)
+    })
+  }
+}
+
+/*
 export function addTopic({ name, brief, avatar, description, parentId, callback = ()=>{} }) {
   return (dispatch, getState) => {
     const accessToken = getState().user.accessToken
@@ -21,6 +40,7 @@ export function addTopic({ name, brief, avatar, description, parentId, callback 
 
   }
 }
+*/
 
 export function updateTopicById({ id, name, brief, avatar, description, parentId, callback = ()=>{} }) {
   return (dispatch, getState) => {
@@ -126,7 +146,30 @@ export function loadTopicById({ id, callback = ()=>{} }) {
   }
 }
 
+export function loadTopics({ name, filters = {}, callback = ()=>{}, restart = false  }) {
+  return (dispatch, getState) => {
 
+    console.log(filters);
+    console.log(name);
+
+    return loadList({
+      dispatch,
+      getState,
+
+      name,
+      restart,
+      filters,
+
+      // processList: processPostsList,
+
+      reducerName: 'topic',
+      api: '/topic',
+      actionType: 'SET_TOPIC_LIST_BY_NAME'
+    })
+  }
+}
+
+/*
 export function loadTopics({ name, filters = {}, callback = ()=>{} }) {
   return (dispatch, getState) => {
 
@@ -183,3 +226,4 @@ export function loadTopics({ name, filters = {}, callback = ()=>{} }) {
 
   }
 }
+*/

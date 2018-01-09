@@ -1,4 +1,4 @@
-@import "../../containers/global/base.scss";
+
 
 .loading{
   position: fixed;
@@ -18,8 +18,6 @@
     height: 60px;
     background-image: url(./images/loading.png);
     background-size: cover;
-
-    @include animaction(rotate, .7s, infinite);
   }
 
 }

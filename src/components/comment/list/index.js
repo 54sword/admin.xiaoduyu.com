@@ -72,8 +72,6 @@ export class CommentList extends Component {
 
     let { commentList } = this.props
 
-    console.log(commentList);
-
     if (!commentList.data) return (<div></div>)
 
     // if (!commentList.data) {

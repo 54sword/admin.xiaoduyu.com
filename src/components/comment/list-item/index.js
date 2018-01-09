@@ -34,7 +34,7 @@ export class CommentItem extends Component {
 
     let { comment, summary, displayLike, displayReply, displayDate, displayEdit } = oursProps
 
-    console.log(comment);
+    // console.log(comment);
 
     /*me.phone ? <span>
         <Link

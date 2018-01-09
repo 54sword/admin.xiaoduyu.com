@@ -37,6 +37,9 @@ export class TopicList extends Component {
 
     const { name, topicList } = this.props
 
+    // console.log(name);
+    // console.log(topicList);
+
     if (!topicList.data) {
       self.triggerLoad()
     }
@@ -53,16 +56,18 @@ export class TopicList extends Component {
   }
 
   componentWillReceiveProps(props) {
+    if (props.timestamp != this.props.timestamp) {
+      this.props = props
 
-    // const that = this
-    //
-    // if (this.props.name != props.name) {
-    //
-    //   setTimeout(()=>{
-    //     that.triggerLoad(()=>{})
-    //   }, 10)
-    //
-    // }
+      const { name, filters, loadTopics } = props
+
+      loadTopics({
+        name,
+        filters,
+        restart: true
+      })
+
+    }
   }
 
   _triggerLoad(callback = ()=>{}) {
