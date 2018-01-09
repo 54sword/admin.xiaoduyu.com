@@ -43,6 +43,7 @@
     "babel-preset-stage-2": "^6.24.1",
     "bootstrap": "^4.0.0-beta.3",
     "clean-webpack-plugin": "^0.1.17",
+    "create-react-class": "^15.6.2",
     "css-loader": "^0.28.7",
     "extract-text-webpack-plugin": "^3.0.2",
     "html-webpack-plugin": "^2.30.1",

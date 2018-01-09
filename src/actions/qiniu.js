@@ -1,22 +1,17 @@
 import Ajax from '../common/ajax'
 
 // 登录
-export function getQiNiuToken({ callback }) {
+export function getQiNiuToken() {
   return (dispatch, getState) => {
 
-    let accessToken = getState().user.accessToken
-
-    return Ajax({
-      url: '/get-qiniu-token',
-      type: 'post',
-      headers: { AccessToken: accessToken },
-      callback: (res) => {
-        if (res && res.success) {
-          callback(res.data)
-        } else {
-          callback(null)
-        }
-      }
+    const accessToken = getState().user.accessToken
+    return new Promise((resolve, reject) => {
+      Ajax({
+        url: '/get-qiniu-token',
+        type: 'post',
+        headers: { AccessToken: accessToken }
+      }).then(resolve).catch(reject)
     })
+
   }
 }

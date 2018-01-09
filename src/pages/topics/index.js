@@ -79,13 +79,12 @@ export class Topics extends React.PureComponent {
     const { filters, timestamp  } = this.state
     const { type, sortBy } = this.state.params
 
-    console.log(filters);
 
     return(<div>
 
       <div>
         <h1>话题</h1>
-        <Link to="/edit-topic">添加</Link>
+        <Link to="/add-topic">添加</Link>
 
         <form className="form" onSubmit={this.submit}>
 

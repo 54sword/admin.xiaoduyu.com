@@ -11,7 +11,7 @@ import Home from '../pages/home'
 import Posts from '../pages/posts'
 import PostsDetail from '../pages/posts-detail'
 import Topics from '../pages/topics'
-import EditTopic from '../pages/edit-topic'
+import FormTopic from '../pages/form-topic'
 import SignIn from '../pages/sign-in'
 import People from '../pages/people'
 import Comment from '../pages/comment'
@@ -53,15 +53,16 @@ const triggerEnter = (Layout, props) => {
 
 
 const routeArr = [
-  { path: '/',             exact: true, component: Home,         head: Head, sidebar: Sidebar, enter: requireAuth },
-  { path: '/posts',        exact: true, component: Posts,        head: Head, sidebar: Sidebar, enter: requireAuth },
-  { path: '/posts/:id',    exact: true, component: PostsDetail,  head: Head, sidebar: Sidebar, enter: requireAuth },
-  { path: '/topics',       exact: true, component: Topics,       head: Head, sidebar: Sidebar, enter: requireAuth },
-  { path: '/edit-topic',   exact: true, component: EditTopic,    head: Head, sidebar: Sidebar, enter: requireAuth },
-  { path: '/people',       exact: true, component: People,       head: Head, sidebar: Sidebar, enter: requireAuth },
-  { path: '/comment',      exact: true, component: Comment,      head: Head, sidebar: Sidebar, enter: requireAuth },
-  { path: '/notification', exact: true, component: Notification, head: Head, sidebar: Sidebar, enter: requireAuth },
-  { path: '/sign-in',      exact: true, component: SignIn,                                     enter: requireTourists },
+  { path: '/',               exact: true, component: Home,         head: Head, sidebar: Sidebar, enter: requireAuth },
+  { path: '/posts',          exact: true, component: Posts,        head: Head, sidebar: Sidebar, enter: requireAuth },
+  { path: '/posts/:id',      exact: true, component: PostsDetail,  head: Head, sidebar: Sidebar, enter: requireAuth },
+  { path: '/topics',         exact: true, component: Topics,       head: Head, sidebar: Sidebar, enter: requireAuth },
+  { path: '/add-topic',      exact: true, component: FormTopic,    head: Head, sidebar: Sidebar, enter: requireAuth },
+  { path: '/edit-topic/:id', exact: true, component: FormTopic,    head: Head, sidebar: Sidebar, enter: requireAuth },
+  { path: '/people',         exact: true, component: People,       head: Head, sidebar: Sidebar, enter: requireAuth },
+  { path: '/comment',        exact: true, component: Comment,      head: Head, sidebar: Sidebar, enter: requireAuth },
+  { path: '/notification',   exact: true, component: Notification, head: Head, sidebar: Sidebar, enter: requireAuth },
+  { path: '/sign-in',        exact: true, component: SignIn,                                     enter: requireTourists },
   { path: '**',                         component: NotFound,                                   enter: triggerEnter }
 ]
 

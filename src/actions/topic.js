@@ -126,31 +126,10 @@ export function unfollowTopic({ id, callback }) {
 }
 
 
-export function loadTopicById({ id, callback = ()=>{} }) {
-  return (dispatch, getState) => {
 
-    Ajax({
-      url: '/topic',
-      params: { topic_id: id },
-      callback: (res)=>{
-        if (res && res.success && res.data && res.data.length > 0) {
-          dispatch({ type: 'ADD_NODE', node: res.data[0] })
-          callback(res.data[0])
-        } else {
-          callback(null)
-        }
-
-      }
-    })
-
-  }
-}
 
 export function loadTopics({ name, filters = {}, callback = ()=>{}, restart = false  }) {
   return (dispatch, getState) => {
-
-    console.log(filters);
-    console.log(name);
 
     return loadList({
       dispatch,
@@ -168,6 +147,39 @@ export function loadTopics({ name, filters = {}, callback = ()=>{}, restart = fa
     })
   }
 }
+
+
+export function loadTopicById({ id, callback = ()=>{} }) {
+  return (dispatch, getState) => {
+
+    return loadTopics({
+      name: id,
+      filters: {
+        query: { _id: id }
+      },
+      callback,
+      restart: true
+    })(dispatch, getState)
+
+    /*
+    Ajax({
+      url: '/topic',
+      params: { topic_id: id },
+      callback: (res)=>{
+        if (res && res.success && res.data && res.data.length > 0) {
+          dispatch({ type: 'ADD_NODE', node: res.data[0] })
+          callback(res.data[0])
+        } else {
+          callback(null)
+        }
+
+      }
+    })
+    */
+
+  }
+}
+
 
 /*
 export function loadTopics({ name, filters = {}, callback = ()=>{} }) {

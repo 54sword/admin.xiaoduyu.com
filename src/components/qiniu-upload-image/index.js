@@ -27,18 +27,15 @@ export class QiniuUploadImage extends React.Component {
     this.onUpload = this._onUpload.bind(this)
   }
 
-  componentWillMount() {
+  async componentDidMount() {
 
-    const self = this
     const { getQiNiuToken } = this.props
 
-    getQiNiuToken({
-      callback: (data) =>{
-        if (data) {
-          self.setState({ token: data.token, url: data.url })
-        }
-      }
-    })
+    let result = await getQiNiuToken()
+
+    if (result) {
+      this.setState({ token: result.data.token, url: result.data.url })
+    }
 
   }
 
@@ -89,6 +86,8 @@ export class QiniuUploadImage extends React.Component {
 
   render() {
 
+    // console.log(this.state.token);
+    
     if (!this.state.token) {
       return (<span></span>)
     }

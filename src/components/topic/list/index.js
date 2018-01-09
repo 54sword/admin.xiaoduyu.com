@@ -9,7 +9,7 @@ import { connect } from 'react-redux'
 import { loadTopics } from '../../../actions/topic'
 import { getTopicListByName } from '../../../reducers/topic'
 
-import TopicItem from '../../topic-item'
+import TopicItem from '../list-item'
 import ListLoading from '../../list-loading'
 
 import connectReudx from '../../../common/connect-redux'
@@ -88,7 +88,7 @@ export class TopicList extends Component {
       return (<div></div>)
     }
 
-    return (<div className="container">
+    return (<div>
       <ul>
         {topicList.data.map((topic, index) => {
           return(<li key={topic._id}><TopicItem topic={topic} /></li>)
@@ -103,24 +103,5 @@ export class TopicList extends Component {
   }
 
 }
-
-/*
-TopicList.propTypes = {
-  loadTopics: PropTypes.func.isRequired,
-  topicList: PropTypes.object.isRequired
-}
-
-const mapStateToProps = (state, props) => {
-  return {
-    topicList: getTopicListByName(state, props.name)
-  }
-}
-
-const mapDispatchToProps = (dispatch, props) => {
-  return {
-    loadTopics: bindActionCreators(loadTopics, dispatch)
-  }
-}
-*/
 
 export default connectReudx(TopicList)
