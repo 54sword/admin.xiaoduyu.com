@@ -66,8 +66,15 @@ export class Posts extends React.Component {
       switch (i) {
         case 'sortBy': filters.options.sort[params[i]] = -1; break
         case 'status': filters.query[params[i]] = true; break
-        case 'startDate': filters.query.lte_create_at = params[i]; break
-        case 'endDate': filters.query.gte_create_at = params[i]; break
+        case 'startDate':
+          if (!filters.query.create_at) filters.query.create_at = {}
+          filters.query.create_at['$lte'] = params[i]
+          break
+        case 'endDate':
+          if (!filters.query.create_at) filters.query.create_at = {}
+          filters.query.create_at['$gte'] = params[i]
+          // filters.query.gte_create_at = params[i];
+          break
         default: filters.query[i] = params[i]
       }
     }
