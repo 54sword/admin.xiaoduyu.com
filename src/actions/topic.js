@@ -42,6 +42,23 @@ export function addTopic({ name, brief, avatar, description, parentId, callback 
 }
 */
 
+export const updateTopic = ({ data }) => {
+  return (dispatch, getState) => {
+    const accessToken = getState().user.accessToken
+    return new Promise(async (resolve, reject) => {
+      Ajax({
+        url: '/topic/update',
+        type: 'post',
+        data,
+        headers: { AccessToken: accessToken },
+        callback: (res) => {
+          console.log(res);
+        }
+      }).then(resolve).catch(reject)
+    })
+  }
+}
+/*
 export function updateTopicById({ id, name, brief, avatar, description, parentId, callback = ()=>{} }) {
   return (dispatch, getState) => {
     const accessToken = getState().user.accessToken
@@ -85,7 +102,7 @@ export function updateTopicById({ id, name, brief, avatar, description, parentId
 
   }
 }
-
+*/
 export function followTopic({ id, callback }) {
   return (dispatch, getState) => {
     const accessToken = getState().user.accessToken

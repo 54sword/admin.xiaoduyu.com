@@ -13,7 +13,7 @@ import styles from './style.scss'
 // import { getTopicListByName, getTopicById } from '../../reducers/topic'
 // import { getProfile } from '../../reducers/user'
 
-import { addTopic, loadTopics, loadTopicById } from '../../actions/topic'
+import { addTopic, updateTopic, loadTopics, loadTopicById } from '../../actions/topic'
 import { getTopicListByName } from '../../reducers/topic'
 
 import Shell from '../shell'
@@ -36,7 +36,7 @@ class EditTopic extends Component {
     return obj
   }
 
-  static mapDispatchToProps = { addTopic, loadTopics, loadTopicById }
+  static mapDispatchToProps = { addTopic, updateTopic, loadTopics, loadTopicById }
 
   constructor(props) {
     super(props)
@@ -116,10 +116,11 @@ class EditTopic extends Component {
     if (event) event.preventDefault()
 
     const self = this
-    const { addTopic } = this.props
+    const { addTopic, updateTopic } = this.props
     const { name, brief, description, parentId } = this.refs
     // const { image } = this.state
     // const { id } = this.props.params
+    const { id } = this.props.match.params
 
     // if (!image) return alert('请上传社群封面')
     if (!name.value) return name.focus()
@@ -127,7 +128,28 @@ class EditTopic extends Component {
     if (!description.value) return description.focus()
     if (parentId.value == -1) return alert('请选择分类')
 
-    /*
+
+
+    if (id) {
+
+      let res = await updateTopic({
+        data: {
+          query: { _id: id },
+          update: {
+            name: name.value,
+            brief: brief.value,
+            avatar: '',
+            description: description.value,
+            parent_id: parentId.value
+          }
+        }
+      })
+      
+      console.log(res);
+
+      return
+    }
+
     let res = await addTopic({
       data: {
         save: {
@@ -139,9 +161,8 @@ class EditTopic extends Component {
         }
       }
     })
-    */
 
-    // console.log(res);
+    console.log(res);
 
     /*
     updateTopicById({

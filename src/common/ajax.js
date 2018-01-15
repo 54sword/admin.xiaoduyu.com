@@ -59,7 +59,8 @@ const AJAX = ({
   // data.admin = 1
 
   if (type == 'get') {
-    data._t = parseInt(new Date().getTime()/8000)
+    data._t = new Date().getTime()
+    // data._t = parseInt(new Date().getTime()/8000)
     option.params = JSON.stringify(data)
   } else if (type == 'post') {
     option.data = JSON.stringify(data)
