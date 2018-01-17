@@ -60,8 +60,8 @@ var avatarPicker = (function() {
     var fc = function(event) {
       var point = getMousePosition(event);
       var e = event || window.event;
-      e.pageX = point.x;
-      e.pageY = point.y;
+      // e.pageX = point.x;
+      // e.pageY = point.y;
       callback(e);
       stopBubble(e);
     };

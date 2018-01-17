@@ -89,7 +89,7 @@ const AJAX = ({
 
     if (resp && resp.data) {
       let res = resp.data
-      res = converterErrorInfo(res)
+      // res = converterErrorInfo(res)
       // resolve(res)
       return res
     } else {

@@ -19,7 +19,7 @@ import { getTopicListByName } from '../../reducers/topic'
 import Shell from '../shell'
 // import Meta from '../../components/meta'
 // import Subnav from '../../components/subnav'
-// import QiniuUploadImage from '../../components/qiniu-upload-image'
+import QiniuUploadImage from '../../components/qiniu-upload-image'
 
 class EditTopic extends Component {
 
@@ -73,7 +73,7 @@ class EditTopic extends Component {
     // 编辑状态，加载id
     if (id) await loadTopicById({ id })
 
-    /*
+
     this.setState({
       updateButton: <QiniuUploadImage upload={this.upload} multiple={false} name={'上传社群封面'} />
     })
@@ -90,7 +90,7 @@ class EditTopic extends Component {
         // })
       }
     })
-    */
+
   }
 
   upload(url) {
@@ -144,7 +144,7 @@ class EditTopic extends Component {
           }
         }
       })
-      
+
       console.log(res);
 
       return

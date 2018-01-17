@@ -6,17 +6,19 @@ import '../common/mobi.min.css'
 import '../pages/global.scss'
 import '../common/load-demand'
 
+import { generateAsyncRouteComponent } from '../pages/generateAsyncComponent.js';
+
 // pages
-import Home from '../pages/home'
-import Posts from '../pages/posts'
-import PostsDetail from '../pages/posts-detail'
-import Topics from '../pages/topics'
-import FormTopic from '../pages/form-topic'
-import SignIn from '../pages/sign-in'
-import People from '../pages/people'
-import Comment from '../pages/comment'
-import Notification from '../pages/notification'
-import NotFound from '../pages/not-found'
+// import Home from '../pages/home'
+// import Posts from '../pages/posts'
+// import PostsDetail from '../pages/posts-detail'
+// import Topics from '../pages/topics'
+// import FormTopic from '../pages/form-topic'
+// import SignIn from '../pages/sign-in'
+// import People from '../pages/people'
+// import Comment from '../pages/comment'
+// import Notification from '../pages/notification'
+// import NotFound from '../pages/not-found'
 
 // components
 import Head from '../components/head'
@@ -53,17 +55,75 @@ const triggerEnter = (Layout, props) => {
 
 
 const routeArr = [
-  { path: '/',               exact: true, component: Home,         head: Head, sidebar: Sidebar, enter: requireAuth },
-  { path: '/posts',          exact: true, component: Posts,        head: Head, sidebar: Sidebar, enter: requireAuth },
-  { path: '/posts/:id',      exact: true, component: PostsDetail,  head: Head, sidebar: Sidebar, enter: requireAuth },
-  { path: '/topics',         exact: true, component: Topics,       head: Head, sidebar: Sidebar, enter: requireAuth },
-  { path: '/add-topic',      exact: true, component: FormTopic,    head: Head, sidebar: Sidebar, enter: requireAuth },
-  { path: '/edit-topic/:id', exact: true, component: FormTopic,    head: Head, sidebar: Sidebar, enter: requireAuth },
-  { path: '/people',         exact: true, component: People,       head: Head, sidebar: Sidebar, enter: requireAuth },
-  { path: '/comment',        exact: true, component: Comment,      head: Head, sidebar: Sidebar, enter: requireAuth },
-  { path: '/notification',   exact: true, component: Notification, head: Head, sidebar: Sidebar, enter: requireAuth },
-  { path: '/sign-in',        exact: true, component: SignIn,                                     enter: requireTourists },
-  { path: '**',                         component: NotFound,                                   enter: triggerEnter }
+  { path: '/',               exact: true,
+    // component: Home,
+    component: generateAsyncRouteComponent({
+      loader: () => import('../pages/home')
+    }),
+    head: Head, sidebar: Sidebar, enter: requireAuth },
+  {
+    path: '/posts',          exact: true,
+    // component: Posts,
+    component: generateAsyncRouteComponent({
+      loader: () => import('../pages/posts')
+    }),
+    head: Head, sidebar: Sidebar, enter: requireAuth },
+  {
+    path: '/posts/:id',      exact: true,
+    // component: PostsDetail,
+    component: generateAsyncRouteComponent({
+      loader: () => import('../pages/posts-detail')
+    }),
+    head: Head, sidebar: Sidebar, enter: requireAuth },
+  {
+    path: '/topics',         exact: true,
+    // component: Topics,
+    component: generateAsyncRouteComponent({
+      loader: () => import('../pages/topics')
+    }),
+    head: Head, sidebar: Sidebar, enter: requireAuth },
+  { path: '/add-topic',      exact: true,
+    // component: FormTopic,
+    component: generateAsyncRouteComponent({
+      loader: () => import('../pages/form-topic')
+    }),
+    head: Head, sidebar: Sidebar, enter: requireAuth },
+  { path: '/edit-topic/:id', exact: true,
+    // component: FormTopic,
+    component: generateAsyncRouteComponent({
+      loader: () => import('../pages/form-topic')
+    }),
+    head: Head, sidebar: Sidebar, enter: requireAuth },
+  { path: '/people',         exact: true,
+    // component: People,
+    component: generateAsyncRouteComponent({
+      loader: () => import('../pages/people')
+    }),
+    head: Head, sidebar: Sidebar, enter: requireAuth },
+  { path: '/comment',        exact: true,
+    // component: Comment,
+    component: generateAsyncRouteComponent({
+      loader: () => import('../pages/comment')
+    }),
+    head: Head, sidebar: Sidebar, enter: requireAuth },
+  { path: '/notification',   exact: true,
+    // component: Notification,
+    component: generateAsyncRouteComponent({
+      loader: () => import('../pages/notification')
+    }),
+    head: Head, sidebar: Sidebar, enter: requireAuth },
+  { path: '/sign-in',        exact: true,
+    // component: SignIn,
+    component: generateAsyncRouteComponent({
+      loader: () => import('../pages/sign-in')
+    }),
+    enter: requireTourists },
+  { path: '**',
+    // component: NotFound,
+    component: generateAsyncRouteComponent({
+      loader: () => import('../pages/not-found')
+    }),
+    enter: triggerEnter }
 ]
 
 let router = ({ userinfo }) => {

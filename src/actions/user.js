@@ -14,9 +14,10 @@ export const loadUserInfo = ({ accessToken = null }) => {
 
     accessToken = accessToken || getState().user.accessToken
 
+
     return new Promise((resolve, reject) => {
 
-      Ajax({
+      return Ajax({
         url: '/user',
         type: 'post',
         headers: { AccessToken: accessToken }
