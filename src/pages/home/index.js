@@ -22,7 +22,7 @@ export class Home extends React.Component {
     })
 
   }
-
+  
   constructor(props) {
     super(props)
     this.state = {
@@ -54,29 +54,29 @@ export class Home extends React.Component {
         />
         <h1>首页</h1>
         <div>当前注册用户：</div>
-        <div>帖子总数1：</div>
-        <div>评论总数2：</div>
-        <div>恢复总数2：</div>
+        <div>帖子总数111：</div>
+        <div>评论总数222：</div>
+        <div>恢复总数332：</div>
     </div>)
   }
 
 }
 
-Home.propTypes = {
-  // accessToken: PropTypes.object.isRequired
-}
-
-const mapStateToProps = (state, props) => {
-  return {
-    // accessToken: getAccessToken(state)
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-  }
-}
-
-Home = withRouter(connect(mapStateToProps,mapDispatchToProps)(Home))
+// Home.propTypes = {
+//   // accessToken: PropTypes.object.isRequired
+// }
+//
+// const mapStateToProps = (state, props) => {
+//   return {
+//     // accessToken: getAccessToken(state)
+//   }
+// }
+//
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//   }
+// }
+//
+// Home = withRouter(connect(mapStateToProps,mapDispatchToProps)(Home))
 
 export default Shell(Home)

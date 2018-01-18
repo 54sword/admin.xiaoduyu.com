@@ -24,6 +24,13 @@ import { generateAsyncRouteComponent } from '../pages/generateAsyncComponent.js'
 import Head from '../components/head'
 import Sidebar from '../components/sidebar'
 
+// const Head = generateAsyncRouteComponent({
+//   loader: () => import('../components/head')
+// })
+//
+// const Sidebar = generateAsyncRouteComponent({
+//   loader: () => import('../components/sidebar')
+// })
 
 // import CSSModules from 'react-css-modules'
 // import styles from './style.scss'

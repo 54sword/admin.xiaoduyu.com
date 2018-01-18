@@ -1,3 +1,5 @@
+const path = require('path')
+
 import express from 'express'
 import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
@@ -20,7 +22,7 @@ import { RouteArr, Router } from '../src/router'
 import { initialStateJSON } from '../src/reducers'
 
 
-import { matchRoutes } from 'react-router-config'
+// import { matchRoutes } from 'react-router-config'
 
 // 配置
 import config from '../config'
@@ -33,10 +35,20 @@ const runWebpack = ()=>{
   // https://github.com/glenjamin/webpack-hot-middleware/blob/master/example/server.js
   const webpack = require('webpack')
   const webpackConfig = require('../webpack.development.config.js')
+
+  webpackConfig.module.loaders = [{
+    loader: 'babel-loader',
+    include: [path.resolve('./src')],
+    options: {
+      plugins: ['dynamic-import-webpack'],
+    }
+  }]
+
   const compiler = webpack(webpackConfig)
 
   app.use(require("webpack-dev-middleware")(compiler, {
-    noInfo: true, publicPath: webpackConfig.output.publicPath
+    noInfo: true,
+    publicPath: webpackConfig.output.publicPath
   }))
 
   app.use(require("webpack-hot-middleware")(compiler, {
@@ -50,7 +62,6 @@ if (process.env.NODE_ENV === 'development') runWebpack()
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser(config.auth_cookie_name));
-
 app.use(compress())
 app.use(express.static(__dirname + '/../dist'))
 app.use(express.static(__dirname + '/../public'))
@@ -72,6 +83,7 @@ app.use(function (req, res, next) {
   next()
 })
 
+// (安全实施) 服务端储存 token cookie 设置成httpOnly
 app.use('/sign', (function(){
 
   var router = express.Router();
@@ -99,28 +111,23 @@ app.get('*', async function(req, res){
 
   const store = configureStore(JSON.parse(initialStateJSON))
 
-  // console.log(store.getState())
-
   let accessToken = req.cookies[config.auth_cookie_name] || null
         // expires = req.cookies['expires'] || 0
 
   let context = {}
   let userinfo = null
 
+  // 验证 token 是否有效
   if (accessToken) {
     let result = await loadUserInfo({ accessToken })(store.dispatch, store.getState)
     if (result.success) {
       store.dispatch(addAccessToken({ access_token: accessToken }))
       userinfo = result.data
-      // console.log(userinfo);
     }
-    // console.log(store.getState())
   }
 
   let _route = null,
       _match = null
-
-  // console.log(matchPath(req.url.split('?')[0], RouteArr))
 
   RouteArr.some(route => {
     let match = matchPath(req.url.split('?')[0], route)
@@ -131,33 +138,12 @@ app.get('*', async function(req, res){
     }
   })
 
-  await _route.component.load({ store, match: _match, userinfo })
-  // console.log(matchRoutes(RouteArr, req.url));
+  // 加载页面分片
+  context = await _route.component.load({ store, match: _match, userinfo })
 
-  // console.log(_match);
-  // console.log(_route.component.WrappedComponent);
-
-  // console.log(_route.component.WrappedComponent.defaultProps.component);
-
-  if (
-    _match &&
-    _route &&
-    _route.component &&
-    _route.component.WrappedComponent &&
-    _route.component.WrappedComponent.defaultProps &&
-    // _route.component.WrappedComponent.defaultProps.component &&
-    _route.component.WrappedComponent.defaultProps.loadData
-  ) {
-    context = await _route.component.WrappedComponent.defaultProps.loadData({ store, match: _match, userinfo })
-  }
-
-  // console.log(userinfo);
+  console.log(context);
 
   const _Router = Router({ userinfo })
-
-  // console.log(context);
-
-
 
   let html = ReactDOMServer.renderToString(
     <Provider store={store}>
@@ -167,6 +153,7 @@ app.get('*', async function(req, res){
     </Provider>
   )
 
+  // 获取redux
   let reduxState = JSON.stringify(store.getState()).replace(/</g, '\\x3c');
 
   if (context.code) {

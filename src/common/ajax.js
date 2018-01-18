@@ -1,40 +1,8 @@
 
 import config from '../../config'
-import errors from '../../config/errors'
+// import errors from '../../config/errors'
 import axios from 'axios'
 // import Promise from 'promise'
-
-
-const converterErrorInfo = (res) => {
-
-  if (res.error) {
-    res._error = res.error
-    if (typeof(res.error) == 'number') {
-      res.error = errors[res.error] || '未知错误: '+res.error
-    } else {
-      for (let i in res.error) {
-        res.error[i] = errors[res.error[i]] || '未知错误: '+res.error[i]
-      }
-    }
-  }
-
-  // 参数替换
-  if (res.error_data) {
-
-    if (typeof(res.error) == 'string') {
-      res.error = res.error.format(res.error_data);
-    } else if (typeof(res.error) == 'object') {
-      for (let i in res.error) {
-        res.error[i] = errors[res.error[i]] || '未知错误: '+res.error[i]
-        res.error[i] = res.error[i].format(res.error_data);
-      }
-    }
-
-  }
-
-  return res
-
-}
 
 const AJAX = ({
     domain = config.api_url,
@@ -44,7 +12,7 @@ const AJAX = ({
     data = {},
     headers = {}
   }) => {
-
+    
   // if (typeof apiVerstion == 'undefined') {
   //   apiVerstion = '/' + config.api_verstion
   // }
@@ -63,7 +31,8 @@ const AJAX = ({
     // data._t = parseInt(new Date().getTime()/8000)
     option.params = JSON.stringify(data)
   } else if (type == 'post') {
-    option.data = JSON.stringify(data)
+    // console.log(data);
+    option.data = data
   }
 
   if (headers && headers.AccessToken) {
@@ -102,9 +71,9 @@ const AJAX = ({
     if (typeof __DEV__ != 'undefined') console.warn('[结果] '+option.url, error.response.data)
 
     if (error && error.response && error.response.data) {
-      let res = error.response.data
-      res = converterErrorInfo(res)
-      return res
+      // let res = error.response.data
+      // res = converterErrorInfo(res)
+      return error.response.data
       // resolve(res)
     } else {
       return null

@@ -19,10 +19,20 @@ module.exports = {
   entry: {
     app: [
       // 让客户端支持 async 和 await
-      './node_modules/babel-polyfill/dist/polyfill.min.js',
+      'babel-polyfill',
       './client/index',
+      // 热更新
       'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true'
-      // 'webpack-hot-middleware/client?noInfo=true&reload=true'
+    ],
+    vendors: [
+      'react',
+      'react-dom',
+      'react-router',
+      'babel-polyfill',
+      'redux',
+      'react-redux',
+      'react-document-meta',
+      'axios'
     ]
   },
 
@@ -50,15 +60,23 @@ module.exports = {
         test: /\.scss$/,
         use: extractSass.extract({
             use: [{
-                loader: `css-loader?modules&localIdentName=${config.class_scoped_name}`,
-                // options: {
-                //   includePaths: ['src/pages']
-                // }
+                loader: `css`,
+                options: {
+                  // css module
+                  modules: true,
+                  localIdentName: config.class_scoped_name,
+                  // If you are having trouble with urls not resolving add this setting.
+                  // See https://github.com/webpack-contrib/css-loader#url
+                  // url: false,
+                  // 压缩css
+                  minimize: true,
+                  sourceMap: true
+                }
             }, {
-                loader: `sass-loader`,
+                loader: `sass`,
             }],
             // use style-loader in development
-            fallback: "style-loader"
+            fallback: "style"
         })
       },
 
@@ -66,51 +84,15 @@ module.exports = {
         test: /\.css$/,
         use: extractSass.extract({
             use: [{
-                loader: `css-loader`,
+                loader: `css`,
             }],
             // use style-loader in development
-            fallback: "style-loader"
+            fallback: "style"
         })
       },
 
-      { test: /\.(png|jpg|gif)$/, loader: 'url-loader?limit=40000' }
-      // { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "url-loader?limit=10000&minetype=application/font-woff" },
-      // { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "file-loader" }
-
-      /*
-      {
-        test: /\.scss$/i,
-        loader: ExtractTextPlugin.extract('style',
-          `css?modules&importLoaders=1&localIdentName=${config.class_scoped_name}!resolve-url!sass`),
-        include: path.resolve(__dirname, 'src')
-      },
-      {
-        test: /\.css$/,
-        loader: ExtractTextPlugin.extract('style', 'css')
-      }
-      */
+      { test: /\.(png|jpg|gif)$/, loader: 'url?limit=40000' }
     ]
-
-
-    /*
-    loaders: [
-      {
-        test: /\.js$/i,
-        exclude: /node_modules/,
-        loader: 'babel?presets[]=es2015,presets[]=react,presets[]=stage-0',
-      },
-      {
-        test: /\.scss$/i,
-        loader: ExtractTextPlugin.extract('style',
-          `css?modules&importLoaders=1&localIdentName=${config.class_scoped_name}!resolve-url!sass`),
-        include: path.resolve(__dirname, 'src')
-      },
-      { test: /\.css$/, loader: ExtractTextPlugin.extract('style', 'css') },
-      { test: /\.(png|jpg|gif)$/, loader: 'url?limit=40000' },
-      { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "url-loader?limit=10000&minetype=application/font-woff" },
-      { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "file-loader" }
-    ]
-    */
   },
 
   plugins: [
@@ -129,11 +111,20 @@ module.exports = {
 
     extractSass,
 
+    // 将多个入口 chunk 的公共模块。通过将公共模块拆出来
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common',
       filename: 'common.bundle.js'
     }),
 
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'common-child',
+      filename: 'common-child.bundle.js',
+      children: true,
+      deepChildren: true
+    }),
+
+    // 创建index.ejs模版文件
     new HtmlwebpackPlugin({
       filename: path.resolve(__dirname, 'dist/index.ejs'),
       template: 'src/view/index.html',
@@ -144,14 +135,16 @@ module.exports = {
       reduxState: '<%- reduxState %>'
     }),
 
-    new webpack.optimize.OccurrenceOrderPlugin(),
+    // 当开启 HMR 的时候使用该插件会显示模块的相对路径，建议用于开发环境。
     new webpack.NamedModulesPlugin(),
+    // 开发环境的热更新
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin(),
+    // 启用此插件后，webpack 进程遇到错误代码将不会退出
+    new webpack.NoEmitOnErrorsPlugin()
 
-    new ServiceWorkerWebpackPlugin({
-      entry: path.join(__dirname, 'client/sw.js'),
-    })
+    // new ServiceWorkerWebpackPlugin({
+    //   entry: path.join(__dirname, 'client/sw.js'),
+    // })
 
   ]
 }
