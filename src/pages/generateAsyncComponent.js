@@ -15,8 +15,26 @@ exports.generateAsyncRouteComponent = ({ loader, Placeholder }) => {
      * this component. This should only be called one time outside of the
      * normal render path.
      */
-    static load() {
-      return loader().then((ResolvedComponent) => {
+    static load({ store, match, userinfo }) {
+      return loader().then(async (ResolvedComponent) => {
+
+        if (store && match) {
+
+          if (
+            ResolvedComponent &&
+            ResolvedComponent.default &&
+            ResolvedComponent.default.WrappedComponent &&
+            ResolvedComponent.default.WrappedComponent.defaultProps &&
+            ResolvedComponent.default.WrappedComponent.defaultProps.loadData
+          ) {
+            await ResolvedComponent.default.WrappedComponent.defaultProps.loadData({ store, match, userinfo })
+            // context = await _route.component.WrappedComponent.defaultProps.loadData({ store, match: _match, userinfo })
+          }
+
+        }
+
+        // console.log('111111');
+
         Component = ResolvedComponent.default || ResolvedComponent;
       });
     }
@@ -30,7 +48,10 @@ exports.generateAsyncRouteComponent = ({ loader, Placeholder }) => {
     }
 
     componentWillMount() {
-      AsyncRouteComponent.load().then(this.updateState);
+      // console.log(this.props);
+      // console.log(this.props.match.params);
+      // console.log('----');
+      AsyncRouteComponent.load({}).then(this.updateState);
     }
 
     updateState() {

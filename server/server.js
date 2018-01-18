@@ -20,6 +20,8 @@ import { RouteArr, Router } from '../src/router'
 import { initialStateJSON } from '../src/reducers'
 
 
+import { matchRoutes } from 'react-router-config'
+
 // 配置
 import config from '../config'
 
@@ -128,6 +130,9 @@ app.get('*', async function(req, res){
       return true
     }
   })
+
+  await _route.component.load({ store, match: _match, userinfo })
+  // console.log(matchRoutes(RouteArr, req.url));
 
   // console.log(_match);
   // console.log(_route.component.WrappedComponent);
