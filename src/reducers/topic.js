@@ -7,11 +7,26 @@ export default function topic(state = initialState, action = {}) {
 
   switch (action.type) {
 
+    case 'SET_TOPICS':
+      return merge({}, action.state, {})
+
     case 'SET_TOPIC_LIST_BY_NAME':
       var { name, data } = action
       state[name] = data
       return merge({}, state, {})
 
+    case 'UPDATE_TOPIC':
+      var { id, update } = action
+      for (let i in state) {
+        state[i].data.map(item => {
+          if (item._id == id) {
+            for (let i in update) item[i] = update[i]
+          }
+        })
+      }
+      return merge({}, state, {})
+
+    /*
     case 'ADD_NODE':
       var { node } = action
       state.other.data.push(node)
@@ -31,6 +46,7 @@ export default function topic(state = initialState, action = {}) {
 
     case 'SET_NODE':
       return merge({}, action.state, {})
+    */
 
     case 'FOLLOW_NODE':
 

@@ -20,7 +20,6 @@ exports.generateAsyncRouteComponent = ({ loader, Placeholder }) => {
       return new Promise((resolve, reject) => {
 
         loader().then(async (ResolvedComponent) => {
-
           let result = {}
 
           if (store && match) {
@@ -42,7 +41,7 @@ exports.generateAsyncRouteComponent = ({ loader, Placeholder }) => {
           Component = ResolvedComponent.default || ResolvedComponent;
 
           resolve(result)
-        })
+        }).catch(reject)
 
       })
     }

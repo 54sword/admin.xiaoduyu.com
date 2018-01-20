@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom'
 
 import styles from './style.scss'
 
-import arriveFooter from '../../common/arrive-footer'
+// import arriveFooter from '../../common/arrive-footer'
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -42,14 +42,17 @@ export class CommentList extends Component {
       self.triggerLoad()
     }
 
-    // arriveFooter.add(this.state.name, ()=>{
-    //   self.triggerLoad()
-    // })
+    console.log(ArriveFooter);
+
+    ArriveFooter.add(this.state.name, ()=>{
+      console.log('12313');
+      self.triggerLoad()
+    })
 
   }
 
   componentWillUnmount() {
-    // arriveFooter.remove(this.state.name)
+    ArriveFooter.remove(this.state.name)
   }
 
   triggerLoad(callback) {

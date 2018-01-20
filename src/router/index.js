@@ -4,7 +4,25 @@ import { Route, Switch, Redirect } from 'react-router-dom'
 
 import '../common/mobi.min.css'
 import '../pages/global.scss'
-import '../common/load-demand'
+// import '../common/load-demand'
+
+/*** 非npm安装的依赖，使用在浏览器客户端上 ***/
+
+// https://github.com/apvarun/toastify-js
+// Toastify 全局的轻消息
+import '../vendors/toastify-js/toastify.js'
+import '../vendors/toastify-js/toastify.css'
+
+// ArriveFooter 监听抵达页尾的事件
+import '../vendors/arrive-footer.js'
+
+/**
+ * 懒加载图片、Dom
+ * 使用方式
+ * 给dom添加class="load-demand"、data-load-demand="<div></div> or <img />"
+ **/
+import '../vendors/load-demand'
+
 
 import { generateAsyncRouteComponent } from '../pages/generateAsyncComponent.js';
 
@@ -92,13 +110,13 @@ const routeArr = [
   { path: '/add-topic',      exact: true,
     // component: FormTopic,
     component: generateAsyncRouteComponent({
-      loader: () => import('../pages/form-topic')
+      loader: () => import('../pages/topic-form')
     }),
     head: Head, sidebar: Sidebar, enter: requireAuth },
   { path: '/edit-topic/:id', exact: true,
     // component: FormTopic,
     component: generateAsyncRouteComponent({
-      loader: () => import('../pages/form-topic')
+      loader: () => import('../pages/topic-form')
     }),
     head: Head, sidebar: Sidebar, enter: requireAuth },
   { path: '/people',         exact: true,

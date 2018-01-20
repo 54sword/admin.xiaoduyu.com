@@ -52,14 +52,14 @@ export class CommentList extends Component {
       self.triggerLoad()
     }
 
-    // arriveFooter.add(this.state.name, ()=>{
-    //   self.triggerLoad()
-    // })
+    ArriveFooter.add(this.state.name, ()=>{
+      self.triggerLoad()
+    })
 
   }
 
   componentWillUnmount() {
-    // arriveFooter.remove(this.state.name)
+    ArriveFooter.remove(this.state.name)
   }
 
   triggerLoad(callback) {

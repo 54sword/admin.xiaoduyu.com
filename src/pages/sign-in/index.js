@@ -1,6 +1,6 @@
 import React from 'react'
 import { Route, Link } from 'react-router-dom'
-import { ToastContainer, toast } from 'react-toastify'
+// import { ToastContainer, toast } from 'react-toastify'
 
 // import PropTypes from 'prop-types'
 // import { bindActionCreators } from 'redux'
@@ -100,13 +100,26 @@ export class SignIn extends React.Component {
     submit.disabled = false
 
     if (!result.success && result.error) {
-      toast.warn(result.error)
+
+      Toastify({
+          text: result.error,
+          duration: 3000,
+          backgroundColor: 'linear-gradient(to right, #ff6c6c, #f66262)'
+      }).showToast();
+
+      // toast.warn(result.error)
     } else if (result && result.success) {
       result = await saveSignInCookie()
       if (result.success) {
         location.reload()
       } else {
-        toast.warn('cookie 储存失败')
+
+        Toastify({
+          text: 'cookie 储存失败',
+          duration: 3000,
+          backgroundColor: 'linear-gradient(to right, #ff6c6c, #f66262)'
+        }).showToast();
+        // toast.warn('cookie 储存失败')
       }
     }
 
@@ -132,7 +145,7 @@ export class SignIn extends React.Component {
       </form>
 
 
-      <ToastContainer />
+      {/* <ToastContainer /> */}
 
 
     </div>)

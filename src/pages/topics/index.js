@@ -66,7 +66,7 @@ export class Topics extends React.PureComponent {
         default: filters.query[i] = params[i]
       }
     }
-
+    
     // console.log(filters);
 
     this.setState({ filters, timestamp: new Date().getTime() })
@@ -77,7 +77,7 @@ export class Topics extends React.PureComponent {
   render() {
 
     const { filters, timestamp  } = this.state
-    const { type, sortBy } = this.state.params
+    const { type, sortBy, recommend } = this.state.params
 
 
     return(<div>
@@ -106,6 +106,17 @@ export class Topics extends React.PureComponent {
                 <option value="sort">按排序字段排序</option>
                 <option value="sort_by_date">按排序日期</option>
                 <option value="create_at">按创建日期</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="flex-left units-gap">
+            <label className="unit-0 text-right" style={{width:'85px'}}>推荐</label>
+            <div className="unit">
+              <select onChange={e=>this.valueOnChange(e, 'recommend')} defaultValue={recommend}>
+                <option value="">全部</option>
+                <option value="true">推荐</option>
+                <option value="false">未推荐</option>
               </select>
             </div>
           </div>

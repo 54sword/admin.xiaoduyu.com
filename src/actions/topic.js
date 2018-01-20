@@ -4,7 +4,7 @@ import Promise from 'promise'
 
 import loadList from './common/load-list'
 
-export function addTopic({ data, callback = ()=>{} }) {
+export function addTopic({ data = {}, callback = ()=>{} }) {
   return (dispatch, getState) => {
     const accessToken = getState().user.accessToken
     return new Promise(async (resolve, reject) => {
@@ -19,30 +19,8 @@ export function addTopic({ data, callback = ()=>{} }) {
   }
 }
 
-/*
-export function addTopic({ name, brief, avatar, description, parentId, callback = ()=>{} }) {
-  return (dispatch, getState) => {
-    const accessToken = getState().user.accessToken
-
-    Ajax({
-      url: '/add-topic',
-      type: 'post',
-      data: {
-        parent_id: parentId,
-        name: name,
-        brief: brief,
-        avatar: avatar,
-        description: description
-      },
-      headers: { AccessToken: accessToken },
-      callback
-    })
-
-  }
-}
-*/
-
-export const updateTopic = ({ data }) => {
+// 更新topic
+export const updateTopic = ({ data = {} }) => {
   return (dispatch, getState) => {
     const accessToken = getState().user.accessToken
     return new Promise(async (resolve, reject) => {
@@ -50,59 +28,19 @@ export const updateTopic = ({ data }) => {
         url: '/topic/update',
         type: 'post',
         data,
-        headers: { AccessToken: accessToken },
-        callback: (res) => {
-          console.log(res);
+        headers: { AccessToken: accessToken }
+      }).then((res) => {
+        // 更新redux state
+        if (res && res.success && data.query && data.query._id) {
+          // 更新 redux state 里面，相同的topic的数据
+          dispatch({ type: 'UPDATE_TOPIC', id: data.query._id, update: data.update })
         }
-      }).then(resolve).catch(reject)
+        resolve(res)
+      }).catch(reject)
     })
   }
 }
-/*
-export function updateTopicById({ id, name, brief, avatar, description, parentId, callback = ()=>{} }) {
-  return (dispatch, getState) => {
-    const accessToken = getState().user.accessToken
-    let state = getState().topic
 
-    Ajax({
-      url: '/update-topic',
-      type: 'post',
-      data: {
-        id: id,
-        parent_id: parentId,
-        name: name,
-        brief: brief,
-        avatar: avatar,
-        description: description
-      },
-      headers: { AccessToken: accessToken },
-      callback: (res)=>{
-
-        if (res && res.success) {
-          for (let i in state) {
-            let data = state[i].data
-            if (data.length > 0) {
-              for (let n = 0, max = data.length; n < max; n++) {
-                if (data[n]._id == id) {
-                  state[i].data[n].name = name
-                  state[i].data[n].brief = brief
-                  state[i].data[n].avatar = avatar
-                  state[i].data[n].description = description
-                  state[i].data[n].parent_id = parentId
-                }
-              }
-            }
-          }
-          dispatch({ type: 'SET_NODE', state })
-        }
-
-        callback(res)
-      }
-    })
-
-  }
-}
-*/
 export function followTopic({ id, callback }) {
   return (dispatch, getState) => {
     const accessToken = getState().user.accessToken

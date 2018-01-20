@@ -36,7 +36,20 @@ export class Posts extends React.Component {
   }
 
   componentDidMount() {
-    this.props.loadTopics({ name: 'posts', filters:{} })
+    this.props.loadTopics({
+      name: 'posts',
+      filters:{
+        query: {
+          parent_id: { $exists: true }
+        },
+        select: {
+          _id: 1, name: 1
+        },
+        options: {
+          limit: 1000
+        }
+      }
+    })
   }
 
   valueOnChange(e, name) {

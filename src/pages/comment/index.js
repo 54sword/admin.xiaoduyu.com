@@ -17,11 +17,17 @@ export class Comment extends React.Component {
 
   componentWillMount() {
   }
-
+  
   render() {
     return(<div>
       <h1>评论</h1>
-      <CommentList name="home" filters={{}} />
+      <CommentList name="home" filters={{
+        options: {
+          sort: {
+            create_at: -1
+          }
+        }
+      }} />
     </div>)
   }
 

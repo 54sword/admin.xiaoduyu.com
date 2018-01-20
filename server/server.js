@@ -139,9 +139,17 @@ app.get('*', async function(req, res){
   })
 
   // 加载页面分片
-  context = await _route.component.load({ store, match: _match, userinfo })
+  context = await _route.component.load({ store, match: _match, userinfo }).
+  catch((e)=>{
+    console.log(e);
+    console.log('发生错误');
+  })
 
-  console.log(context);
+  if (!context) {
+    context = {}
+  }
+  
+  // console.log(context);
 
   const _Router = Router({ userinfo })
 
