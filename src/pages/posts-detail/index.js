@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import Shell from '../shell'
 import Detail from '../../components/posts/detail'
 import CommentList from '../../components/comment/list'
+import CommentItem from '../../components/comment/list-item'
 
 import { loadPostsList } from '../../actions/posts'
 
@@ -36,6 +37,7 @@ export class PostsDetail extends React.Component {
     return (<div>
       <Detail id={id} />
       <CommentList
+        CommentItem={CommentItem}
         name={id}
         filters={{
           posts_id: id, parent_exists: 0, per_page:100

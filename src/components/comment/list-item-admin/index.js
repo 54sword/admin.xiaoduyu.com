@@ -53,32 +53,9 @@ export class CommentItem extends Component {
         >
 
           <div styleName="footer-action">
-            {displayEdit && me._id == comment.user_id._id ? <span><Link to={`/edit-comment/${comment._id}`} onClick={this.stopPropagation}>编辑</Link></span> : null}
-            {/*displayLike ? <span><LikeButton comment={!comment.parent_id ? comment : null} reply={comment.parent_id ? comment : null} /></span> : null*/}
-            {displayReply ?
-                (me._id ?
-                  <span>
-                    <a
-                      href="javascript:void(0)"
-                      onClick={()=>{
-                        this.show({
-                          posts_id: comment.posts_id && comment.posts_id._id ? comment.posts_id._id : comment.posts_id,
-                          parent_id: comment.parent_id ? comment.parent_id : comment._id,
-                          reply_id: comment._id,
-                          reply: comment
-                        })
-                      }}>
-                      回复
-                    </a>
-                      {/*
-                      <Link
-                        to={`/write-comment?posts_id=${comment.posts_id && comment.posts_id._id ? comment.posts_id._id : comment.posts_id}&parent_id=${comment.parent_id ? comment.parent_id : comment._id}&reply_id=${comment._id}`}
-                        onClick={this.stopPropagation}>
-                        回复</Link>
-                      */}
-                    </span>
-                  : <span><a href="javascript:void(0)" onClick={showSign}>回复</a></span>)
-              : null}
+            <span><Link to={`/edit-comment/${comment._id}`} onClick={this.stopPropagation}>编辑</Link></span>
+            <span>折叠</span>
+            <span>删除</span>
           </div>
 
           <div styleName="head">

@@ -1,20 +1,14 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import ReactDOM from 'react-dom'
-// import { Link } from 'react-router-dom'
 
+import CSSModules from 'react-css-modules'
 import styles from './style.scss'
-
-// import arriveFooter from '../../../common/arrive-footer'
-
-// import { bindActionCreators } from 'redux'
-// import { connect } from 'react-redux'
 
 import { getCommentListByName } from '../../../reducers/comment'
 import { loadCommentList } from '../../../actions/comment'
 
 // import ListLoading from '../list-loading'
-import CommentItem from '../list-item'
+// import CommentItem from '../list-item'
 
 import connectReudx from '../../../common/connect-redux'
 
@@ -29,6 +23,11 @@ export class CommentList extends Component {
 
   static mapDispatchToProps = { loadCommentList }
 
+  static propTypes = {
+    name: PropTypes.string.isRequired,
+    filters: PropTypes.object.isRequired
+  }
+
   constructor(props) {
     super(props)
 
@@ -42,8 +41,6 @@ export class CommentList extends Component {
   }
 
   componentDidMount() {
-
-    // console.log('21333');
 
     const self = this
     const { loadCommentList, commentList } = this.props
@@ -69,8 +66,8 @@ export class CommentList extends Component {
   }
 
   render () {
-
-    let { commentList } = this.props
+    
+    let { commentList, CommentItem } = this.props
 
     if (!commentList.data) return (<div></div>)
 
@@ -101,29 +98,6 @@ export class CommentList extends Component {
   }
 }
 
-CommentList.defaultProps = {
-  name: PropTypes.string.isRequired,
-  filters: PropTypes.object.isRequired
-}
-
-/*
-CommentList.propTypes = {
-  commentList: PropTypes.object.isRequired,
-  loadCommentList: PropTypes.func.isRequired
-}
-
-function mapStateToProps(state, props) {
-  const name = props.name
-  return {
-    commentList: getCommentListByName(state, name)
-  }
-}
-
-function mapDispatchToProps(dispatch, props) {
-  return {
-    loadCommentList: bindActionCreators(loadCommentList, dispatch)
-  }
-}
-*/
+CommentList = CSSModules(CommentList, styles)
 
 export default connectReudx(CommentList)
