@@ -54,7 +54,7 @@ export function addComment({ posts_id, parent_id, reply_id, contentJSON, content
 
 
 
-
+/*
 export function updateComment({ id, contentJSON, contentHTML, callback }) {
   return (dispatch, getState) => {
 
@@ -130,7 +130,7 @@ export function updateComment({ id, contentJSON, contentHTML, callback }) {
 
   }
 }
-
+*/
 export const loadCommentById = ({ id, callback = () => {} }) => {
   return (dispatch, getState) => {
 
@@ -213,6 +213,37 @@ export function loadCommentList({ name, filters = {}, restart = false }) {
       reducerName: 'comment',
       api: '/comments',
       actionType: 'SET_COMMENT_LIST_BY_NAME'
+    })
+  }
+}
+
+export function updateComment({ query = {}, update = {}, options = {} }) {
+  return (dispatch, getState) => {
+
+    let accessToken = getState().user.accessToken
+
+    return Ajax({
+      url: '/commment/update',
+      type: 'post',
+      data: { query, update, options },
+      headers: { 'AccessToken': accessToken }
+    }).then((result) => {
+
+      if (result && result.success) {
+
+        dispatch({ type: 'UPDATE_COMMENT', id: query._id, update })
+        let commentList = getState().comment
+
+        for (let i in commentList) {
+          if (commentList[i].data) {
+            commentList[i].data = processCommentList(commentList[i].data)
+          }
+        }
+
+        dispatch({ type: 'SET_COMMENT', state: commentList })
+
+      }
+
     })
   }
 }

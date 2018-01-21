@@ -12,7 +12,7 @@ import styles from './style.scss'
 import HTMLText from '../../html-text'
 import AdminAction from '../admin-action'
 
-import connectReudx from '../../../common/connect-redux'
+import connectRedux from '../../../common/connect-redux'
 
 // 纯组件
 export class PostsDetail extends React.Component {
@@ -65,7 +65,7 @@ export class PostsDetail extends React.Component {
             <div styleName="detail"><HTMLText content={posts.content_html} /></div>
             :null}
         </div>
-        
+
         <AdminAction posts={posts} />
 
     </div>)
@@ -78,4 +78,4 @@ PostsDetail.propTypes = {
 }
 
 PostsDetail = CSSModules(PostsDetail, styles)
-export default connectReudx(PostsDetail)
+export default connectRedux(PostsDetail)

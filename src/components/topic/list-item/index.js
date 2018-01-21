@@ -16,14 +16,14 @@ import connectReudx from '../../../common/connect-redux'
 // 样式1
 const medium = ({ topic, me, isSignin, showSign }) => {
   return (<div styleName="item">
-            
+
             <div styleName="left">
-              <Link to={`/topics/${topic._id}`}>
+              <Link to={`/posts?topic_id=${topic._id}`}>
                 <span className="load-demand" data-load-demand={`<img class=${styles.avatar} src=${topic.avatar} />`}></span>
                 {topic.recommend ? '[推荐]': null} {topic.parent_id ? null : '[父]'} {topic.name}
               </Link>
               {topic.brief}
-
+              
               排序 {topic.sort}
             </div>
 

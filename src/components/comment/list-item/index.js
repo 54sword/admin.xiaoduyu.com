@@ -1,13 +1,14 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { Link, browserHistory } from 'react-router-dom'
 
 import CSSModules from 'react-css-modules'
 import styles from './style.scss'
 
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
+// import { bindActionCreators } from 'redux'
+// import { connect } from 'react-redux'
 
+import { updateComment } from '../../../actions/comment'
 import { showSign } from '../../../actions/sign'
 import { getProfile } from '../../../reducers/user'
 
@@ -15,70 +16,116 @@ import { getProfile } from '../../../reducers/user'
 import HTMLText from '../../html-text'
 // import BindingPhone from '../binding-phone'
 // import CommentEditorModal from '../comment-editor-modal'
+// import ItemView from '../views/item'
 
-export class CommentItem extends Component {
+import connectRedux from '../../../common/connect-redux'
+
+export class CommentItem extends PureComponent {
+
+  static propTypes = {
+    comment: PropTypes.object.isRequired,
+    showSign: PropTypes.func.isRequired,
+    me: PropTypes.object.isRequired
+  }
+
+  static defaultProps = {
+    summary: false,
+    displayLike: true,
+    displayReply: true,
+    displayDate: true,
+    displayEdit: true,
+  }
+
+  static mapStateToProps = (state, props) => {
+    const name = props.name
+    return {
+      me: getProfile(state)
+    }
+  }
+
+  static mapDispatchToProps = { showSign, updateComment }
+
+  stopPropagation(e) {
+    e.stopPropagation()
+  }
 
   constructor(props) {
     super(props)
-    this.renderItem = this._renderItem.bind(this)
+    this.renderUserView = this.renderUserView.bind(this)
+    this.updateComment = this.updateComment.bind(this)
   }
 
-  stopPropagation(e) {
-    e.stopPropagation();
+  updateComment(e, data) {
+    this.stopPropagation(e)
+    const { comment, updateComment } = this.props
+    updateComment({
+      query: {
+        _id: comment._id
+      },
+      update: data
+    })
   }
 
-  _renderItem(oursProps) {
+  // 用户的dom
+  renderUserView(comment) {
 
-    const that = this
-    let { me, showSign } = this.props
+    let self = this
+    let { me, showSign,
+      summary, displayLike, displayReply, displayDate, displayEdit
+    } = this.props
 
-    let { comment, summary, displayLike, displayReply, displayDate, displayEdit } = oursProps
+    const updateComment = (data) => e => this.updateComment(e, data)
 
-    // console.log(comment);
+    let background = '#fff'
 
-    /*me.phone ? <span>
-        <Link
-          to={`/write-comment?posts_id=${comment.posts_id && comment.posts_id._id ? comment.posts_id._id : comment.posts_id}&parent_id=${comment.parent_id ? comment.parent_id : comment._id}&reply_id=${comment._id}`}
-          onClick={this.stopPropagation}>
-          回复</Link>
-      </span>:
-      <span><a href="javascript:void(0)" onClick={()=>{ this.show() }}>回复</a></span>*/
+    if (comment.weaken) background = '#efefef'
+    if (comment.deleted) background = '#ffe3e3'
+
+    return (<div>
+      <table styleName="table" style={{backgroundColor:background}}>
+            <tbody>
+              <tr>
+                <td width="200">
+                  <Link to={`/people/${comment.user_id._id}`}>
+                    <i styleName="avatar" className="load-demand" data-load-demand={`<img width="40" height="40" src="${comment.user_id.avatar_url}" />`}></i>
+                    <b>{comment.user_id.nickname}</b>
+                  </Link>
+                  {comment.reply_id ? ` 回复了${comment.reply_id.user_id._id == comment.user_id._id ? '自己' : ' '}` : null}
+                  {comment.reply_id && comment.reply_id.user_id._id != comment.user_id._id ? <Link to={`/people/${comment.reply_id.user_id._id}`} onClick={this.stopPropagation}><b>{comment.reply_id.user_id.nickname}</b></Link> : null}
+                </td>
+                <td width="200">
+                  <Link to={`/posts/${comment.posts_id._id}`}>{comment.posts_id.title}</Link>
+                </td>
+                <td>
+                  <HTMLText content={comment.content_html} />
+                </td>
+                <td width="100">
+                  {comment._create_at}
+                </td>
+                <td width="200">
+                  <a href="javascript:void(0)" onClick={updateComment({ deleted: comment.deleted ? false : true })}>删除</a>
+                  {' '}
+                  <a href="javascript:void(0)" onClick={updateComment({ weaken: comment.weaken ? false : true })}>折叠</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div style={{paddingLeft:'100px'}}>
+            {comment.reply && comment.reply.map(item=>self.renderUserView(item))}
+          </div>
+        </div>)
 
     return (<div styleName="box">
-      {/*me && !me.phone ? <BindingPhone show={(s)=>{ this.show = s; }} /> : null*/}
-      {/* <CommentEditorModal show={(s)=>{ this.show = s; }} /> */}
+
+      {/*
       <div
         styleName={summary ? "click-item" : "item"}
         onClick={summary ? ()=>{ browserHistory.push(`/comment/${comment._id}`) } : null}
         >
-
           <div styleName="footer-action">
-            {displayEdit && me._id == comment.user_id._id ? <span><Link to={`/edit-comment/${comment._id}`} onClick={this.stopPropagation}>编辑</Link></span> : null}
-            {/*displayLike ? <span><LikeButton comment={!comment.parent_id ? comment : null} reply={comment.parent_id ? comment : null} /></span> : null*/}
-            {displayReply ?
-                (me._id ?
-                  <span>
-                    <a
-                      href="javascript:void(0)"
-                      onClick={()=>{
-                        this.show({
-                          posts_id: comment.posts_id && comment.posts_id._id ? comment.posts_id._id : comment.posts_id,
-                          parent_id: comment.parent_id ? comment.parent_id : comment._id,
-                          reply_id: comment._id,
-                          reply: comment
-                        })
-                      }}>
-                      回复
-                    </a>
-                      {/*
-                      <Link
-                        to={`/write-comment?posts_id=${comment.posts_id && comment.posts_id._id ? comment.posts_id._id : comment.posts_id}&parent_id=${comment.parent_id ? comment.parent_id : comment._id}&reply_id=${comment._id}`}
-                        onClick={this.stopPropagation}>
-                        回复</Link>
-                      */}
-                    </span>
-                  : <span><a href="javascript:void(0)" onClick={showSign}>回复</a></span>)
-              : null}
+            <span><Link to={`/edit-comment/${comment._id}`} onClick={this.stopPropagation}>编辑</Link></span>
+            <span>删除</span>
+            <span>折叠</span>
           </div>
 
           <div styleName="head">
@@ -99,13 +146,6 @@ export class CommentItem extends Component {
           {summary ?
             <Link to={`/comment/${comment._id}`} onClick={this.stopPropagation}>
               {comment.content_summary}
-              {/*comment.images && comment.images.length ?
-                <div styleName="abstract-image">
-                  {comment.images.map(image=>{
-                    return (<div key={image} className="load-demand" data-load-demand={`<div style="background-image:url(${image}?imageMogr2/thumbnail/!200)"></div>`}></div>)
-                  })}
-                </div>
-                : null*/}
             </Link> :
             <HTMLText content={comment.content_html} />}
         </div>
@@ -125,43 +165,17 @@ export class CommentItem extends Component {
         </div>
         : null}
 
-    </div>)
+      */}
 
+    </div>)
   }
 
   render () {
-    return this.renderItem(this.props)
+    return this.renderUserView(this.props.comment)
   }
 
-}
-
-CommentItem.defaultProps = {
-  comment: PropTypes.object.isRequired,
-  summary: false,
-  displayLike: true,
-  displayReply: true,
-  displayDate: true,
-  displayEdit: true,
-}
-
-CommentItem.propTypes = {
-  showSign: PropTypes.func.isRequired,
-  me: PropTypes.object.isRequired
-}
-
-function mapStateToProps(state, props) {
-  const name = props.name
-  return {
-    me: getProfile(state)
-  }
-}
-
-function mapDispatchToProps(dispatch, props) {
-  return {
-    showSign: bindActionCreators(showSign, dispatch)
-  }
 }
 
 CommentItem = CSSModules(CommentItem, styles)
 
-export default connect(mapStateToProps, mapDispatchToProps)(CommentItem)
+export default connectRedux(CommentItem)

@@ -18,6 +18,18 @@ export default function comment(state = initialState, action = {}) {
     case 'SET_COMMENT':
       return merge({}, action.state, {})
 
+    case 'UPDATE_COMMENT':
+      var { id, update } = action
+      for (let i in state) {
+        state[i].data.map(item => {
+          if (item._id == id) {
+            for (let i in update) item[i] = update[i]
+          }
+        })
+      }
+      return merge({}, state, {})
+
+    /*
     case 'ADD_COMMENT':
       var { comment } = action
       state.other.data.push(comment)
@@ -45,6 +57,7 @@ export default function comment(state = initialState, action = {}) {
       }
 
       return merge({}, state, {})
+    */
 
     default:
       return state;

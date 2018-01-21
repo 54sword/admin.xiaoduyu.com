@@ -18,7 +18,7 @@ const medium = ({ topic, me, isSignin, showSign }) => {
   return (<div styleName="item">
 
             <div styleName="left">
-              <Link to={`/topics/${topic._id}`}>
+              <Link to={`/posts?topic_id=${topic._id}`}>
                 <i className="load-demand" data-load-demand={`<img class=${styles.avatar} src=${topic.avatar} />`}></i>
                 {topic.name}
               </Link>

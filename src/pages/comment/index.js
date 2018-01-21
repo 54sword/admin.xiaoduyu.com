@@ -4,7 +4,7 @@ import styles from './style.scss'
 
 import Shell from '../shell'
 import CommentList from '../../components/comment/list'
-import CommentItem from '../../components/comment/list-item-admin'
+// import CommentItem from '../../components/comment/list-item-admin'
 
 export class Comment extends React.Component {
 
@@ -14,11 +14,9 @@ export class Comment extends React.Component {
 
   render() {
     return(<div>
-      <h1>评论</h1>
-      <CommentList
-        CommentItem={CommentItem}
+      <h1>评论</h1><CommentList
         name="home"
-        filters={{
+        sql={{
           select: {
             user_id:1,
             posts_id:1,

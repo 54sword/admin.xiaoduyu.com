@@ -21,6 +21,12 @@ export class Posts extends React.Component {
 
   constructor(props) {
     super(props)
+
+    // const { topic_id = '' } = this.props.location.params
+
+
+    // 590d1fa07ea7dd7054095cbf
+
     this.state = {
       timestamp: new Date().getTime(),
       filters: {
@@ -35,7 +41,22 @@ export class Posts extends React.Component {
 
   }
 
+  componentWillMount() {
+    const { topic_id = '' } = this.props.location.params || {}
+
+    let { params } = this.state
+
+    if (topic_id) {
+      params.topic_id = topic_id
+      this.setState({
+        params
+      })
+      // this.submit()
+    }
+  }
+
   componentDidMount() {
+
     this.props.loadTopics({
       name: 'posts',
       filters:{
@@ -50,6 +71,21 @@ export class Posts extends React.Component {
         }
       }
     })
+
+    // url
+
+    // const { topic_id = '' } = this.props.location.params || {}
+    //
+    // let { params } = this.state
+    //
+    // if (topic_id) {
+    //   params.topic_id = topic_id
+    //   this.setState({
+    //     params
+    //   })
+      this.submit()
+    // }
+
   }
 
   valueOnChange(e, name) {
@@ -97,14 +133,13 @@ export class Posts extends React.Component {
 
   }
 
-  componentWillMount() {
-  }
-
   render() {
 
     const { filters, timestamp, params } = this.state
     const { sortBy, status, topic_id } = params
     const { topicList } = this.props
+
+    console.log(topic_id);
 
     return(<div>
 
@@ -137,7 +172,7 @@ export class Posts extends React.Component {
         <div className="flex-left units-gap">
           <label className="unit-0 text-right" style={{width:'85px'}}>ID</label>
           <div className="unit">
-            <input ref="postsId" type="text" placeholder="请输入id" onChange={e=>this.valueOnChange(e, '_id')} />
+            <input type="text" placeholder="请输入id" onChange={e=>this.valueOnChange(e, '_id')} />
           </div>
         </div>
 
@@ -148,7 +183,7 @@ export class Posts extends React.Component {
             <input ref="endDate" type="text" placeholder="创建日期大于该日期（如：2018/01/01）" onChange={e=>this.valueOnChange(e, 'endDate')} />
           </div>
         </div>
-
+        
         <div className="flex-left units-gap">
           <label className="unit-0 text-right" style={{width:'85px'}}>话题</label>
           <div className="unit">
@@ -164,7 +199,7 @@ export class Posts extends React.Component {
         <div className="flex-left units-gap">
           <label className="unit-0 text-right" style={{width:'85px'}}>用户ID</label>
           <div className="unit">
-            <input ref="postsId" type="text" placeholder="请输入用户的id" onChange={e=>this.valueOnChange(e, 'user_id')} />
+            <input type="text" placeholder="请输入用户的id" onChange={e=>this.valueOnChange(e, 'user_id')} />
           </div>
         </div>
 

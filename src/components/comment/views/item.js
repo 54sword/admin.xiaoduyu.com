@@ -1,48 +1,36 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { Link, browserHistory } from 'react-router-dom'
-
 import CSSModules from 'react-css-modules'
 import styles from './style.scss'
 
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-
-import { showSign } from '../../../actions/sign'
-import { getProfile } from '../../../reducers/user'
-
-// import LikeButton from '../like'
 import HTMLText from '../../html-text'
-// import BindingPhone from '../binding-phone'
-// import CommentEditorModal from '../comment-editor-modal'
 
-export class CommentItem extends Component {
+class Item extends PureComponent {
 
-  constructor(props) {
-    super(props)
-    this.renderItem = this._renderItem.bind(this)
+  static propTypes = {
+    comment: PropTypes.object.isRequired,
+    showSign: PropTypes.func.isRequired,
+    me: PropTypes.object.isRequired
+  }
+
+  static defaultProps = {
+    summary: false,
+    displayLike: true,
+    displayReply: true,
+    displayDate: true,
+    displayEdit: true,
   }
 
   stopPropagation(e) {
     e.stopPropagation();
   }
 
-  _renderItem(oursProps) {
+  render() {
 
-    const that = this
-    let { me, showSign } = this.props
-
-    let { comment, summary, displayLike, displayReply, displayDate, displayEdit } = oursProps
-
-    // console.log(comment);
-
-    /*me.phone ? <span>
-        <Link
-          to={`/write-comment?posts_id=${comment.posts_id && comment.posts_id._id ? comment.posts_id._id : comment.posts_id}&parent_id=${comment.parent_id ? comment.parent_id : comment._id}&reply_id=${comment._id}`}
-          onClick={this.stopPropagation}>
-          回复</Link>
-      </span>:
-      <span><a href="javascript:void(0)" onClick={()=>{ this.show() }}>回复</a></span>*/
+    let { me, showSign,
+      comment, summary, displayLike, displayReply, displayDate, displayEdit
+    } = this.props
 
     return (<div styleName="box">
       {/*me && !me.phone ? <BindingPhone show={(s)=>{ this.show = s; }} /> : null*/}
@@ -53,9 +41,32 @@ export class CommentItem extends Component {
         >
 
           <div styleName="footer-action">
-            <span><Link to={`/edit-comment/${comment._id}`} onClick={this.stopPropagation}>编辑</Link></span>
-            <span>折叠</span>
-            <span>删除</span>
+            {displayEdit && me._id == comment.user_id._id ? <span><Link to={`/edit-comment/${comment._id}`} onClick={this.stopPropagation}>编辑</Link></span> : null}
+            {/*displayLike ? <span><LikeButton comment={!comment.parent_id ? comment : null} reply={comment.parent_id ? comment : null} /></span> : null*/}
+            {displayReply ?
+                (me._id ?
+                  <span>
+                    <a
+                      href="javascript:void(0)"
+                      onClick={()=>{
+                        this.show({
+                          posts_id: comment.posts_id && comment.posts_id._id ? comment.posts_id._id : comment.posts_id,
+                          parent_id: comment.parent_id ? comment.parent_id : comment._id,
+                          reply_id: comment._id,
+                          reply: comment
+                        })
+                      }}>
+                      回复
+                    </a>
+                      {/*
+                      <Link
+                        to={`/write-comment?posts_id=${comment.posts_id && comment.posts_id._id ? comment.posts_id._id : comment.posts_id}&parent_id=${comment.parent_id ? comment.parent_id : comment._id}&reply_id=${comment._id}`}
+                        onClick={this.stopPropagation}>
+                        回复</Link>
+                      */}
+                    </span>
+                  : <span><a href="javascript:void(0)" onClick={showSign}>回复</a></span>)
+              : null}
           </div>
 
           <div styleName="head">
@@ -104,41 +115,11 @@ export class CommentItem extends Component {
 
     </div>)
 
-  }
-
-  render () {
-    return this.renderItem(this.props)
-  }
-
-}
-
-CommentItem.defaultProps = {
-  comment: PropTypes.object.isRequired,
-  summary: false,
-  displayLike: true,
-  displayReply: true,
-  displayDate: true,
-  displayEdit: true,
-}
-
-CommentItem.propTypes = {
-  showSign: PropTypes.func.isRequired,
-  me: PropTypes.object.isRequired
-}
-
-function mapStateToProps(state, props) {
-  const name = props.name
-  return {
-    me: getProfile(state)
+    // console.log('1111');
+    // return <div>123</div>
   }
 }
 
-function mapDispatchToProps(dispatch, props) {
-  return {
-    showSign: bindActionCreators(showSign, dispatch)
-  }
-}
+Item = CSSModules(Item, styles)
 
-CommentItem = CSSModules(CommentItem, styles)
-
-export default connect(mapStateToProps, mapDispatchToProps)(CommentItem)
+export default Item

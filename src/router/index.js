@@ -126,7 +126,6 @@ const routeArr = [
     }),
     head: Head, sidebar: Sidebar, enter: requireAuth },
   { path: '/comment',        exact: true,
-    // component: Comment,
     component: generateAsyncRouteComponent({
       loader: () => import('../pages/comment')
     }),

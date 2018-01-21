@@ -148,8 +148,8 @@ app.get('*', async function(req, res){
   if (!context) {
     context = {}
   }
-  
-  // console.log(context);
+
+  console.log(context);
 
   const _Router = Router({ userinfo })
 
