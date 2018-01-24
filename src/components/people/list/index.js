@@ -49,6 +49,14 @@ export class PeopleList extends Component{
     ArriveFooter.remove(name)
   }
 
+  componentWillReceiveProps(props) {
+    if (props.name != this.props.name) {
+      this.props = props
+      const { name, filters, loadPeopleList } = props
+      loadPeopleList({ name, filters, restart: true })
+    }
+  }
+
   _triggerLoad(callback) {
     const { loadPeopleList } = this.props
     const { name, filters } = this.state

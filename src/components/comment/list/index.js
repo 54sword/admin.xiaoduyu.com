@@ -26,7 +26,7 @@ export class CommentList extends Component {
   static propTypes = {
     // 在redux创建的名称
     name: PropTypes.string.isRequired,
-    sql: PropTypes.object.isRequired
+    filters: PropTypes.object.isRequired
   }
 
   constructor(props) {
@@ -46,14 +46,14 @@ export class CommentList extends Component {
   }
 
   loadList(callback) {
-    const { name, sql, loadCommentList } = this.props
-    loadCommentList({ name, filters: sql })
+    const { name, filters, loadCommentList } = this.props
+    loadCommentList({ name, filters: filters })
   }
 
   componentWillReceiveProps(props) {
-    if (props.timestamp != this.props.timestamp) {
+    if (props.name != this.props.name) {
       const { loadCommentList } = this.props
-      loadCommentList({ name: props.name, filters: props.sql, restart: true })
+      loadCommentList({ name: props.name, filters: props.filters, restart: true })
     }
   }
 
