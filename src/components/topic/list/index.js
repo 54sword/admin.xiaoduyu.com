@@ -56,7 +56,7 @@ export class TopicList extends Component {
   }
 
   componentWillReceiveProps(props) {
-    if (props.timestamp != this.props.timestamp) {
+    if (props.name != this.props.name) {
       this.props = props
 
       const { name, filters, loadTopics } = props

@@ -119,21 +119,27 @@ const routeArr = [
       loader: () => import('../pages/topic-form')
     }),
     head: Head, sidebar: Sidebar, enter: requireAuth },
-  { path: '/people',         exact: true,
+  { path: '/peoples',         exact: true,
     // component: People,
     component: generateAsyncRouteComponent({
-      loader: () => import('../pages/people')
+      loader: () => import('../pages/peoples')
     }),
     head: Head, sidebar: Sidebar, enter: requireAuth },
-  { path: '/comment',        exact: true,
+  { path: '/people/:id',         exact: true,
+    // component: People,
     component: generateAsyncRouteComponent({
-      loader: () => import('../pages/comment')
+      loader: () => import('../pages/people-detail')
     }),
     head: Head, sidebar: Sidebar, enter: requireAuth },
-  { path: '/notification',   exact: true,
+  { path: '/comments',        exact: true,
+    component: generateAsyncRouteComponent({
+      loader: () => import('../pages/comments')
+    }),
+    head: Head, sidebar: Sidebar, enter: requireAuth },
+  { path: '/notifications',   exact: true,
     // component: Notification,
     component: generateAsyncRouteComponent({
-      loader: () => import('../pages/notification')
+      loader: () => import('../pages/notifications')
     }),
     head: Head, sidebar: Sidebar, enter: requireAuth },
   { path: '/sign-in',        exact: true,

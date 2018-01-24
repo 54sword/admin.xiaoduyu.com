@@ -96,6 +96,8 @@ export class PostsItem extends PureComponent {
           </div>
 
           <div styleName="content">{posts.content_summary}</div>
+
+          <div>{posts.ip}</div>
         </td>
         {/* posts end */}
 

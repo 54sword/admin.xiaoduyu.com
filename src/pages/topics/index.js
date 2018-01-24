@@ -1,33 +1,78 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-// import PropTypes from 'prop-types'
-// import { bindActionCreators } from 'redux'
-// import { connect } from 'react-redux'
-// import { update } from '../../actions/account'
-
 import Shell from '../shell'
 import TopicList from '../../components/topic/list'
 
 
-// 纯组件
-export class Topics extends React.PureComponent {
+export class Topics extends React.Component {
 
   constructor(props) {
     super(props)
     this.state = {
-      timestamp: new Date().getTime(),
-      filters: {
-        options: {
-          sort: { sort: - 1 }
-        }
-      },
-      params: {
-        sortBy: 'sort'
-      }
+      filters: {},
+      params: {}
     }
     this.submit = this.submit.bind(this)
     this.valueOnChange = this.valueOnChange.bind(this)
+    this.produceFilters = this.produceFilters.bind(this)
+    this.produceUrl = this.produceUrl.bind(this)
+  }
+
+  componentWillMount() {
+    if (typeof window == 'undefined') return
+    //初始化默认的 filters
+    this.produceFilters()
+  }
+
+  // 根据生成查询sql
+  produceFilters(params) {
+
+    if (!params) params = this.props.location.params || {}
+    if (!Reflect.has(params, 'sort_by')) params.sort_by = 'sort'
+
+    let filters = {
+      query: {},
+      select: {},
+      options: {
+        sort: {}
+      }
+    }
+
+    for (let i in params) {
+      switch (i) {
+        case 'sort_by':
+          filters.options.sort[params[i]] = -1;
+          break
+        case 'type':
+          filters.query['parent_id'] = {}
+          filters.query['parent_id']['$exists'] = params[i] == 'true' ? true : false;
+          break
+        default:
+          filters.query[i] = params[i]
+      }
+    }
+
+    this.setState({ filters, params })
+  }
+
+  // 生产url
+  produceUrl() {
+    let { params } = this.state
+    const { pathname } = this.props.location
+    let arr = []
+
+    for (let i in params) {
+      switch (i) {
+        case 'sort_by': arr.push('sort_by='+params[i]); break
+        case 'type': arr.push('type='+params[i]); break
+        default: arr.push(i+'='+params[i])
+      }
+    }
+
+    this.produceFilters(params)
+
+    return arr.length > 0 ? pathname + '?' + arr.join('&') : pathname
   }
 
   valueOnChange(e, name) {
@@ -40,45 +85,14 @@ export class Topics extends React.PureComponent {
 
   submit(event) {
     if (event) event.preventDefault()
-
-    let filters = {
-      query: {},
-      select: {},
-      options: {
-        sort: {}
-      }
-    }
-
-    let { params } = this.state
-
-    for (let i in params) {
-      switch (i) {
-        case 'sortBy':
-          filters.options.sort[params[i]] = -1;
-          break
-        case 'type':
-          filters.query['parent_id'] = {}
-          filters.query['parent_id']['$exists'] = params[i] == 'true' ? true : false;
-          break
-        // case 'status': filters.query[params[i]] = true; break
-        // case 'startDate': filters.query.lte_create_at = params[i]; break
-        // case 'endDate': filters.query.gte_create_at = params[i]; break
-        default: filters.query[i] = params[i]
-      }
-    }
-    
-    // console.log(filters);
-
-    this.setState({ filters, timestamp: new Date().getTime() })
-
+    this.props.history.push(this.produceUrl())
     return false
   }
 
   render() {
 
-    const { filters, timestamp  } = this.state
-    const { type, sortBy, recommend } = this.state.params
-
+    const { filters } = this.state
+    const { type, sort_by, recommend } = this.state.params
 
     return(<div>
 
@@ -102,7 +116,7 @@ export class Topics extends React.PureComponent {
           <div className="flex-left units-gap">
             <label className="unit-0 text-right" style={{width:'85px'}}>排序</label>
             <div className="unit">
-              <select onChange={e=>this.valueOnChange(e, 'sortBy')} defaultValue={sortBy}>
+              <select onChange={e=>this.valueOnChange(e, 'sort_by')} defaultValue={sort_by}>
                 <option value="sort">按排序字段排序</option>
                 <option value="sort_by_date">按排序日期</option>
                 <option value="create_at">按创建日期</option>
@@ -131,34 +145,13 @@ export class Topics extends React.PureComponent {
         </form>
 
         <TopicList
-          name="topics"
+          name={this.props.location.pathname + this.props.location.search}
           filters={filters}
-          timestamp={timestamp}
           />
       </div>
     </div>)
   }
 
 }
-
-// Topics = CSSModules(Topics, styles)
-//
-// Topics.propTypes = {
-//   update: PropTypes.func.isRequired
-// }
-//
-// const mapStateToProps = (state, props) => {
-//   return {
-//   }
-// }
-//
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     update: bindActionCreators(update, dispatch)
-//   }
-// }
-//
-// Topics = connect(mapStateToProps,mapDispatchToProps)(Topics)
-
 
 export default Shell(Topics)

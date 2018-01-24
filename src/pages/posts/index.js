@@ -1,10 +1,11 @@
 import React from 'react'
 import CSSModules from 'react-css-modules'
+import { Link } from 'react-router'
 
 import styles from './style.scss'
 
 import Shell from '../shell'
-import PostsList from '../../components/posts-list'
+import PostsList from '../../components/posts/list'
 
 import { loadTopics } from '../../actions/topic'
 import { getTopicListByName } from '../../reducers/topic'
@@ -22,40 +23,21 @@ export class Posts extends React.Component {
   constructor(props) {
     super(props)
 
-    // const { topic_id = '' } = this.props.location.params
-
-
-    // 590d1fa07ea7dd7054095cbf
-
     this.state = {
-      timestamp: new Date().getTime(),
-      filters: {
-        options: { sort: { sort_by_date: - 1 } }
-      },
-      params: {
-        sortBy: 'sort_by_date'
-      }
+      filters: {},
+      params: {}
     }
     this.submit = this.submit.bind(this)
     this.valueOnChange = this.valueOnChange.bind(this)
-
+    this.produceUrl = this.produceUrl.bind(this)
+    this.produceFilters = this.produceFilters.bind(this)
   }
 
   componentWillMount() {
-    const { topic_id = '' } = this.props.location.params || {}
 
-    let { params } = this.state
+    if (typeof window == 'undefined') return
 
-    if (topic_id) {
-      params.topic_id = topic_id
-      this.setState({
-        params
-      })
-      // this.submit()
-    }
-  }
-
-  componentDidMount() {
+    this.produceFilters()
 
     this.props.loadTopics({
       name: 'posts',
@@ -72,34 +54,13 @@ export class Posts extends React.Component {
       }
     })
 
-    // url
-
-    // const { topic_id = '' } = this.props.location.params || {}
-    //
-    // let { params } = this.state
-    //
-    // if (topic_id) {
-    //   params.topic_id = topic_id
-    //   this.setState({
-    //     params
-    //   })
-      this.submit()
-    // }
-
   }
 
-  valueOnChange(e, name) {
-    if (e.target.value) {
-      this.state.params[name] = e.target.value
-    } else {
-      delete this.state.params[name]
-    }
+  // 根据生成查询sql
+  produceFilters(params) {
 
-  }
-
-  submit(event) {
-
-    if (event) event.preventDefault()
+    if (!params) params = this.props.location.params || {}
+    if (!Reflect.has(params, 'sort_by')) params.sort_by = 'create_at'
 
     let filters = {
       query: {},
@@ -109,37 +70,74 @@ export class Posts extends React.Component {
       }
     }
 
-    let { params } = this.state
-
     for (let i in params) {
       switch (i) {
-        case 'sortBy': filters.options.sort[params[i]] = -1; break
-        case 'status': filters.query[params[i]] = true; break
-        case 'startDate':
+        case 'sort_by':
+          filters.options.sort[params[i]] = -1;
+          break
+        case 'status':
+          filters.query[params[i]] = true;
+          break
+        case 'start_date':
           if (!filters.query.create_at) filters.query.create_at = {}
           filters.query.create_at['$lte'] = params[i]
           break
-        case 'endDate':
+        case 'end_date':
           if (!filters.query.create_at) filters.query.create_at = {}
           filters.query.create_at['$gte'] = params[i]
-          // filters.query.gte_create_at = params[i];
           break
-        default: filters.query[i] = params[i]
+        case 'people_id':
+          filters.query.user_id = params[i]
+          break
+        default:
+          filters.query[i] = params[i]
       }
     }
 
-    this.setState({ filters, timestamp: new Date().getTime() })
-    return false
+    this.setState({ filters, params })
+  }
 
+  // 生产url
+  produceUrl() {
+    let { params } = this.state
+    const { pathname } = this.props.location
+    let arr = []
+
+    for (let i in params) {
+      switch (i) {
+        case 'sort_by': arr.push('sort_by='+params[i]); break
+        case 'status': arr.push('status='+params[i]); break
+        case 'start_date': arr.push('start_date='+params[i]); break
+        case 'end_date': arr.push('end_date='+params[i]); break
+        case 'people_id': arr.push('people_id='+params[i]); break
+        default: arr.push(i+'='+params[i])
+      }
+    }
+
+    this.produceFilters(params)
+
+    return arr.length > 0 ? pathname + '?' + arr.join('&') : pathname
+  }
+
+  valueOnChange(e, name) {
+    if (e.target.value) {
+      this.state.params[name] = e.target.value
+    } else {
+      delete this.state.params[name]
+    }
+  }
+
+  submit(event) {
+    if (event) event.preventDefault()
+    this.props.history.push(this.produceUrl())
+    return false
   }
 
   render() {
 
-    const { filters, timestamp, params } = this.state
-    const { sortBy, status, topic_id } = params
+    const { filters, params } = this.state
+    const { sort_by, status, topic_id, people_id } = params
     const { topicList } = this.props
-
-    console.log(topic_id);
 
     return(<div>
 
@@ -150,7 +148,8 @@ export class Posts extends React.Component {
         <div className="flex-left units-gap">
           <label className="unit-0 text-right" style={{width:'85px'}}>排序</label>
           <div className="unit">
-            <select onChange={e=>this.valueOnChange(e, 'sortBy')} defaultValue={sortBy}>
+
+            <select onChange={e=>this.valueOnChange(e, 'sort_by')} defaultValue={sort_by}>
               <option value="sort_by_date">按排序日期</option>
               <option value="create_at">按创建日期</option>
             </select>
@@ -179,27 +178,31 @@ export class Posts extends React.Component {
         <div className="flex-left units-gap">
           <label className="unit-0 text-right" style={{width:'85px'}}>日期筛选</label>
           <div className="unit">
-            <input ref="startDate" type="text" placeholder="创建日期小于该日期（如：2018/01/01）" onChange={e=>this.valueOnChange(e, 'startDate')} />
-            <input ref="endDate" type="text" placeholder="创建日期大于该日期（如：2018/01/01）" onChange={e=>this.valueOnChange(e, 'endDate')} />
+            <input ref="start_date" type="text" placeholder="创建日期小于该日期（如：2018/01/01）" onChange={e=>this.valueOnChange(e, 'start_date')} />
+            <input ref="end_date" type="text" placeholder="创建日期大于该日期（如：2018/01/01）" onChange={e=>this.valueOnChange(e, 'end_date')} />
           </div>
         </div>
-        
+
         <div className="flex-left units-gap">
           <label className="unit-0 text-right" style={{width:'85px'}}>话题</label>
           <div className="unit">
-            <select onChange={e=>this.valueOnChange(e, 'topic_id')} defaultValue={topic_id}>
-              <option value="">所有</option>
-              {topicList.data && topicList.data.map(item=>{
-                return (<option value={item._id} key={item._id}>{item.name}</option>)
-              })}
-            </select>
+
+            {topicList.data && topicList.data.length > 0 ?
+              <select onChange={e=>this.valueOnChange(e, 'topic_id')} defaultValue={topic_id}>
+                <option value="">所有</option>
+                {topicList.data.map(item=>{
+                  return (<option value={item._id} key={item._id}>{item.name}</option>)
+                })}
+              </select>
+            : null}
+
           </div>
         </div>
 
         <div className="flex-left units-gap">
           <label className="unit-0 text-right" style={{width:'85px'}}>用户ID</label>
           <div className="unit">
-            <input type="text" placeholder="请输入用户的id" onChange={e=>this.valueOnChange(e, 'user_id')} />
+            <input type="text" placeholder="请输入用户的id" defaultValue={people_id} onChange={e=>this.valueOnChange(e, 'user_id')} />
           </div>
         </div>
 
@@ -214,7 +217,10 @@ export class Posts extends React.Component {
 
       <br /><br />
 
-      <PostsList name="home" timestamp={timestamp} filters={filters} />
+      <PostsList
+        name={this.props.location.pathname + this.props.location.search}
+        filters={filters}
+        />
     </div>)
   }
 

@@ -4,7 +4,7 @@ import CSSModules from 'react-css-modules'
 import styles from './style.scss'
 
 import Shell from '../shell'
-import PeopleList from '../../components/people-list'
+import PeopleList from '../../components/people/list'
 
 export class People extends React.Component {
 
@@ -23,7 +23,11 @@ export class People extends React.Component {
       </div>
       <PeopleList
         name="home"
-        filters={{}}
+        filters={{
+          options: {
+            sort: { create_at: -1 }
+          }
+        }}
         />
     </div>)
   }

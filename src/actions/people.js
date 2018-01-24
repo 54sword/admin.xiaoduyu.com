@@ -69,6 +69,39 @@ export function loadPeopleList({ name, filters = {}, restart = false }) {
   }
 }
 
+export function updatePeople ({ query = {}, update = {}, options = {} }) {
+  return (dispatch, getState) => {
+
+    let accessToken = getState().user.accessToken
+
+    return Ajax({
+      url: '/people/update',
+      type: 'post',
+      data: { query, update, options },
+      headers: { 'AccessToken': accessToken }
+    }).then((result) => {
+
+      // console.log(result);
+
+      if (result && result.success) {
+
+        dispatch({ type: 'UPDATE_PEOPLE', id: query._id, update })
+        // let list = getState().people
+        //
+        // for (let i in list) {
+        //   if (list[i].data) {
+        //     list[i].data = processCommentList(list[i].data)
+        //   }
+        // }
+        //
+        // dispatch({ type: 'SET_COMMENT', state: list })
+
+      }
+
+    })
+  }
+}
+
 export function follow({ peopleId, callback }) {
   return (dispatch, getState) => {
     let accessToken = getState().user.accessToken

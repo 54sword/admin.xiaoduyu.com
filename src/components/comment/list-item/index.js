@@ -80,18 +80,22 @@ export class CommentItem extends PureComponent {
 
     if (comment.weaken) background = '#efefef'
     if (comment.deleted) background = '#ffe3e3'
-
+    if (comment.recommend) background = '#d6fee4'
+    
     return (<div>
       <table styleName="table" style={{backgroundColor:background}}>
             <tbody>
               <tr>
                 <td width="200">
-                  <Link to={`/people/${comment.user_id._id}`}>
+                  <Link to={`/people?_id=${comment.user_id._id}`}>
                     <i styleName="avatar" className="load-demand" data-load-demand={`<img width="40" height="40" src="${comment.user_id.avatar_url}" />`}></i>
                     <b>{comment.user_id.nickname}</b>
                   </Link>
                   {comment.reply_id ? ` 回复了${comment.reply_id.user_id._id == comment.user_id._id ? '自己' : ' '}` : null}
-                  {comment.reply_id && comment.reply_id.user_id._id != comment.user_id._id ? <Link to={`/people/${comment.reply_id.user_id._id}`} onClick={this.stopPropagation}><b>{comment.reply_id.user_id.nickname}</b></Link> : null}
+                  {comment.reply_id && comment.reply_id.user_id._id != comment.user_id._id ? <Link to={`/people?_id=${comment.reply_id.user_id._id}`} onClick={this.stopPropagation}><b>{comment.reply_id.user_id.nickname}</b></Link> : null}
+                </td>
+                <td width="200">
+                  {comment.ip}
                 </td>
                 <td width="200">
                   <Link to={`/posts/${comment.posts_id._id}`}>{comment.posts_id.title}</Link>
@@ -103,9 +107,11 @@ export class CommentItem extends PureComponent {
                   {comment._create_at}
                 </td>
                 <td width="200">
-                  <a href="javascript:void(0)" onClick={updateComment({ deleted: comment.deleted ? false : true })}>删除</a>
+                  <a href="javascript:void(0)" onClick={updateComment({ weaken: comment.weaken ? false : true })}>弱化</a>
                   {' '}
-                  <a href="javascript:void(0)" onClick={updateComment({ weaken: comment.weaken ? false : true })}>折叠</a>
+                  <a href="javascript:void(0)" onClick={updateComment({ recommend: comment.recommend ? false : true })}>推荐</a>
+                  {' '}
+                  <a href="javascript:void(0)" onClick={updateComment({ deleted: comment.deleted ? false : true })}>删除</a>
                 </td>
               </tr>
             </tbody>

@@ -50,6 +50,13 @@ export class CommentList extends Component {
     loadCommentList({ name, filters: sql })
   }
 
+  componentWillReceiveProps(props) {
+    if (props.timestamp != this.props.timestamp) {
+      const { loadCommentList } = this.props
+      loadCommentList({ name: props.name, filters: props.sql, restart: true })
+    }
+  }
+
   render () {
 
     let { list } = this.props

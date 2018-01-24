@@ -2,14 +2,14 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
-import arriveFooter from '../../../common/arrive-footer'
+// import arriveFooter from '../../../common/arrive-footer'
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { loadPeopleList } from '../../../actions/people'
 import { getPeopleListByName } from '../../../reducers/people'
 
-import PeopleItem from './list-item'
+import PeopleItem from '../list-item'
 import ListLoading from '../../list-loading'
 
 export class PeopleList extends Component{
@@ -38,7 +38,7 @@ export class PeopleList extends Component{
       self.triggerLoad()
     }
 
-    arriveFooter.add(name, ()=>{
+    ArriveFooter.add(name, ()=>{
       self.triggerLoad()
     })
 
@@ -46,7 +46,7 @@ export class PeopleList extends Component{
 
   componentWillUnmount() {
     const { name, type } = this.state
-    arriveFooter.remove(name)
+    ArriveFooter.remove(name)
   }
 
   _triggerLoad(callback) {
@@ -74,7 +74,7 @@ export class PeopleList extends Component{
 
     const { data, loading, more } = peopleList
 
-    return (<div className="container">
+    return (<div>
       {data.map(people=>{
         return (<div key={people._id}>
             <PeopleItem people={people} />
