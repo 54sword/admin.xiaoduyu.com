@@ -175,6 +175,7 @@ class TopicForm extends Component {
 
     if (id && !topic) return (<div>加载中</div>)
 
+
     return (<div>
       <Meta meta={{title:topic ? '编辑话题' : '添加话题'}} />
       <form className="form" onSubmit={this.submit}>

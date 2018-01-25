@@ -12,7 +12,7 @@ const AJAX = ({
     data = {},
     headers = {}
   }) => {
-    
+
   // if (typeof apiVerstion == 'undefined') {
   //   apiVerstion = '/' + config.api_verstion
   // }
@@ -48,13 +48,13 @@ const AJAX = ({
   // }
 
 
-  if (typeof __DEV__ != 'undefined') {
+  if (typeof __DEV__ != 'undefined' && __DEV__) {
     console.debug('[发起' + option.method  + '请求] '+option.url, data)
     // console.debug('[参数]', data)
   }
 
   return axios(option).then(resp => {
-    if (typeof __DEV__ != 'undefined') console.debug('[结果] '+option.url, resp.data)
+    if (typeof __DEV__ != 'undefined' && __DEV__) console.debug('[结果] '+option.url, resp.data)
 
     if (resp && resp.data) {
       let res = resp.data
@@ -68,7 +68,7 @@ const AJAX = ({
 
   })
   .catch(function (error) {
-    if (typeof __DEV__ != 'undefined') console.warn('[结果] '+option.url, error.response.data)
+    if (typeof __DEV__ != 'undefined' && __DEV__) console.warn('[结果] '+option.url, error.response.data)
 
     if (error && error.response && error.response.data) {
       // let res = error.response.data

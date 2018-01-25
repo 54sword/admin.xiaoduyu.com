@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 import Shell from '../shell'
 import TopicList from '../../components/topic/list'
-
+import Meta from '../../components/meta'
 
 export class Topics extends React.Component {
 
@@ -95,6 +95,10 @@ export class Topics extends React.Component {
     const { type, sort_by, recommend } = this.state.params
 
     return(<div>
+
+      <Meta meta={{
+        title: '话题'
+        }} />
 
       <div>
         <h1>话题</h1>

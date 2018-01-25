@@ -4,8 +4,9 @@ import CSSModules from 'react-css-modules'
 import styles from './style.scss'
 
 import Shell from '../shell'
-import NotificationList from '../../components/notification-list'
+import NotificationList from '../../components/notification/list'
 
+import Meta from '../../components/meta'
 
 // 纯组件
 export class Notification extends React.Component {
@@ -21,6 +22,11 @@ export class Notification extends React.Component {
   render() {
     return(<div>
       <h1>通知</h1>
+      <Meta
+        meta={{
+          title: '通知'
+        }}
+        />
       <NotificationList name="home" filters={{}} />
     </div>)
   }

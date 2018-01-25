@@ -36,9 +36,11 @@ export default ({ dispatch, getState, reducerName, name, api, actionType, restar
       filters.options.skip += filters.options.limit
     }
 
-    if (!Reflect.has(list, 'more')) list.more = true
+    // if (!Reflect.has(list, 'more'))
+    list.more = true
     // if (!Reflect.has(list, 'count')) list.count = 0
-    if (!Reflect.has(list, 'loading')) list.loading = true
+    // if (!Reflect.has(list, 'loading'))
+    list.loading = true
 
     dispatch({ type: actionType, name, data: list })
 
@@ -62,8 +64,12 @@ export default ({ dispatch, getState, reducerName, name, api, actionType, restar
       // list.count = 0
       list.loading = false
 
-      dispatch({ type: actionType, name, data: list })
-      resolve(res)
+      // setTimeout(()=>{
+        
+        dispatch({ type: actionType, name, data: list })
+        resolve(res)
+
+      // }, 10000)
 
     })
 

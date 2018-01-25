@@ -1,11 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
 
-// import arriveFooter from '../../../common/arrive-footer'
-
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
+import connectReudx from '../../../common/connect-redux'
 import { loadPeopleList } from '../../../actions/people'
 import { getPeopleListByName } from '../../../reducers/people'
 
@@ -14,38 +10,33 @@ import ListLoading from '../../list-loading'
 
 export class PeopleList extends Component{
 
+  static propTypes = {
+    loadPeopleList: PropTypes.func.isRequired,
+    peopleList: PropTypes.object.isRequired
+  }
+
+  static mapStateToProps = (state, props) => {
+    return {
+      peopleList: getPeopleListByName(state, props.name)
+    }
+  }
+
+  static mapDispatchToProps = { loadPeopleList }
+
   constructor(props) {
     super(props)
-
-    const { name, filters, type } = this.props
-
-    this.state = {
-      name: name,
-      filters: filters,
-      type: type // 关注 follow-people 或 粉丝 fans
-    }
-
-    this.triggerLoad = this._triggerLoad.bind(this)
+    this.state = {}
+    this.load = this.load.bind(this)
   }
 
   componentDidMount() {
-
-    const self = this
     const { peopleList } = this.props
-    const { name, type } = this.state
-
-    if (!peopleList.data) {
-      self.triggerLoad()
-    }
-
-    ArriveFooter.add(name, ()=>{
-      self.triggerLoad()
-    })
-
+    if (!peopleList.data) this.load()
+    ArriveFooter.add(name, this.load)
   }
 
   componentWillUnmount() {
-    const { name, type } = this.state
+    const { name, type } = this.props
     ArriveFooter.remove(name)
   }
 
@@ -57,30 +48,20 @@ export class PeopleList extends Component{
     }
   }
 
-  _triggerLoad(callback) {
-    const { loadPeopleList } = this.props
-    const { name, filters } = this.state
-
-    // const handle = type == 'follow-people' ? loadPeopleList : loadFans
-
-    loadPeopleList({
-      name: name,
-      filters: filters,
-      callback: (err, callback) => {
-      }
-    })
-
+  load(callback) {
+    const { name, filters, loadPeopleList } = this.props
+    loadPeopleList({ name: name, filters: filters })
   }
 
   render () {
 
-    let { peopleList, type } = this.props
+    const { peopleList } = this.props
 
-    if (!peopleList.data) {
-      return (<div></div>)
-    }
+    if (!peopleList.data) return ''
 
     const { data, loading, more } = peopleList
+
+    // console.log(loading);
 
     return (<div>
       {data.map(people=>{
@@ -88,29 +69,11 @@ export class PeopleList extends Component{
             <PeopleItem people={people} />
           </div>)
       })}
-
-      <ListLoading loading={loading} more={more} handleLoad={this.triggerLoad} />
+      <ListLoading loading={loading} more={more} handleLoad={this.load} />
     </div>)
 
   }
 
 }
 
-PeopleList.propTypes = {
-  loadPeopleList: PropTypes.func.isRequired,
-  peopleList: PropTypes.object.isRequired
-}
-
-const mapStateToProps = (state, props) => {
-  return {
-    peopleList: getPeopleListByName(state, props.name)
-  }
-}
-
-const mapDispatchToProps = (dispatch, props) => {
-  return {
-    loadPeopleList: bindActionCreators(loadPeopleList, dispatch)
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(PeopleList)
+export default connectReudx(PeopleList)

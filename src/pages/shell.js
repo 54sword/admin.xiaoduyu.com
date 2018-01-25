@@ -1,17 +1,27 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Route, Link } from 'react-router-dom'
+// import { Route, Link } from 'react-router-dom'
 
 import { setScrollPosition, saveScrollPosition } from '../actions/scroll'
 
 import parseUrl from '../common/parse-url'
 import connectReudx from '../common/connect-redux'
 
+import Meta from '../components/meta'
+
 export default (Component) => {
 
   Component = connectReudx(Component)
 
   class Shell extends React.Component {
+
+    static defaultProps = {
+      loadData: Component.loadData || null
+    }
+
+    static contextTypes = {
+      router: PropTypes.object.isRequired
+    }
 
     static mapStateToProps = (state) => {
       return {}
@@ -23,7 +33,7 @@ export default (Component) => {
       super(props)
       this.state = {}
     }
-    
+
     // 组件加载完成
     componentWillMount() {
 
@@ -43,7 +53,7 @@ export default (Component) => {
       // console.log('组件加载完成');
       this.props.setScrollPosition(this.props.location ? this.props.location.pathname : '')
     }
-
+    
     // 更新组件
     componentDidUpdate() {
       // console.log('组件加载更新了');
@@ -56,17 +66,9 @@ export default (Component) => {
     }
 
     render() {
-      return (<Component {...this.props} />)
+      return <Component {...this.props} />
     }
 
-  }
-
-  Shell.defaultProps = {
-    loadData: Component.loadData || null
-  }
-
-  Shell.contextTypes = {
-    router: PropTypes.object.isRequired
   }
 
   return connectReudx(Shell)

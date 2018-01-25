@@ -1,17 +1,18 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
-
+import CSSModules from 'react-css-modules'
 import styles from './style.scss'
 
 import connectReudx from '../../../common/connect-redux'
-import { loadNotifications } from '../../actions/notification'
-import { getNotificationByName } from '../../reducers/notification'
+import { loadNotifications } from '../../../actions/notification'
+import { getNotificationByName } from '../../../reducers/notification'
 
-import { DateDiff } from '../../common/date'
+import { DateDiff } from '../../../common/date'
 
-import ListLoading from '../list-loading'
-import HTMLText from '../html-text'
+import ListLoading from '../../list-loading'
+import HTMLText from '../../html-text'
+
 
 export class NotificationList extends Component {
 
@@ -20,7 +21,7 @@ export class NotificationList extends Component {
     loadNotifications: PropTypes.func.isRequired
   }
 
-  static mapStateToProps(state, props) => {
+  static mapStateToProps = (state, props) => {
     return {
       notification: getNotificationByName(state, props.name)
     }
@@ -191,6 +192,9 @@ export class NotificationList extends Component {
                 return (<div key={notice._id} styleName={notice.has_read ? "" : "new"}>
                     <div styleName="create-at"></div>
                     {content}
+                    <div>
+                      <a href="#">删除</a>
+                    </div>
                   </div>)
               }
 

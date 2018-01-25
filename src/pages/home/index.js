@@ -15,9 +15,9 @@ export class Home extends React.Component {
     return(<div>
         <Meta
           meta={{
-            title: '122222'
+            title: '首页'
           }}
-        />
+          />
         <h1>首页</h1>
         <div>当前注册用户：</div>
         <div>帖子总数1111：</div>

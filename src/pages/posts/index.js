@@ -10,6 +10,8 @@ import PostsList from '../../components/posts/list'
 import { loadTopics } from '../../actions/topic'
 import { getTopicListByName } from '../../reducers/topic'
 
+import Meta from '../../components/meta'
+
 export class Posts extends React.Component {
 
   static mapStateToProps = (state, props) => {
@@ -140,6 +142,10 @@ export class Posts extends React.Component {
     const { topicList } = this.props
 
     return(<div>
+
+        <Meta meta={{
+          title: '帖子'
+          }} />
 
         <h1>帖子</h1>
 

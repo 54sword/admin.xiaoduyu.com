@@ -6,6 +6,8 @@ import Shell from '../shell'
 import CommentList from '../../components/comment/list'
 // import CommentItem from '../../components/comment/list-item-admin'
 
+import Meta from '../../components/meta'
+
 export class Comment extends React.Component {
 
   constructor(props) {
@@ -115,8 +117,14 @@ export class Comment extends React.Component {
     return(<div>
       <h1>评论</h1>
 
+      <Meta
+        meta={{
+          title: '评论'
+        }}
+        />
+
       <form className="form" onSubmit={this.submit}>
-        
+
         <div className="flex-left units-gap">
           <label className="unit-0 text-right" style={{width:'85px'}}>状态</label>
           <div className="unit">

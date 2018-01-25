@@ -5,6 +5,7 @@ import styles from './style.scss'
 
 import Shell from '../shell'
 import PeopleList from '../../components/people/list'
+import Meta from '../../components/meta'
 
 export class People extends React.Component {
 
@@ -29,8 +30,6 @@ export class People extends React.Component {
   produceFilters(params) {
 
     if (!params) params = this.props.location.params || {}
-
-    console.log(params);
 
     if (!Reflect.has(params, 'sort_by')) params.sort_by = 'create_at'
 
@@ -65,8 +64,6 @@ export class People extends React.Component {
           filters.query[i] = params[i]
       }
     }
-
-    console.log(filters);
 
     this.setState({ filters, params })
   }
@@ -113,6 +110,11 @@ export class People extends React.Component {
     const { status, _id, start_date, end_date, sort_by } = params
 
     return(<div>
+
+      <Meta meta={{
+        title: '用户'
+        }} />
+
       <div>
         <h1>用户</h1>
 

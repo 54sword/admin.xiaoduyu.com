@@ -81,8 +81,8 @@ export class CommentItem extends PureComponent {
     if (comment.weaken) background = '#efefef'
     if (comment.deleted) background = '#ffe3e3'
     if (comment.recommend) background = '#d6fee4'
-    
-    return (<div>
+
+    return (<div key={comment._id}>
       <table styleName="table" style={{backgroundColor:background}}>
             <tbody>
               <tr>
