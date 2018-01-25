@@ -1,6 +1,61 @@
 import Ajax from '../common/ajax'
 import merge from 'lodash/merge'
 
+import loadList from './common/load-list'
+
+export function loadNotifications({ name, filters = {}, restart = false }) {
+  return (dispatch, getState) => {
+    return loadList({
+      dispatch,
+      getState,
+
+      name,
+      restart,
+      filters,
+
+      // processList: processPostsList,
+
+      reducerName: 'notification',
+      api: '/notifications',
+      type: 'post',
+      actionType: 'SET_NOTIFICATION_LIST_BY_NAME',
+
+      callback: (res) =>{
+        // console.log(res);
+
+        let unreadNotice = getState().user.unreadNotice
+        let comment = getState().comment
+        let posts = getState().posts
+        let followPeople = getState().followPeople
+        let me = getState().user.profile
+
+        comment = updateCommentState(comment, res.data)
+        posts = updatePosts(posts, res.data)
+        followPeople = updateFollowPeople(followPeople, me._id, res.data)
+
+        // 如果在未读列表中，将其删除
+        res.data.map(item=>{
+          let _index = unreadNotice.indexOf(item._id)
+          if (_index != -1) unreadNotice.splice(_index, 1)
+        })
+
+        if (followPeople.count > 0) {
+          me.fans_count = me.fans_count + followPeople.count
+          dispatch({ type: 'SET_USER', userinfo: me })
+          dispatch({ type: 'SET_FOLLOW_PEOPLE', state: followPeople.state })
+        }
+
+        dispatch({ type: 'SET_POSTS', state: posts })
+        dispatch({ type: 'SET_COMMENT', state: comment })
+        dispatch({ type: 'SET_UNREAD_NOTICE', unreadNotice })
+        // dispatch({ type: 'SET_NOTIFICATION_LIST_BY_NAME', name, data: list })
+
+      }
+    })
+  }
+}
+
+/*
 export function loadNotifications({ name, filters = {}, callback = ()=>{} }) {
   return (dispatch, getState) => {
 
@@ -51,7 +106,7 @@ export function loadNotifications({ name, filters = {}, callback = ()=>{} }) {
         let _index = unreadNotice.indexOf(item._id)
         if (_index != -1) unreadNotice.splice(_index, 1)
       })
-      
+
       if (followPeople.count > 0) {
         me.fans_count = me.fans_count + followPeople.count
         dispatch({ type: 'SET_USER', userinfo: me })
@@ -68,6 +123,7 @@ export function loadNotifications({ name, filters = {}, callback = ()=>{} }) {
 
   }
 }
+*/
 
 // 更新通知中的评论
 let updateCommentState = (comment, notices) => {

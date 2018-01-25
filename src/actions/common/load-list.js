@@ -1,6 +1,12 @@
 import Ajax from '../../common/ajax'
 
-export default ({ dispatch, getState, reducerName, name, api, actionType, restart, filters, processList = data => data }) => {
+export default ({
+  dispatch, getState, reducerName,
+  name, api, actionType, restart, filters,
+  type = 'get',
+  processList = data => data,
+  callback = ()=>{}
+}) => {
 
   return new Promise((resolve, reject) => {
 
@@ -51,6 +57,7 @@ export default ({ dispatch, getState, reducerName, name, api, actionType, restar
     Ajax({
       url: api,
       data: filters,
+      type,
       headers
     }).then(res => {
 
@@ -65,9 +72,10 @@ export default ({ dispatch, getState, reducerName, name, api, actionType, restar
       list.loading = false
 
       // setTimeout(()=>{
-        
-        dispatch({ type: actionType, name, data: list })
-        resolve(res)
+      
+      callback(res)
+      dispatch({ type: actionType, name, data: list })
+      resolve(res)
 
       // }, 10000)
 
