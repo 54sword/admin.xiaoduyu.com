@@ -16,7 +16,7 @@ export function loadNotifications({ name, filters = {}, restart = false }) {
       // processList: processPostsList,
 
       reducerName: 'notification',
-      api: '/notifications',
+      api: '/user-notifications',
       type: 'post',
       actionType: 'SET_NOTIFICATION_LIST_BY_NAME',
 
@@ -55,75 +55,26 @@ export function loadNotifications({ name, filters = {}, restart = false }) {
   }
 }
 
-/*
-export function loadNotifications({ name, filters = {}, callback = ()=>{} }) {
+export function updateNotification({ query = {}, update = {}, options = {} }) {
   return (dispatch, getState) => {
 
     let accessToken = getState().user.accessToken
-    let unreadNotice = getState().user.unreadNotice
-    let comment = getState().comment
-    let posts = getState().posts
-    let followPeople = getState().followPeople
-    let me = getState().user.profile
-
-    let list = getState().notification[name] || {}
-
-    if (typeof(list.more) != 'undefined' && !list.more || list.loading) return
-
-    if (!list.filters) {
-      if (!filters.lt_create_at) filters.lt_create_at = new Date().getTime()
-      if (!filters.per_page) filters.per_page = 30
-      list.filters = filters
-    } else {
-      filters = list.filters
-      filters.lt_create_at = new Date(list.data[list.data.length - 1].create_at).getTime()
-    }
-
-    if (!list.data) list.data = []
-    if (!list.more) list.more = true
-    if (!list.loading) list.loading = true
-
-    dispatch({ type: 'SET_NOTIFICATION_LIST_BY_NAME', name, data: list })
 
     return Ajax({
-      url: '/notifications',
+      url: '/user-notification/update',
       type: 'post',
-      data: merge({}, filters, { access_token: accessToken })
-    }).then((res)=>{
+      data: { query, update, options },
+      headers: { 'AccessToken': accessToken }
+    }).then((result) => {
 
-      list.loading = false
-      list.more = res.data.length < list.filters.per_page ? false : true
-      list.data = list.data.concat(res.data)
-      list.filters = filters
-      list.count = 0
-
-      comment = updateCommentState(comment, res.data)
-      posts = updatePosts(posts, res.data)
-      followPeople = updateFollowPeople(followPeople, me._id, res.data)
-
-      // 如果在未读列表中，将其删除
-      res.data.map(item=>{
-        let _index = unreadNotice.indexOf(item._id)
-        if (_index != -1) unreadNotice.splice(_index, 1)
-      })
-
-      if (followPeople.count > 0) {
-        me.fans_count = me.fans_count + followPeople.count
-        dispatch({ type: 'SET_USER', userinfo: me })
-        dispatch({ type: 'SET_FOLLOW_PEOPLE', state: followPeople.state })
+      if (result && result.success) {
+        dispatch({ type: 'UPDATE_NOTIFICATION', id: query._id, update })
       }
 
-      dispatch({ type: 'SET_POSTS', state: posts })
-      dispatch({ type: 'SET_COMMENT', state: comment })
-      dispatch({ type: 'SET_UNREAD_NOTICE', unreadNotice })
-      dispatch({ type: 'SET_NOTIFICATION_LIST_BY_NAME', name, data: list })
-
-      callback(res)
     })
-
   }
 }
-*/
+
 
 // 更新通知中的评论
 let updateCommentState = (comment, notices) => {

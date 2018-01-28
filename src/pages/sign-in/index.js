@@ -1,16 +1,12 @@
 import React from 'react'
 import { Route, Link } from 'react-router-dom'
-// import { ToastContainer, toast } from 'react-toastify'
 
-// import PropTypes from 'prop-types'
-// import { bindActionCreators } from 'redux'
-// import { connect } from 'react-redux'
 import { signIn, saveSignInCookie } from '../../actions/sign'
 import { getCaptchaId } from '../../actions/captcha'
 import { getProfile } from '../../reducers/user'
 
-import Promise from 'promise'
-//
+// import Promise from 'promise'
+
 import CSSModules from 'react-css-modules'
 import styles from './style.scss'
 
@@ -18,11 +14,11 @@ import config from '../../../config'
 
 import Shell from '../shell'
 
-// import connectReudx from '../../common/connect-redux'
 
 // 纯组件
 export class SignIn extends React.Component {
 
+  /*
   static loadData({ store, match, userinfo }) {
 
     return new Promise(function (resolve, reject) {
@@ -36,6 +32,7 @@ export class SignIn extends React.Component {
     })
 
   }
+  */
 
   // 从 state 从获取数据到 props
   static mapStateToProps(state, props) {
@@ -54,10 +51,6 @@ export class SignIn extends React.Component {
     }
     this.submit = this.submit.bind(this)
     this.getCaptcha = this.getCaptcha.bind(this)
-  }
-
-  componentWillMount() {
-    console.log('服务端渲染');
   }
 
   componentDidMount() {
@@ -102,10 +95,12 @@ export class SignIn extends React.Component {
     if (!result.success && result.error) {
 
       Toastify({
-          text: result.error,
-          duration: 3000,
-          backgroundColor: 'linear-gradient(to right, #ff6c6c, #f66262)'
+        text: result.error,
+        duration: 3000,
+        backgroundColor: 'linear-gradient(to right, #ff6c6c, #f66262)'
       }).showToast();
+
+      this.getCaptcha()
 
       // toast.warn(result.error)
     } else if (result && result.success) {
@@ -144,10 +139,6 @@ export class SignIn extends React.Component {
         <input ref="submit" className="btn" type="submit" value="登录"/>
       </form>
 
-
-      {/* <ToastContainer /> */}
-
-
     </div>)
   }
 
@@ -155,43 +146,4 @@ export class SignIn extends React.Component {
 
 SignIn = CSSModules(SignIn, styles)
 
-
-SignIn.defaultProps = {
-  test: '123'
-  /*
-  mapStateToProps: (state, props) => {
-    return {}
-  },
-  mapDispatchToProps: (dispatch) => {
-    return {
-      signIn: bindActionCreators(signIn, dispatch),
-      getCaptchaId: bindActionCreators(getCaptchaId, dispatch),
-      saveSignInCookie: bindActionCreators(saveSignInCookie, dispatch)
-    }
-  }
-  */
-}
-
-// SignIn = connectReudx(SignIn)
-
-// SignIn.propTypes = {
-//   signIn: PropTypes.func.isRequired,
-//   getCaptchaId: PropTypes.func.isRequired,
-//   saveSignInCookie: PropTypes.func.isRequired
-// }
-/*
-const mapStateToProps = (state, props) => {
-  return {}
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    signIn: bindActionCreators(signIn, dispatch),
-    getCaptchaId: bindActionCreators(getCaptchaId, dispatch),
-    saveSignInCookie: bindActionCreators(saveSignInCookie, dispatch)
-  }
-}
-
-SignIn = connect(mapStateToProps, mapDispatchToProps)(SignIn)
-*/
 export default Shell(SignIn)

@@ -5,7 +5,7 @@ import CSSModules from 'react-css-modules'
 import styles from './style.scss'
 
 import connectReudx from '../../../common/connect-redux'
-import { loadNotifications } from '../../../actions/notification'
+import { loadNotifications, updateNotification } from '../../../actions/notification'
 import { getNotificationByName } from '../../../reducers/notification'
 
 import { DateDiff } from '../../../common/date'
@@ -27,11 +27,12 @@ export class NotificationList extends Component {
     }
   }
 
-  static mapDispatchToProps = { loadNotifications }
+  static mapDispatchToProps = { loadNotifications, updateNotification }
 
   constructor(props) {
     super(props)
     this.handleLoad = this.handleLoad.bind(this)
+    this.updateNotification = this.updateNotification.bind(this)
   }
 
   componentDidMount() {
@@ -42,6 +43,21 @@ export class NotificationList extends Component {
 
   componentWillUnmount() {
     ArriveFooter.remove('index')
+  }
+
+  componentWillReceiveProps(props) {
+    if (props.name != this.props.name) {
+      const { loadNotifications } = this.props
+      loadNotifications({ name: props.name, filters: props.filters, restart: true })
+    }
+  }
+
+  updateNotification(id, data) {
+    const { updateNotification } = this.props
+    updateNotification({
+      query: { _id: id },
+      update: data
+    })
   }
 
   handleLoad() {
@@ -189,11 +205,21 @@ export class NotificationList extends Component {
               }
 
               if (content) {
-                return (<div key={notice._id} styleName={notice.has_read ? "" : "new"}>
+                
+                let backgroundColor = ''
+                if (notice.deleted) {
+                  backgroundColor = '#ffe3e3'
+                }
+
+                return (<div key={notice._id} styleName={notice.has_read ? "" : "new"} style={{backgroundColor}}>
                     <div styleName="create-at"></div>
                     {content}
                     <div>
-                      <a href="#">删除</a>
+                      <a
+                        href="javascript:void(0)"
+                        onClick={(e)=>{ this.updateNotification(notice._id, { deleted: notice.deleted ? false : true }) }}>
+                        {notice.deleted ? '已删除' : '删除'}
+                      </a>
                     </div>
                   </div>)
               }

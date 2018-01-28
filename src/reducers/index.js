@@ -15,6 +15,8 @@ import comment from './comment'
 import website from './website'
 // import postsTypes from './posts-types'
 import countries from './countries'
+import broadcast from './broadcast'
+import analysis from './analysis'
 
 let states = {
   scroll,
@@ -29,7 +31,9 @@ let states = {
   comment,
   website,
   // postsTypes,
-  countries
+  countries,
+  broadcast,
+  analysis
 }
 
 let _states = {}

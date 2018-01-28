@@ -18,7 +18,8 @@ export class Sidebar extends React.Component {
           <li><NavLink exact to="/topics">话题</NavLink></li>
           <li><NavLink exact to="/peoples">用户</NavLink></li>
           <li><NavLink exact to="/comments">评论</NavLink></li>
-          <li><NavLink exact to="/notifications">通知</NavLink></li>
+          <li><NavLink exact to="/user-notifications">用户通知</NavLink></li>
+          <li><NavLink exact to="/notifications">广播通知</NavLink></li>
         </ul>
       </div>)
   }

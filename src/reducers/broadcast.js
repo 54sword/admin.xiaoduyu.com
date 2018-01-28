@@ -4,18 +4,18 @@ import merge from 'lodash/merge'
 let initialState = {
 }
 
-export default function notification(state = initialState, action = {}) {
+export default function broadcast(state = initialState, action = {}) {
   switch (action.type) {
 
-    case 'SET_NOTIFICATION':
+    case 'SET_BROADCAST':
       return merge({}, action.state, {})
 
-    case 'SET_NOTIFICATION_LIST_BY_NAME':
+    case 'SET_BROADCAST_LIST_BY_NAME':
       var { name, data } = action
       state[name] = data
       return merge({}, state, {})
 
-    case 'UPDATE_NOTIFICATION':
+    case 'UPDATE_BROADCAST':
       var { id, update } = action
       for (let i in state) {
         state[i].data.map(item => {
@@ -31,6 +31,6 @@ export default function notification(state = initialState, action = {}) {
   }
 }
 
-export const getNotificationByName = (state, name) => {
-  return state.notification[name] || {}
+export const getBroadcastListByName = (state, name) => {
+  return state.broadcast[name] ? state.broadcast[name] : {}
 }

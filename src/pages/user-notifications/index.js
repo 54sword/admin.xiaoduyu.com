@@ -4,11 +4,10 @@ import CSSModules from 'react-css-modules'
 import styles from './style.scss'
 
 import Shell from '../shell'
-import BroadcastList from '../../components/broadcast/list'
+import NotificationList from '../../components/notification/list'
 
 import Meta from '../../components/meta'
 
-// 纯组件
 export class Notification extends React.Component {
 
   constructor(props) {
@@ -112,11 +111,11 @@ export class Notification extends React.Component {
 
       <Meta
         meta={{
-          title: '广播通知'
+          title: '用户通知'
         }}
         />
 
-      <h1>广播通知</h1>
+      <h1>用户通知</h1>
 
         <form className="form" onSubmit={this.submit}>
 
@@ -125,7 +124,13 @@ export class Notification extends React.Component {
             <div className="unit">
               <select onChange={e=>this.valueOnChange(e, 'type')} defaultValue={type}>
                 <option value="">所有</option>
-                <option value="new-comment">新评论通知</option>
+                <option value="follow-posts">关注帖子</option>
+                <option value="comment">评论帖子</option>
+                <option value="reply">回复评论</option>
+                <option value="follow-you">关注用户</option>
+                <option value="like-comment">赞了评论</option>
+                <option value="like-reply">赞了评论</option>
+                <option value="new-comment">新的评论</option>
               </select>
             </div>
           </div>
@@ -136,6 +141,17 @@ export class Notification extends React.Component {
             <select onChange={e=>this.valueOnChange(e, 'status')} defaultValue={status}>
               <option value="">所有</option>
               <option value="deleted">删除</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="flex-left units-gap">
+          <label className="unit-0 text-right" style={{width:'85px'}}>是否已读</label>
+          <div className="unit">
+            <select onChange={e=>this.valueOnChange(e, 'has_read')} defaultValue={has_read}>
+              <option value="">所有</option>
+              <option value="true">已读</option>
+              <option value="false">未读</option>
             </select>
           </div>
         </div>
@@ -163,6 +179,20 @@ export class Notification extends React.Component {
         </div>
 
         <div className="flex-left units-gap">
+          <label className="unit-0 text-right" style={{width:'85px'}}>评论ID</label>
+          <div className="unit">
+            <input type="text" placeholder="请输入评论的id" defaultValue={comment_id} onChange={e=>this.valueOnChange(e, 'comment_id')} />
+          </div>
+        </div>
+
+        <div className="flex-left units-gap">
+          <label className="unit-0 text-right" style={{width:'85px'}}>帖子ID</label>
+          <div className="unit">
+            <input type="text" placeholder="请输入评论的id" defaultValue={posts_id} onChange={e=>this.valueOnChange(e, 'posts_id')} />
+          </div>
+        </div>
+
+        <div className="flex-left units-gap">
           <label className="unit-0 text-right" style={{width:'85px'}}></label>
           <div className="unit">
             <button type="submit" className="btn btn-primary">搜索</button>
@@ -171,10 +201,10 @@ export class Notification extends React.Component {
 
       </form>
 
-      <BroadcastList
+      <NotificationList
         name={this.props.location.pathname + this.props.location.search}
-        filters={filters} />
-        
+        filters={filters}
+        />
     </div>)
   }
 

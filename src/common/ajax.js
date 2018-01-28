@@ -13,25 +13,17 @@ const AJAX = ({
     headers = {}
   }) => {
 
-  // if (typeof apiVerstion == 'undefined') {
-  //   apiVerstion = '/' + config.api_verstion
-  // }
-
   let option = {
     url: domain + apiVerstion + url,
     method: type,
     dataType : 'json'
   }
 
-  // 管理员查询
-  // data.admin = 1
-
   if (type == 'get') {
     data._t = new Date().getTime()
     // data._t = parseInt(new Date().getTime()/8000)
     option.params = JSON.stringify(data)
   } else if (type == 'post') {
-    // console.log(data);
     option.data = data
   }
 
@@ -39,8 +31,9 @@ const AJAX = ({
     option.headers = headers
   }
 
-  headers['Accept'] = "application/json"
-  headers['Content-Type'] = "application/json"
+  // headers['Accept'] = "application/json"
+  // headers['Content-Type'] = "application/json"
+  headers['Role'] = "admin"
 
   // if (type == 'post' && headers.AccessToken) {
   //   option.data.access_token = headers.AccessToken

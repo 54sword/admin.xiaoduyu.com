@@ -136,8 +136,14 @@ const routeArr = [
       loader: () => import('../pages/comments')
     }),
     head: Head, sidebar: Sidebar, enter: requireAuth },
-  { path: '/notifications',   exact: true,
+
+  { path: '/user-notifications',   exact: true,
     // component: Notification,
+    component: generateAsyncRouteComponent({
+      loader: () => import('../pages/user-notifications')
+    }),    head: Head, sidebar: Sidebar, enter: requireAuth },
+
+  { path: '/notifications',   exact: true,
     component: generateAsyncRouteComponent({
       loader: () => import('../pages/notifications')
     }),
