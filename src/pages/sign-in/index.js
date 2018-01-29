@@ -75,7 +75,7 @@ export class SignIn extends React.Component {
 
     if (!account.value) return account.focus()
     if (!password.value) return password.focus()
-
+    
     submit.value = '登录中...'
     submit.disabled = true
 

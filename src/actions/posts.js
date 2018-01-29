@@ -1,10 +1,13 @@
+// import grapgQLClient from '../common/grapgql-client'
+
 
 // import merge from 'lodash/merge'
 import Ajax from '../common/ajax'
 // import Promise from 'promise'
 
 import { DateDiff } from '../common/date'
-import loadList from './common/load-list'
+// import loadList from './common/load-list'
+import loadList from './common/new-load-list'
 
 // console.log(loadList);
 
@@ -82,8 +85,23 @@ export function updatePostsById({ id, typeId, topicId, title, content, contentHT
 
 
 
-export function loadPostsList({ name, filters = {}, restart = false }) {
-  return (dispatch, getState) => {
+export function loadPostsList({ name, filters = ``, restart = false }) {
+  return async (dispatch, getState) => {
+
+    // console.log(filters);
+
+    // let [ err, res ] = await grapgQLClient(
+    //   `{
+    //     posts(limit:10) {
+    //       _id
+    //       title
+    //     }
+    //   }`
+    // )
+
+    // console.log(err);
+    // console.log(res);
+
     return loadList({
       dispatch,
       getState,
@@ -101,9 +119,34 @@ export function loadPostsList({ name, filters = {}, restart = false }) {
   }
 }
 
+/*
+Ajax({
+  apiVerstion: '',
+  url: '/graphql',
+  type: 'post',
+  data: {
+    query: `
+      {
+        posts(limit:10) {
+          _id
+          title
+        }
+      }
+    `,
+    variables: null,
+    operationName: null
+  }
+}).then(res=>{
+  console.log(res);
+})
+*/
 
+/*
 export function loadPostsById({ id, callback = ()=>{} }) {
   return (dispatch, getState) => {
+
+
+
     return loadPostsList({
       name: id,
       filters: { posts_id: id, per_page: 1, draft: 1 },
@@ -117,6 +160,7 @@ export function loadPostsById({ id, callback = ()=>{} }) {
     })(dispatch, getState)
   }
 }
+*/
 
 export function addViewById({ id, callback = ()=>{ } }) {
   return (dispatch, getState) => {
@@ -229,6 +273,7 @@ const processPostsList = (list) => {
     posts._sort_by_date = DateDiff(posts.sort_by_date)
     posts._last_comment_at = DateDiff(posts.last_comment_at)
 
+    /*
     if (posts.comment) {
       posts.comment.map(function(comment){
 
@@ -244,6 +289,7 @@ const processPostsList = (list) => {
 
       })
     }
+    */
 
   })
 

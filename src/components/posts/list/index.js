@@ -33,15 +33,11 @@ export class PostsList extends Component {
 
   componentDidMount() {
 
-    const { postsList, loadPostsList, name, filters } = this.props
+    const { postsList, loadPostsList, name } = this.props
 
-    if (!postsList.data) {
-      this.loadDate()
-    }
+    if (!postsList.data) this.loadDate()
 
-    ArriveFooter.add(name, ()=>{
-      this.loadDate()
-    })
+    ArriveFooter.add(name, this.loadDate)
   }
 
   componentWillUnmount() {
@@ -51,6 +47,7 @@ export class PostsList extends Component {
 
   async loadDate() {
     const { name, filters, loadPostsList } = this.props
+
     await loadPostsList({ name, filters })
   }
 
@@ -98,7 +95,7 @@ export class PostsList extends Component {
 
 PostsList.propTypes = {
   name: PropTypes.string.isRequired,
-  filters: PropTypes.object.isRequired
+  filters: PropTypes.string.isRequired
 }
 
 export default connectReudx(PostsList)

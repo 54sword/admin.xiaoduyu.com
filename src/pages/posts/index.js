@@ -225,7 +225,42 @@ export class Posts extends React.Component {
 
       <PostsList
         name={this.props.location.pathname + this.props.location.search}
-        filters={filters}
+        filters={`{
+          posts{
+            _id
+            comment{
+              _id
+              posts_id
+            }
+            comment_count
+            content
+            content_html
+            create_at
+            deleted
+            device
+            follow_count
+            ip
+            last_comment_at
+            like_count
+            recommend
+            sort_by_date
+            title
+            topic_id{
+              _id
+              name
+            }
+            type
+            user_id{
+          	  _id
+          	  nickname
+          	  brief
+              avatar_url
+          	}
+            verify
+            view_count
+            weaken
+          }
+        }`}
         />
     </div>)
   }

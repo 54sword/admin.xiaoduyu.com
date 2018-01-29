@@ -3,6 +3,12 @@ import Ajax from '../common/ajax'
 export function loadSummary({ name, filters = { query: {}, update: {}, options: {} } }) {
   return (dispatch, getState) => {
     let accessToken = getState().user.accessToken
+
+
+
+
+    // console.log('1233');
+
     return Ajax({
       url: '/analysis/summary',
       type: 'post',
