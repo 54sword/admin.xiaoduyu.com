@@ -3,8 +3,6 @@ import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import gql from 'graphql-tag';
 import fetch from "node-fetch";
-// import cookie from 'react-cookie'
-
 
 const client = new ApolloClient({
   ssrMode: true,
@@ -21,6 +19,8 @@ export default ({ ql, headers }) => {
     query: gql`${ql}`,
     context: {}
   }
+
+  console.log(ql);
 
   if (headers) options.context.headers = headers
 

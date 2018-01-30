@@ -87,21 +87,6 @@ export function updatePostsById({ id, typeId, topicId, title, content, contentHT
 
 export function loadPostsList({ name, filters, restart = false }) {
   return async (dispatch, getState) => {
-
-    // console.log(filters);
-
-    // let [ err, res ] = await grapgQLClient(
-    //   `{
-    //     posts(limit:10) {
-    //       _id
-    //       title
-    //     }
-    //   }`
-    // )
-
-    // console.log(err);
-    // console.log(res);
-
     return loadList({
       dispatch,
       getState,

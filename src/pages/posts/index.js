@@ -26,20 +26,19 @@ export class Posts extends React.Component {
     super(props)
 
     this.state = {
-      filters: {},
       params: {}
     }
     this.submit = this.submit.bind(this)
     this.valueOnChange = this.valueOnChange.bind(this)
     this.produceUrl = this.produceUrl.bind(this)
-    this.produceFilters = this.produceFilters.bind(this)
+    this.produceQuery = this.produceQuery.bind(this)
   }
 
   componentWillMount() {
 
     if (typeof window == 'undefined') return
 
-    this.produceFilters()
+    this.produceQuery()
 
     this.props.loadTopics({
       name: 'posts',
@@ -59,44 +58,32 @@ export class Posts extends React.Component {
   }
 
   // 根据生成查询sql
-  produceFilters(params) {
-
+  produceQuery(params) {
     if (!params) params = this.props.location.params || {}
+
     if (!Reflect.has(params, 'sort_by')) params.sort_by = 'create_at'
 
-    let filters = {
-      query: {},
-      select: {},
-      options: {
-        sort: {}
-      }
+    let newParams = {}
+
+    let whiteList = {
+      sort_by: (s)=>s,
+      recommend: (s)=>true,
+      deleted: (s)=>true,
+      weaken: (s)=>true,
+      page_number: (s)=>parseInt(s),
+      page_size: (s)=>parseInt(s),
+      start_create_at: (s)=>s,
+      end_create_at: (s)=>s,
+      topic_id: (s)=>s,
+      user_id: (s)=>s,
+      _id: (s)=>s
     }
 
     for (let i in params) {
-      switch (i) {
-        case 'sort_by':
-          filters.options.sort[params[i]] = -1;
-          break
-        case 'status':
-          filters.query[params[i]] = true;
-          break
-        case 'start_date':
-          if (!filters.query.create_at) filters.query.create_at = {}
-          filters.query.create_at['$lte'] = params[i]
-          break
-        case 'end_date':
-          if (!filters.query.create_at) filters.query.create_at = {}
-          filters.query.create_at['$gte'] = params[i]
-          break
-        case 'people_id':
-          filters.query.user_id = params[i]
-          break
-        default:
-          filters.query[i] = params[i]
-      }
+      if (whiteList[i]) newParams[i] = whiteList[i](params[i])
     }
 
-    this.setState({ filters, params })
+    this.setState({ params: newParams })
   }
 
   // 生产url
@@ -106,27 +93,23 @@ export class Posts extends React.Component {
     let arr = []
 
     for (let i in params) {
-      switch (i) {
-        case 'sort_by': arr.push('sort_by='+params[i]); break
-        case 'status': arr.push('status='+params[i]); break
-        case 'start_date': arr.push('start_date='+params[i]); break
-        case 'end_date': arr.push('end_date='+params[i]); break
-        case 'people_id': arr.push('people_id='+params[i]); break
-        default: arr.push(i+'='+params[i])
-      }
+      arr.push(i+'='+params[i])
     }
-
-    this.produceFilters(params)
 
     return arr.length > 0 ? pathname + '?' + arr.join('&') : pathname
   }
 
   valueOnChange(e, name) {
+
+    let { params } = this.state
+
     if (e.target.value) {
-      this.state.params[name] = e.target.value
+      params[name] = e.target.value
     } else {
-      delete this.state.params[name]
+      delete params[name]
     }
+
+    this.produceQuery(params)
   }
 
   submit(event) {
@@ -137,15 +120,18 @@ export class Posts extends React.Component {
 
   render() {
 
-    const { filters, params } = this.state
-    const { sort_by, status, topic_id, people_id } = params
+    const { params } = this.state
+    const {
+      sort_by, status, topic_id, user_id, weaken, deleted, recommend,
+      end_create_at, start_create_at
+    } = params
     const { topicList } = this.props
 
     return(<div>
 
-        <Meta meta={{
-          title: '帖子'
-          }} />
+        <Meta
+          meta={{ title: '帖子' }}
+          />
 
         <h1>帖子</h1>
 
@@ -165,12 +151,9 @@ export class Posts extends React.Component {
         <div className="flex-left units-gap">
           <label className="unit-0 text-right" style={{width:'85px'}}>状态</label>
           <div className="unit">
-            <select onChange={e=>this.valueOnChange(e, 'status')} defaultValue={status}>
-              <option value="">所有</option>
-              <option value="weaken">弱化</option>
-              <option value="deleted">删除</option>
-              <option value="recommend">推荐</option>
-            </select>
+            <label><input type="checkbox" checked={weaken ? true : false} defaultValue={weaken ? '' : 'true'} onChange={e=>this.valueOnChange(e, 'weaken')} /> 弱化</label>
+            <label><input type="checkbox" checked={deleted ? true : false} defaultValue={deleted ? '' : 'true'} onChange={e=>this.valueOnChange(e, 'deleted')} /> 删除</label>
+            <label><input type="checkbox" checked={recommend ? true : false} defaultValue={recommend ? '' : 'true'} onChange={e=>this.valueOnChange(e, 'recommend')} /> 推荐</label>
           </div>
         </div>
 
@@ -184,8 +167,8 @@ export class Posts extends React.Component {
         <div className="flex-left units-gap">
           <label className="unit-0 text-right" style={{width:'85px'}}>日期筛选</label>
           <div className="unit">
-            <input ref="start_date" type="text" placeholder="创建日期小于该日期（如：2018/01/01）" onChange={e=>this.valueOnChange(e, 'start_date')} />
-            <input ref="end_date" type="text" placeholder="创建日期大于该日期（如：2018/01/01）" onChange={e=>this.valueOnChange(e, 'end_date')} />
+            <input ref="end_create_at" type="text" placeholder="创建日期小于该日期（如：2018/01/01）" onChange={e=>this.valueOnChange(e, 'end_create_at')} />
+            <input ref="start_create_at" type="text" placeholder="创建日期大于该日期（如：2018/01/01）" onChange={e=>this.valueOnChange(e, 'start_create_at')} />
           </div>
         </div>
 
@@ -208,7 +191,7 @@ export class Posts extends React.Component {
         <div className="flex-left units-gap">
           <label className="unit-0 text-right" style={{width:'85px'}}>用户ID</label>
           <div className="unit">
-            <input type="text" placeholder="请输入用户的id" defaultValue={people_id} onChange={e=>this.valueOnChange(e, 'user_id')} />
+            <input type="text" placeholder="请输入用户的id" defaultValue={user_id} onChange={e=>this.valueOnChange(e, 'user_id')} />
           </div>
         </div>
 
@@ -225,7 +208,8 @@ export class Posts extends React.Component {
 
       <PostsList
         name={this.props.location.pathname + this.props.location.search}
-        filters={{variables: params,
+        filters={{
+          variables: params,
           select: `
             _id
             comment{
