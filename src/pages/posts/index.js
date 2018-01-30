@@ -225,8 +225,8 @@ export class Posts extends React.Component {
 
       <PostsList
         name={this.props.location.pathname + this.props.location.search}
-        filters={`{
-          posts{
+        filters={{variables: params,
+          select: `
             _id
             comment{
               _id
@@ -251,16 +251,16 @@ export class Posts extends React.Component {
             }
             type
             user_id{
-          	  _id
-          	  nickname
-          	  brief
+              _id
+              nickname
+              brief
               avatar_url
-          	}
+            }
             verify
             view_count
             weaken
-          }
-        }`}
+          `
+        }}
         />
     </div>)
   }

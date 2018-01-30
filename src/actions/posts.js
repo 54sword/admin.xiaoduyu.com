@@ -85,7 +85,7 @@ export function updatePostsById({ id, typeId, topicId, title, content, contentHT
 
 
 
-export function loadPostsList({ name, filters = ``, restart = false }) {
+export function loadPostsList({ name, filters, restart = false }) {
   return async (dispatch, getState) => {
 
     // console.log(filters);

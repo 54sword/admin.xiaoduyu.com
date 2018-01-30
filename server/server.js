@@ -107,7 +107,7 @@ app.use('/sign', (function(){
 
 }()))
 
-app.get('*', async function(req, res){
+app.get('*', async (req, res)=>{
 
   const store = configureStore(JSON.parse(initialStateJSON))
 

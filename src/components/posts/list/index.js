@@ -47,7 +47,6 @@ export class PostsList extends Component {
 
   async loadDate() {
     const { name, filters, loadPostsList } = this.props
-
     await loadPostsList({ name, filters })
   }
 
@@ -95,7 +94,7 @@ export class PostsList extends Component {
 
 PostsList.propTypes = {
   name: PropTypes.string.isRequired,
-  filters: PropTypes.string.isRequired
+  filters: PropTypes.object.isRequired
 }
 
 export default connectReudx(PostsList)
