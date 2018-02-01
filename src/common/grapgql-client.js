@@ -13,18 +13,25 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 });
 
-export default ({ ql, headers }) => {
+export default ({ query, mutation, headers }) => {
 
   let options = {
-    query: gql`${ql}`,
     context: {}
   }
 
-  console.log(ql);
+  if (query) {
+    options.query = gql`${query}`
+  }
+
+  if (mutation) {
+    options.mutation = gql`${mutation}`
+  }
 
   if (headers) options.context.headers = headers
 
-  return client.query(options).then(res=>{
+  let fn = query ? client.query : client.mutate
+
+  return fn(options).then(res=>{
     return [null, res]
   }).catch(res=>{
     return [res.graphQLErrors]

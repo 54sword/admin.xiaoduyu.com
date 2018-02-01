@@ -214,7 +214,14 @@ export class Posts extends React.Component {
             _id
             comment{
               _id
-              posts_id
+              user_id{
+                _id
+                nickname
+                brief
+                avatar_url
+              }
+              content_html
+              create_at
             }
             comment_count
             content
@@ -243,6 +250,8 @@ export class Posts extends React.Component {
             verify
             view_count
             weaken
+            follow
+            like
           `
         }}
         />

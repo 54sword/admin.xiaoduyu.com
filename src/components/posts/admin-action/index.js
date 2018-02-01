@@ -21,10 +21,12 @@ export class PostsAdminAction extends Component {
 
   updatePosts(e, data) {
     const { posts, updatePosts } = this.props
-    updatePosts({
-      query: { _id: posts._id },
-      update: data
-    })
+    data._id = posts._id
+
+
+    console.log(data);
+
+    updatePosts(data)
   }
 
   render () {

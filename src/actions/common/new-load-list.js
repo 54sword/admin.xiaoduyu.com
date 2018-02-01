@@ -33,7 +33,7 @@ export default ({
     if (!Reflect.has(list, 'data')) list.data = []
 
     if (!Reflect.has(list, 'filters')) {
-      if (!Reflect.has(filters, 'page_number')) filters.page_number = 0
+      if (!Reflect.has(filters, 'page_number')) filters.page_number = 1
       if (!Reflect.has(filters, 'page_size')) filters.page_size = 15
 
       filters.page_number = parseInt(filters.page_number)
@@ -54,8 +54,6 @@ export default ({
     let headers = accessToken ? { 'AccessToken': accessToken } : null
 
     let variables = []
-
-    console.log(filters);
 
     for (let i in filters) {
 
@@ -80,7 +78,7 @@ export default ({
       posts(${variables}){ ${select} }
     }`
 
-    let [ err, res ] = await grapgQLClient({ ql:sql, headers })
+    let [ err, res ] = await grapgQLClient({ query:sql, headers })
 
     if (err) return resolve(err)
 

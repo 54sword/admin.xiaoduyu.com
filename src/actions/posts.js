@@ -164,10 +164,31 @@ export function addViewById({ id, callback = ()=>{ } }) {
 }
 
 
-export function updatePosts({ query = {}, update = {}, options = {} }) {
+export function updatePosts(filters) {
   return async (dispatch, getState) => {
 
     let accessToken = getState().user.accessToken
+
+    let variables = []
+
+    for (let i in filters) {
+
+      let v = ''
+
+      switch (typeof filters[i]) {
+        case 'string':
+          v = '"'+filters[i]+'"'
+          break
+        case 'number':
+          v = filters[i]
+          break
+        default:
+          v = filters[i]
+          break
+      }
+
+      variables.push(i+':'+v)
+    }
 
     let sql = `
       mutation {
@@ -177,33 +198,27 @@ export function updatePosts({ query = {}, update = {}, options = {} }) {
       }
     `
 
-    let [ err, res ] = await grapgQLClient({ ql:sql, headers })
-
-    /*
-    return Ajax({
-      url: '/posts/update',
-      type: 'post',
-      data: { query, update, options },
-      headers: { 'AccessToken': accessToken }
-    }).then((result) => {
-
-      if (result && result.success) {
-
-        dispatch({ type: 'UPDATE_POST', id: query._id, update })
-        let postsList = getState().posts
-
-        for (let i in postsList) {
-          if (postsList[i].data) {
-            postsList[i].data = processPostsList(postsList[i].data)
-          }
-        }
-
-        dispatch({ type: 'UPDATE_POST', state: postsList })
-
-      }
-
+    let [ err, res ] = await grapgQLClient({
+      mutation:sql,
+      headers: accessToken ? { 'AccessToken': accessToken } : null
     })
-    */
+
+    if (err) return alert('提交失败')
+
+    let _id = filters._id
+
+    delete filters._id
+
+    dispatch({ type: 'UPDATE_POST', id: _id, update: filters })
+    let postsList = getState().posts
+
+    for (let i in postsList) {
+      if (postsList[i].data) {
+        postsList[i].data = processPostsList(postsList[i].data)
+      }
+    }
+
+    dispatch({ type: 'UPDATE_POST', state: postsList })
   }
 }
 
