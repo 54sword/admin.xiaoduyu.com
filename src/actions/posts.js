@@ -1,4 +1,4 @@
-// import grapgQLClient from '../common/grapgql-client'
+import grapgQLClient from '../common/grapgql-client'
 
 
 // import merge from 'lodash/merge'
@@ -165,10 +165,21 @@ export function addViewById({ id, callback = ()=>{ } }) {
 
 
 export function updatePosts({ query = {}, update = {}, options = {} }) {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
 
     let accessToken = getState().user.accessToken
 
+    let sql = `
+      mutation {
+      	editPosts(${variables}){
+          success
+        }
+      }
+    `
+
+    let [ err, res ] = await grapgQLClient({ ql:sql, headers })
+
+    /*
     return Ajax({
       url: '/posts/update',
       type: 'post',
@@ -192,6 +203,7 @@ export function updatePosts({ query = {}, update = {}, options = {} }) {
       }
 
     })
+    */
   }
 }
 

@@ -1,4 +1,4 @@
-import Ajax from '../../common/ajax'
+// import Ajax from '../../common/ajax'
 
 import grapgQLClient from '../../common/grapgql-client'
 import merge from 'lodash/merge'
