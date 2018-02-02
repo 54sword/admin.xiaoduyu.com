@@ -2,7 +2,8 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Route, Switch, Redirect } from 'react-router-dom'
 
-import '../common/mobi.min.css'
+
+// import '../common/mobi.min.css'
 import '../pages/global.scss'
 // import '../common/load-demand'
 
@@ -178,6 +179,15 @@ let router = ({ userinfo }) => {
           ))}
         </Switch>
 
+        <div className="container-fluid">
+          <Switch>
+            {routeArr.map((route, index) => {
+              if (route.component) return <Route key={index} path={route.path} exact={route.exact} component={props => route.enter(route.component, props)} />
+            })}
+          </Switch>
+        </div>
+
+        {/*
         <div className="flex-center">
           <div className="container-fluid">
             <div className="flex-left flex-wrap units-gap-big top-gap">
@@ -187,10 +197,6 @@ let router = ({ userinfo }) => {
                   <Route key={index} path={route.path} exact={route.exact} component={route.sidebar} />
                 ))}
               </Switch>
-
-              {/* <div className="unit-0 hide-on-mobile" style={{width:'200px'}}>
-                <Sidebar />
-              </div> */}
 
               <div className="unit">
                 <Switch>
@@ -202,6 +208,7 @@ let router = ({ userinfo }) => {
             </div>
           </div>
         </div>
+        */}
 
     </div>)
 

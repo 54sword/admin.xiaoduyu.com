@@ -5,6 +5,11 @@ import { Provider } from 'react-redux'
 // import runtime from 'serviceworker-webpack-plugin/lib/runtime'
 
 // import '../src/pages/mobi.min.css'
+import 'jquery'
+import 'popper.js'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap/dist/js/bootstrap.min.js'
+
 
 import configureStore from '../src/store'
 import { Router } from '../src/router'

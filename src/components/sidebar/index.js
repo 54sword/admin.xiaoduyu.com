@@ -11,8 +11,8 @@ export class Sidebar extends React.Component {
   }
 
   render() {
-    return(<div className="unit-0 hide-on-mobile" style={{width:'200px'}}>
-        <ul styleName="head">
+    return(<div>
+        <ul>
           <li><NavLink exact to="/">首页</NavLink></li>
           <li><NavLink exact to="/posts">帖子</NavLink></li>
           <li><NavLink exact to="/topics">话题</NavLink></li>
