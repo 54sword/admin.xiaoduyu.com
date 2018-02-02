@@ -127,27 +127,63 @@ export class Posts extends React.Component {
     } = params
     const { topicList } = this.props
 
+    // console.log('123123');
+
+    // return (<div>Test</div>)
+
     return(<div>
 
         <Meta
           meta={{ title: '帖子' }}
           />
 
-        <h1>帖子</h1>
+        <h1 data-toggle="collapse" href="#collapseFrom">帖子</h1>
 
-        <form className="form" onSubmit={this.submit}>
+        <form className="form collapse" onSubmit={this.submit} id="collapseFrom">
 
-        <div className="flex-left units-gap">
+        <div className="form-group row">
+
+          <label className="col-sm-2 col-form-label">排序</label>
+          <div className="col-sm-10">
+            <select className="form-control" onChange={e=>this.valueOnChange(e, 'sort_by')} defaultValue={sort_by}>
+              <option value="sort_by_date">按排序日期</option>
+              <option value="create_at">按创建日期</option>
+            </select>
+          </div>
+          {/*
           <label className="unit-0 text-right" style={{width:'85px'}}>排序</label>
           <div className="unit">
-
             <select onChange={e=>this.valueOnChange(e, 'sort_by')} defaultValue={sort_by}>
               <option value="sort_by_date">按排序日期</option>
               <option value="create_at">按创建日期</option>
             </select>
           </div>
+          */}
         </div>
 
+        <div className="form-group row">
+          <label className="col-sm-2 col-form-label">状态</label>
+          <div className="col-sm-10">
+
+            <div className="form-check form-check-inline">
+              <input className="form-check-input" type="checkbox" id="weaken" checked={weaken ? true : false} defaultValue={weaken ? '' : 'true'} onChange={e=>this.valueOnChange(e, 'weaken')} />
+              <label className="form-check-label" htmlFor="weaken">弱化</label>
+            </div>
+
+            <div className="form-check form-check-inline">
+              <input className="form-check-input" type="checkbox" id="deleted" checked={deleted ? true : false} defaultValue={deleted ? '' : 'true'} onChange={e=>this.valueOnChange(e, 'deleted')} />
+              <label className="form-check-label" htmlFor="deleted">删除</label>
+            </div>
+
+            <div className="form-check form-check-inline">
+              <input className="form-check-input" type="checkbox" id="recommend" checked={recommend ? true : false} defaultValue={recommend ? '' : 'true'} onChange={e=>this.valueOnChange(e, 'recommend')} />
+              <label className="form-check-label" htmlFor="recommend">推荐</label>
+            </div>
+
+          </div>
+        </div>
+
+        {/*
         <div className="flex-left units-gap">
           <label className="unit-0 text-right" style={{width:'85px'}}>状态</label>
           <div className="unit">
@@ -156,14 +192,39 @@ export class Posts extends React.Component {
             <label><input type="checkbox" checked={recommend ? true : false} defaultValue={recommend ? '' : 'true'} onChange={e=>this.valueOnChange(e, 'recommend')} /> 推荐</label>
           </div>
         </div>
+        */}
 
+        <div className="form-group row">
+          <label className="col-sm-2 col-form-label">ID</label>
+          <div className="col-sm-10">
+            <input type="text" className="form-control" placeholder="请输入id" onChange={e=>this.valueOnChange(e, '_id')} />
+          </div>
+        </div>
+
+        {/*
         <div className="flex-left units-gap">
           <label className="unit-0 text-right" style={{width:'85px'}}>ID</label>
           <div className="unit">
             <input type="text" placeholder="请输入id" onChange={e=>this.valueOnChange(e, '_id')} />
           </div>
         </div>
+        */}
 
+        <div className="form-group row">
+          <label className="col-sm-2 col-form-label">日期筛选</label>
+          <div className="col-sm-10">
+            <div className="form-row">
+              <div className="col">
+                <input className="form-control" ref="end_create_at" type="text" placeholder="创建日期小于该日期（如：2018/01/01）" onChange={e=>this.valueOnChange(e, 'end_create_at')} />
+              </div>
+              <div className="col">
+                <input className="form-control" ref="start_create_at" type="text" placeholder="创建日期大于该日期（如：2018/01/01）" onChange={e=>this.valueOnChange(e, 'start_create_at')} />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/*
         <div className="flex-left units-gap">
           <label className="unit-0 text-right" style={{width:'85px'}}>日期筛选</label>
           <div className="unit">
@@ -171,7 +232,23 @@ export class Posts extends React.Component {
             <input ref="start_create_at" type="text" placeholder="创建日期大于该日期（如：2018/01/01）" onChange={e=>this.valueOnChange(e, 'start_create_at')} />
           </div>
         </div>
+        */}
 
+        <div className="form-group row">
+          <label className="col-sm-2 col-form-label">话题</label>
+          <div className="col-sm-10">
+            {topicList.data && topicList.data.length > 0 ?
+              <select className="form-control" onChange={e=>this.valueOnChange(e, 'topic_id')} defaultValue={topic_id}>
+                <option value="">所有</option>
+                {topicList.data.map(item=>{
+                  return (<option value={item._id} key={item._id}>{item.name}</option>)
+                })}
+              </select>
+            : null}
+          </div>
+        </div>
+
+        {/*
         <div className="flex-left units-gap">
           <label className="unit-0 text-right" style={{width:'85px'}}>话题</label>
           <div className="unit">
@@ -187,72 +264,37 @@ export class Posts extends React.Component {
 
           </div>
         </div>
+        */}
 
+        <div className="form-group row">
+          <label className="col-sm-2 col-form-label">用户ID</label>
+          <div className="col-sm-10">
+            <input className="form-control" type="text" placeholder="请输入用户的id" defaultValue={user_id} onChange={e=>this.valueOnChange(e, 'user_id')} />
+          </div>
+        </div>
+
+        {/*
         <div className="flex-left units-gap">
           <label className="unit-0 text-right" style={{width:'85px'}}>用户ID</label>
           <div className="unit">
             <input type="text" placeholder="请输入用户的id" defaultValue={user_id} onChange={e=>this.valueOnChange(e, 'user_id')} />
           </div>
         </div>
+        */}
 
-        <div className="flex-left units-gap">
-          <label className="unit-0 text-right" style={{width:'85px'}}></label>
-          <div className="unit">
+        <div className="form-group row">
+          <label className="col-sm-2 col-form-label"></label>
+          <div className="col-sm-10">
             <button type="submit" className="btn btn-primary">搜索</button>
           </div>
         </div>
 
       </form>
 
-      <br /><br />
-
       <PostsList
         name={this.props.location.pathname + this.props.location.search}
         filters={{
-          variables: params,
-          select: `
-            _id
-            comment{
-              _id
-              user_id{
-                _id
-                nickname
-                brief
-                avatar_url
-              }
-              content_html
-              create_at
-            }
-            comment_count
-            content
-            content_html
-            create_at
-            deleted
-            device
-            follow_count
-            ip
-            last_comment_at
-            like_count
-            recommend
-            sort_by_date
-            title
-            topic_id{
-              _id
-              name
-            }
-            type
-            user_id{
-              _id
-              nickname
-              brief
-              avatar_url
-            }
-            verify
-            view_count
-            weaken
-            follow
-            like
-          `
+          variables: params
         }}
         />
     </div>)

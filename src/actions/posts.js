@@ -87,6 +87,53 @@ export function updatePostsById({ id, typeId, topicId, title, content, contentHT
 
 export function loadPostsList({ name, filters, restart = false }) {
   return async (dispatch, getState) => {
+
+    if (!filters.select) {
+      filters.select = `
+        _id
+        comment{
+          _id
+          user_id{
+            _id
+            nickname
+            brief
+            avatar_url
+          }
+          content_html
+          create_at
+        }
+        comment_count
+        content
+        content_html
+        create_at
+        deleted
+        device
+        follow_count
+        ip
+        last_comment_at
+        like_count
+        recommend
+        sort_by_date
+        title
+        topic_id{
+          _id
+          name
+        }
+        type
+        user_id{
+          _id
+          nickname
+          brief
+          avatar_url
+        }
+        verify
+        view_count
+        weaken
+        follow
+        like
+      `
+    }
+
     return loadList({
       dispatch,
       getState,

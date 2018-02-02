@@ -1,29 +1,9 @@
-.head{
-  position: fixed;
-  top:0;
-  left:0;
-  width: 100%;
-  height: 50px;
-  line-height: 50px;
-  background-color: #333;
-  color:#fff;
-  z-index: 10;
 
-  a{
-    color:#fff;
-    text-decoration: none;
+:global{
+  body{
+    padding-top:56px;
   }
-
-  .right{
-    float:right;
-    a{
-      margin-left:15px;
-    }
+  .navbar{
+    min-height: 56px;
   }
-
-}
-
-.placeholder{
-  width: 100%;
-  height: 56px;
 }

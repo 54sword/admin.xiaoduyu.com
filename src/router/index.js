@@ -4,7 +4,7 @@ import { Route, Switch, Redirect } from 'react-router-dom'
 
 
 // import '../common/mobi.min.css'
-import '../pages/global.scss'
+// import '../pages/global.scss'
 // import '../common/load-demand'
 
 /*** 非npm安装的依赖，使用在浏览器客户端上 ***/
@@ -179,13 +179,13 @@ let router = ({ userinfo }) => {
           ))}
         </Switch>
 
-        <div className="container-fluid">
+        <main className="container-fluid">
           <Switch>
             {routeArr.map((route, index) => {
               if (route.component) return <Route key={index} path={route.path} exact={route.exact} component={props => route.enter(route.component, props)} />
             })}
           </Switch>
-        </div>
+        </main>
 
         {/*
         <div className="flex-center">

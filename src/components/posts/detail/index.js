@@ -34,7 +34,13 @@ export class PostsDetail extends React.Component {
 
   async componentDidMount() {
     const { id, loadPostsList } = this.props
-    await loadPostsList({ name: id, filters: { query: { _id: id } } })
+    await loadPostsList({
+      name: id,
+      filters: {
+        variables: { _id: id }
+      }
+      // name: id, filters: { query: { _id: id } }
+    })
   }
 
   render() {
@@ -45,7 +51,7 @@ export class PostsDetail extends React.Component {
     if (!posts) return
 
     return(<div>
-      
+
       <Meta meta={{
         title: posts.title
       }} />

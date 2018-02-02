@@ -15,7 +15,13 @@ export class PostsDetail extends React.Component {
   static loadData({ store, match, userinfo }) {
     const { id } = match.params
     return new Promise(async function (resolve, reject) {
-      let res = await loadPostsList({ name: id, filters: { query: { _id: id } } })(store.dispatch, store.getState)
+      let res = await loadPostsList({
+        name: id,
+        filters: {
+          variables: { _id: id }
+        }
+        // filters: { query: { _id: id } }
+      })(store.dispatch, store.getState)
       resolve({ code:200, resr: '123' });
     })
   }
@@ -23,7 +29,7 @@ export class PostsDetail extends React.Component {
   constructor(props) {
     super(props)
   }
-  
+
   render() {
 
     const id = this.props.match.params.id

@@ -5,7 +5,7 @@ import { signOut } from '../../actions/sign'
 import { getProfile } from '../../reducers/user'
 
 import CSSModules from 'react-css-modules'
-// import styles from './style.scss'
+import styles from './style.scss'
 
 import connectReudx from '../../common/connect-redux'
 
@@ -41,7 +41,7 @@ export class Head extends React.Component {
     const { me } = this.props
 
     return (<header>
-      <nav className="navbar fixed-top navbar-expand-lg navbar-dark bg-dark bd-navbar">
+      <nav className="navbar fixed-top navbar-expand-md navbar-expand-lg navbar-dark bg-dark bd-navbar">
         <NavLink className="navbar-brand" exact to="/">小度鱼后台管理</NavLink>
         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
@@ -58,7 +58,7 @@ export class Head extends React.Component {
             <li className="nav-item"><NavLink className="nav-link" exact to="/notifications">广播通知</NavLink></li>
 
           </ul>
-          <span className="navbar-text">
+          <span className="mt-2 mt-md-0">
             <ul className="navbar-nav mr-auto">
               <li className="nav-item">
                 <a className="nav-link" href="#">{me.nickname}</a>
@@ -75,7 +75,7 @@ export class Head extends React.Component {
 
 }
 
-// Head = CSSModules(Head, styles)
+Head = CSSModules(Head, styles)
 
 Head = connectReudx(Head)
 
