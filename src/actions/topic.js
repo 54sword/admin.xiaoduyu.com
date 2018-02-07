@@ -2,7 +2,8 @@
 import Ajax from '../common/ajax'
 import Promise from 'promise'
 
-import loadList from './common/load-list'
+// import loadList from './common/load-list'
+import loadList from './common/new-load-list'
 
 export function addTopic({ data = {}, callback = ()=>{} }) {
   return (dispatch, getState) => {
@@ -86,6 +87,27 @@ export function unfollowTopic({ id, callback }) {
 export function loadTopics({ name, filters = {}, callback = ()=>{}, restart = false  }) {
   return (dispatch, getState) => {
 
+    if (!filters.select) {
+      filters.select = `
+        _id
+        name
+        brief
+        description
+        avatar
+        background
+        follow_count
+        posts_count
+        comment_count
+        sort
+        create_at
+        language
+        recommend
+        user_id
+        follow
+        parent_id
+      `
+    }
+
     return loadList({
       dispatch,
       getState,
@@ -95,7 +117,7 @@ export function loadTopics({ name, filters = {}, callback = ()=>{}, restart = fa
       filters,
 
       // processList: processPostsList,
-
+      schemaName: 'topics',
       reducerName: 'topic',
       api: '/topic',
       actionType: 'SET_TOPIC_LIST_BY_NAME'

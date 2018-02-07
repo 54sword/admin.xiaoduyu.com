@@ -43,15 +43,11 @@ export class Posts extends React.Component {
     this.props.loadTopics({
       name: 'posts',
       filters:{
-        query: {
-          parent_id: { $exists: true }
-        },
-        select: {
-          _id: 1, name: 1
-        },
-        options: {
-          limit: 1000
-        }
+        variables: {  type: 'parent', page_number: 1, page_size: 1000 },
+        select: `
+          _id
+          name
+        `
       }
     })
 
@@ -126,10 +122,6 @@ export class Posts extends React.Component {
       end_create_at, start_create_at
     } = params
     const { topicList } = this.props
-
-    // console.log('123123');
-
-    // return (<div>Test</div>)
 
     return(<div>
 

@@ -1,6 +1,7 @@
 import Ajax from '../common/ajax'
 import Promise from 'promise'
 
+
 function setUser(userinfo) {
   return { type: 'SET_USER', userinfo }
 }

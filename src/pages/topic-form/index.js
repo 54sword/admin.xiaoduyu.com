@@ -178,69 +178,134 @@ class TopicForm extends Component {
 
     return (<div>
       <Meta meta={{title:topic ? '编辑话题' : '添加话题'}} />
-      <form className="form" onSubmit={this.submit}>
+      <form onSubmit={this.submit}>
 
-      <div className={styles.avatar}>
-        {updateButton}
-        {topic && topic.avatar ? <img src={topic.avatar} /> : (avatar ? <img src={avatar} /> : null)}
-      </div>
-
-      <div className="flex-left units-gap">
-        <label className="unit-0 text-right" style={{width:'85px'}}>名称</label>
-        <div className="unit">
-          <input type="text" ref="name" defaultValue={topic ? topic.name : ''} placeholder="名称"></input>
+        <div className="form-group row">
+          <label className="col-sm-2 col-form-label">话题头像</label>
+          <div className="col-sm-10">
+            <div styleName="avatar">
+              {updateButton}
+              {topic && topic.avatar ? <img src={topic.avatar} /> : (avatar ? <img src={avatar} /> : null)}
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div className="flex-left units-gap">
-        <label className="unit-0 text-right" style={{width:'85px'}}>简介</label>
-        <div className="unit">
-          <input type="text" ref="brief" defaultValue={topic ? topic.brief : ''} placeholder="简介"></input>
+        <div className="form-group row">
+          <label className="col-sm-2 col-form-label">名称</label>
+          <div className="col-sm-10">
+            <input className="form-control" type="text" ref="name" defaultValue={topic ? topic.name : ''} placeholder="名称"></input>
+          </div>
         </div>
-      </div>
 
-      <div className="flex-left units-gap">
-        <label className="unit-0 text-right" style={{width:'85px'}}>详细描述</label>
-        <div className="unit">
-          <textarea styleName="description" ref="description" defaultValue={topic ? topic.description : ''} placeholder="详细描述"></textarea>
+        {/*
+        <div className="flex-left units-gap">
+          <label className="unit-0 text-right" style={{width:'85px'}}>名称</label>
+          <div className="unit">
+            <input type="text" ref="name" defaultValue={topic ? topic.name : ''} placeholder="名称"></input>
+          </div>
         </div>
-      </div>
+        */}
 
-      {!topic || topic.parent_id ?
-      <div className="flex-left units-gap">
-        <label className="unit-0 text-right" style={{width:'85px'}}>分类</label>
-        <div className="unit">
-          <select ref="parentId" defaultValue={topic ? (topic.parent_id._id || '') : '-1'}>
-            <option value="-1">请选择分类</option>
-            {topic ? null : <option value="">无父类</option>}
-            {topicList.data && topicList.data.map(item=>{
-              return (<option key={item._id} value={item._id}>{item.name}</option>)
-            })}
-          </select>
+        <div className="form-group row">
+          <label className="col-sm-2 col-form-label">简介</label>
+          <div className="col-sm-10">
+            <input className="form-control" type="text" ref="brief" defaultValue={topic ? topic.brief : ''} placeholder="简介"></input>
+          </div>
         </div>
-      </div>
-      : null}
 
-      <div className="flex-left units-gap">
-        <label className="unit-0 text-right" style={{width:'85px'}}>排序</label>
-        <div className="unit">
-          <input type="text" ref="sort" defaultValue={topic ? topic.sort : 0} placeholder="排序"></input>
+        {/*
+        <div className="flex-left units-gap">
+          <label className="unit-0 text-right" style={{width:'85px'}}>简介</label>
+          <div className="unit">
+            <input type="text" ref="brief" defaultValue={topic ? topic.brief : ''} placeholder="简介"></input>
+          </div>
         </div>
-      </div>
+        */}
 
-      <div className="flex-left units-gap">
-        <label className="unit-0 text-right" style={{width:'85px'}}>推荐</label>
-        <div className="unit">
-          <select ref="recommend" defaultValue={topic ? (topic.recommend ? 1 : '') : ''}>
-            <option value="">否</option>
-            <option value="1">是</option>
-          </select>
+        <div className="form-group row">
+          <label className="col-sm-2 col-form-label">详细描述</label>
+          <div className="col-sm-10">
+            <textarea className="form-control" styleName="description" ref="description" defaultValue={topic ? topic.description : ''} placeholder="详细描述"></textarea>
+          </div>
         </div>
-      </div>
 
-      <button className="btn btn-primary">提交</button>
+        {!topic || topic.parent_id ?
+          <div className="form-group row">
+            <label className="col-sm-2 col-form-label">分类</label>
+            <div className="col-sm-10">
+              <select className="form-control" ref="parentId" defaultValue={topic ? (topic.parent_id._id || '') : '-1'}>
+                <option value="-1">请选择分类</option>
+                {topic ? null : <option value="">无父类</option>}
+                {topicList.data && topicList.data.map(item=>{
+                  return (<option key={item._id} value={item._id}>{item.name}</option>)
+                })}
+              </select>
+            </div>
+          </div>
+        : null}
 
-    </form>
+        {/*<div className="flex-left units-gap">
+          <label className="unit-0 text-right" style={{width:'85px'}}>分类</label>
+          <div className="unit">
+            <select ref="parentId" defaultValue={topic ? (topic.parent_id._id || '') : '-1'}>
+              <option value="-1">请选择分类</option>
+              {topic ? null : <option value="">无父类</option>}
+              {topicList.data && topicList.data.map(item=>{
+                return (<option key={item._id} value={item._id}>{item.name}</option>)
+              })}
+            </select>
+          </div>
+        </div>*/}
+
+        <div className="form-group row">
+          <label className="col-sm-2 col-form-label">排序</label>
+          <div className="col-sm-10">
+            <input className="form-control" type="text" ref="sort" defaultValue={topic ? topic.sort : 0} placeholder="排序"></input>
+          </div>
+        </div>
+
+        {/*
+        <div className="flex-left units-gap">
+          <label className="unit-0 text-right" style={{width:'85px'}}>排序</label>
+          <div className="unit">
+            <input type="text" ref="sort" defaultValue={topic ? topic.sort : 0} placeholder="排序"></input>
+          </div>
+        </div>
+        */}
+
+
+        <div className="form-group row">
+          <label className="col-sm-2 col-form-label">推荐</label>
+          <div className="col-sm-10">
+            <select className="form-control" ref="recommend" defaultValue={topic ? (topic.recommend ? 1 : '') : ''}>
+              <option value="">否</option>
+              <option value="1">是</option>
+            </select>
+          </div>
+        </div>
+
+        {/*
+        <div className="flex-left units-gap">
+          <label className="unit-0 text-right" style={{width:'85px'}}>推荐</label>
+          <div className="unit">
+            <select ref="recommend" defaultValue={topic ? (topic.recommend ? 1 : '') : ''}>
+              <option value="">否</option>
+              <option value="1">是</option>
+            </select>
+          </div>
+        </div>
+        */}
+
+        {/*<button className="btn btn-primary">提交</button>*/}
+
+        <div className="form-group row">
+          <label className="col-sm-2 col-form-label"></label>
+          <div className="col-sm-10">
+            <button className="btn btn-primary">提交</button>
+          </div>
+        </div>
+
+      </form>
     </div>)
 
   }

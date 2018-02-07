@@ -9,6 +9,7 @@ export default ({
   name, api, actionType, restart,
   filters,
   type = 'get',
+  schemaName = '',
   processList = data => data,
   callback = ()=>{}
 }) => {
@@ -75,14 +76,14 @@ export default ({
     }
 
     let sql = `{
-      posts(${variables}){ ${select} }
+      ${schemaName}(${variables}){ ${select} }
     }`
 
     let [ err, res ] = await grapgQLClient({ query:sql, headers })
 
     if (err) return resolve(err)
 
-    let data = res.data.posts
+    let data = res.data[schemaName]
 
     list.more = data.length < list.filters.page_size ? false : true
 

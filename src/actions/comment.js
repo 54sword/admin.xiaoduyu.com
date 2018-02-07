@@ -2,7 +2,7 @@
 import Ajax from '../common/ajax'
 import { DateDiff } from '../common/date'
 
-import loadList from './common/load-list'
+import loadList from './common/new-load-list'
 
 export function addComment({ posts_id, parent_id, reply_id, contentJSON, contentHTML, deviceId, callback }) {
   return (dispatch, getState) => {
@@ -200,6 +200,45 @@ const processCommentList = (list) => {
 
 export function loadCommentList({ name, filters = {}, restart = false }) {
   return (dispatch, getState) => {
+
+    if (!filters.select) {
+      filters.select = `
+        content_html
+        create_at
+        reply_count
+        like_count
+        device
+        ip
+        blocked
+        deleted
+        verify
+        weaken
+        recommend
+        _id
+        user_id {
+          _id
+          nickname
+          brief
+          avatar_url
+        }
+        posts_id{
+          _id
+          title
+          content_html
+        }
+        parent_id
+        reply_id {
+          _id
+          user_id{
+            _id
+            nickname
+            brief
+            avatar_url
+          }
+        }
+      `
+    }
+
     return loadList({
       dispatch,
       getState,
@@ -210,6 +249,7 @@ export function loadCommentList({ name, filters = {}, restart = false }) {
 
       processList: processCommentList,
 
+      schemaName: 'comments',
       reducerName: 'comment',
       api: '/comments',
       actionType: 'SET_COMMENT_LIST_BY_NAME'

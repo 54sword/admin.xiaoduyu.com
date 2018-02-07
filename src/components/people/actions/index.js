@@ -17,15 +17,9 @@ class PeopleActions extends Component {
   }
 
   updatePeople(e, data) {
-
-    // this.stopPropagation(e)
     const { people, updatePeople } = this.props
-    updatePeople({
-      query: {
-        _id: people._id
-      },
-      update: data
-    })
+    data._id = people._id
+    updatePeople(data)
   }
 
   render () {
@@ -44,9 +38,9 @@ class PeopleActions extends Component {
       <div>
         <a href="javascript:void(0)"
           onClick={updatePeople({
-            banned_to_post: time ? new Date().getTime() : new Date().getTime() + 1000*60*60*24*3
+            banned_to_post: (time ? new Date() : new Date(new Date().getTime() + 1000*60*60*24*3))+''
           })}>
-           {time ? '已禁言 ' + time + '分钟' : '禁言'}
+          {time ? '已禁言 ' + time + '分钟' : '禁言'}
         </a>
       </div>
       <div>

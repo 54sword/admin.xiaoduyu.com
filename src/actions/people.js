@@ -1,8 +1,10 @@
+import grapgQLClient from '../common/grapgql-client'
 
 import Ajax from '../common/ajax'
-import merge from 'lodash/merge'
+// import merge from 'lodash/merge'
 
-import loadList from './common/load-list'
+// import loadList from './common/load-list'
+import loadList from './common/new-load-list'
 
 export function loadPeopleById({ id, callback = ()=>{} }) {
   return (dispatch, getState) => {
@@ -31,26 +33,35 @@ export function loadPeopleById({ id, callback = ()=>{} }) {
 export function loadPeopleList({ name, filters = {}, restart = false }) {
   return (dispatch, getState) => {
 
-    /*
-    if (!filters.select) {
-      filters.select = {
-        _id: 1,
-        "find_notification_at": 1,
-        "gender": 1,
-        "nickname": 1,
-        "follow_posts_count": 1,
-        "follow_topic_count": 1,
-        "follow_people_count": 1,
-        "fans_count": 1,
-        "comment_count": 1,
-        "posts_count": 1,
-        "source": 1,
-        "brief": 1,
-        "avatar": 1,
-        "nickname_reset_at": 1
-      }
+    let _filters = Object.assign(filters, {})
+
+    if (!_filters.select) {
+      _filters.select = `
+        _id
+        nickname_reset_at
+        create_at
+        last_sign_at
+        blocked
+        role
+        avatar
+        brief
+        source
+        posts_count
+        comment_count
+        fans_count
+        like_count
+        follow_people_count
+        follow_topic_count
+        follow_posts_count
+        block_people_count
+        block_posts_count
+        access_token
+        gender
+        nickname
+        banned_to_post
+        avatar_url
+      `
     }
-    */
 
     return loadList({
       dispatch,
@@ -58,10 +69,11 @@ export function loadPeopleList({ name, filters = {}, restart = false }) {
 
       name,
       restart,
-      filters,
+      filters: _filters,
 
       // processList: processPostsList,
 
+      schemaName: 'users',
       reducerName: 'people',
       api: '/people',
       actionType: 'SET_PEOPLE_LIST_BY_NAME'
@@ -69,6 +81,68 @@ export function loadPeopleList({ name, filters = {}, restart = false }) {
   }
 }
 
+
+export function updatePeople(filters) {
+  return async (dispatch, getState) => {
+
+    let accessToken = getState().user.accessToken
+
+    let variables = []
+
+    for (let i in filters) {
+
+      let v = ''
+
+      switch (typeof filters[i]) {
+        case 'string':
+          v = '"'+filters[i]+'"'
+          break
+        case 'number':
+          v = filters[i]
+          break
+        default:
+          v = filters[i]
+          break
+      }
+
+      variables.push(i+':'+v)
+    }
+
+    let sql = `
+      mutation {
+      	updateUser(${variables}){
+          success
+        }
+      }
+    `
+
+    let [ err, res ] = await grapgQLClient({
+      mutation:sql,
+      headers: accessToken ? { 'AccessToken': accessToken } : null
+    })
+
+    if (err) return alert('提交失败')
+
+    let _id = filters._id
+
+    delete filters._id
+
+    dispatch({ type: 'UPDATE_PEOPLE', id: _id, update: filters })
+    /*
+    let postsList = getState().posts
+
+    for (let i in postsList) {
+      if (postsList[i].data) {
+        postsList[i].data = processPostsList(postsList[i].data)
+      }
+    }
+
+    dispatch({ type: 'UPDATE_POST', state: postsList })
+    */
+  }
+}
+
+/*
 export function updatePeople ({ query = {}, update = {}, options = {} }) {
   return (dispatch, getState) => {
 
@@ -101,6 +175,7 @@ export function updatePeople ({ query = {}, update = {}, options = {} }) {
     })
   }
 }
+*/
 
 export function follow({ peopleId, callback }) {
   return (dispatch, getState) => {

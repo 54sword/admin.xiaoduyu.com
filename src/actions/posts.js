@@ -144,6 +144,7 @@ export function loadPostsList({ name, filters, restart = false }) {
 
       processList: processPostsList,
 
+      schemaName: 'posts',
       reducerName: 'posts',
       api: '/posts',
       actionType: 'SET_POSTS_LIST_BY_NAME'

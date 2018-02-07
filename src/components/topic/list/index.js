@@ -45,6 +45,7 @@ export class TopicList extends Component {
     }
 
     arriveFooter.add(name, ()=>{
+      console.log('123');
       self.triggerLoad()
     })
 

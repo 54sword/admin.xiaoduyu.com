@@ -62,7 +62,7 @@ export class Comment extends React.Component {
           if (!filters.query.create_at) filters.query.create_at = {}
           filters.query.create_at['$gte'] = params[i]
           break
-        case 'people_id':
+        case 'user_id':
           filters.query.user_id = params[i]
           break
         default:
@@ -85,7 +85,7 @@ export class Comment extends React.Component {
         case 'status': arr.push('status='+params[i]); break
         case 'start_date': arr.push('start_date='+params[i]); break
         case 'end_date': arr.push('end_date='+params[i]); break
-        case 'people_id': arr.push('people_id='+params[i]); break
+        case 'user_id': arr.push('user_id='+params[i]); break
         default: arr.push(i+'='+params[i])
       }
     }
@@ -112,19 +112,99 @@ export class Comment extends React.Component {
   render() {
 
     const { filters, params } = this.state
-    const { status, topic_id, _id, start_date, end_date, people_id, posts_id } = params
+    const { status, topic_id, _id, start_date, end_date, user_id, posts_id } = params
 
     return(<div>
-      <h1>评论</h1>
-
       <Meta
         meta={{
           title: '评论'
         }}
         />
 
-      <form className="form" onSubmit={this.submit}>
+      <h1 data-toggle="collapse" href="#collapseFrom">评论</h1>
 
+      <form className="form collapse" onSubmit={this.submit} id="collapseFrom">
+
+        <div className="form-group row">
+
+          <div className="col-sm-2 col-form-label">状态</div>
+          <div className="col-sm-10">
+            <select className="form-control" onChange={e=>this.valueOnChange(e, 'status')} defaultValue={status}>
+              <option value="">所有</option>
+              <option value="weaken">弱化</option>
+              <option value="deleted">删除</option>
+              <option value="recommend">推荐</option>
+            </select>
+          </div>
+
+          <div className="col-sm-2 col-form-label">ID</div>
+          <div className="col-sm-10">
+            <input
+              className="form-control"
+              type="text"
+              placeholder="请输入id"
+              defaultValue={_id}
+              onChange={e=>this.valueOnChange(e, '_id')}
+              />
+          </div>
+
+          <div className="col-sm-2 col-form-label">日期筛选</div>
+          <div className="col-sm-10">
+            <div className="row">
+              <div className="col">
+                <input
+                  className="form-control"
+                  ref="start_date"
+                  type="text"
+                  placeholder="创建日期小于该日期（如：2018/01/01）"
+                  defaultValue={start_date}
+                  onChange={e=>this.valueOnChange(e, 'start_date')}
+                  />
+              </div>
+              <div className="col">
+                <input
+                  className="form-control"
+                  ref="end_date"
+                  type="text"
+                  placeholder="创建日期大于该日期（如：2018/01/01）"
+                  defaultValue={end_date}
+                  onChange={e=>this.valueOnChange(e, 'end_date')}
+                  />
+              </div>
+            </div>
+          </div>
+
+          <div className="col-sm-2 col-form-label">用户ID</div>
+          <div className="col-sm-10">
+            <input
+              className="form-control"
+              type="text"
+              placeholder="请输入用户的id"
+              defaultValue={user_id}
+              onChange={e=>this.valueOnChange(e, 'user_id')}
+              />
+          </div>
+
+          <div className="col-sm-2 col-form-label">帖子ID</div>
+          <div className="col-sm-10">
+            <input
+              className="form-control"
+              type="text"
+              placeholder="请输入帖子的id"
+              defaultValue={posts_id}
+              onChange={e=>this.valueOnChange(e, 'posts_id')}
+              />
+          </div>
+
+          <div className="col-sm-2 col-form-label"></div>
+          <div className="col-sm-10">
+            <button type="submit" className="btn btn-primary">搜索</button>
+          </div>
+
+        </div>
+
+
+        {/*
         <div className="flex-left units-gap">
           <label className="unit-0 text-right" style={{width:'85px'}}>状态</label>
           <div className="unit">
@@ -137,6 +217,7 @@ export class Comment extends React.Component {
           </div>
         </div>
 
+
         <div className="flex-left units-gap">
           <label className="unit-0 text-right" style={{width:'85px'}}>ID</label>
           <div className="unit">
@@ -148,6 +229,7 @@ export class Comment extends React.Component {
               />
           </div>
         </div>
+
 
         <div className="flex-left units-gap">
           <label className="unit-0 text-right" style={{width:'85px'}}>日期筛选</label>
@@ -169,17 +251,20 @@ export class Comment extends React.Component {
           </div>
         </div>
 
+
         <div className="flex-left units-gap">
           <label className="unit-0 text-right" style={{width:'85px'}}>用户ID</label>
           <div className="unit">
             <input
               type="text"
               placeholder="请输入用户的id"
-              defaultValue={people_id}
-              onChange={e=>this.valueOnChange(e, 'people_id')}
+              defaultValue={user_id}
+              onChange={e=>this.valueOnChange(e, 'user_id')}
               />
           </div>
         </div>
+
+
 
         <div className="flex-left units-gap">
           <label className="unit-0 text-right" style={{width:'85px'}}>帖子ID</label>
@@ -200,13 +285,13 @@ export class Comment extends React.Component {
           </div>
         </div>
 
-      </form>
+        */}
 
-      <br /><br />
+      </form>
 
       <CommentList
         name={this.props.location.pathname + this.props.location.search}
-        filters={filters}
+        filters={params}
         />
     </div>)
   }
