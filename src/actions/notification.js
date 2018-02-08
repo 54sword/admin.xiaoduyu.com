@@ -1,10 +1,59 @@
 import Ajax from '../common/ajax'
 import merge from 'lodash/merge'
 
-import loadList from './common/load-list'
+import loadList from './common/new-load-list'
 
 export function loadNotifications({ name, filters = {}, restart = false }) {
   return (dispatch, getState) => {
+
+    if (!filters.select) {
+      filters.select = `
+        has_read
+        deleted
+        create_at
+        _id
+        type
+        comment_id {
+          _id
+          content_html
+          posts_id {
+            _id
+            title
+            content_html
+          }
+          reply_id {
+            _id
+            content_html
+          }
+          parent_id {
+            _id
+            content_html
+          }
+        }
+        sender_id {
+          create_at
+          avatar
+          _id
+          nickname
+          avatar_url
+          id
+        }
+        addressee_id {
+          create_at
+          avatar
+          _id
+          nickname
+          avatar_url
+          id
+        }
+        posts_id {
+          title
+          content_html
+          _id
+        }
+      `
+    }
+
     return loadList({
       dispatch,
       getState,
@@ -15,6 +64,7 @@ export function loadNotifications({ name, filters = {}, restart = false }) {
 
       // processList: processPostsList,
 
+      schemaName: 'userNotifications',
       reducerName: 'notification',
       api: '/user-notifications',
       type: 'post',

@@ -4,7 +4,6 @@ import styles from './style.scss'
 
 import Shell from '../shell'
 import CommentList from '../../components/comment/list'
-// import CommentItem from '../../components/comment/list-item-admin'
 
 import Meta from '../../components/meta'
 
@@ -20,77 +19,51 @@ export class Comment extends React.Component {
     this.submit = this.submit.bind(this)
     this.valueOnChange = this.valueOnChange.bind(this)
     this.produceUrl = this.produceUrl.bind(this)
-    this.produceFilters = this.produceFilters.bind(this)
+    this.produceQuery = this.produceQuery.bind(this)
   }
 
   componentWillMount() {
     if (typeof window == 'undefined') return
-    this.produceFilters()
+    this.produceQuery()
   }
 
   // 根据生成查询sql
-  produceFilters(params) {
-
+  produceQuery(params) {
     if (!params) params = this.props.location.params || {}
+
     if (!Reflect.has(params, 'sort_by')) params.sort_by = 'create_at'
 
-    let filters = {
-      query: {},
-      select: {
-        user_id:1, posts_id:1, parent_id:1, reply_id:1, _id:1, weaken:1, verify:1,
-        deleted:1, blocked:1, ip:1, device:1, like_count:1, reply_count:1,
-        create_at:1, content_html:1, recommend: 1
-      },
-      options: {
-        sort: {}
-      }
+    let newParams = {}
+
+    let whiteList = {
+      sort_by: (s)=>s,
+      recommend: (s)=>true,
+      deleted: (s)=>true,
+      weaken: (s)=>true,
+      page_number: (s)=>parseInt(s),
+      page_size: (s)=>parseInt(s),
+      start_create_at: (s)=>s,
+      end_create_at: (s)=>s,
+      topic_id: (s)=>s,
+      user_id: (s)=>s,
+      _id: (s)=>s
     }
 
     for (let i in params) {
-      switch (i) {
-        case 'sort_by':
-          filters.options.sort[params[i]] = -1;
-          break
-        case 'status':
-          filters.query[params[i]] = true;
-          break
-        case 'start_date':
-          if (!filters.query.create_at) filters.query.create_at = {}
-          filters.query.create_at['$lte'] = params[i]
-          break
-        case 'end_date':
-          if (!filters.query.create_at) filters.query.create_at = {}
-          filters.query.create_at['$gte'] = params[i]
-          break
-        case 'user_id':
-          filters.query.user_id = params[i]
-          break
-        default:
-          filters.query[i] = params[i]
-      }
+      if (whiteList[i]) newParams[i] = whiteList[i](params[i])
     }
 
-    this.setState({ filters, params })
+    this.setState({ params: newParams })
   }
 
-  // 生产url
   produceUrl() {
     let { params } = this.state
     const { pathname } = this.props.location
     let arr = []
 
     for (let i in params) {
-      switch (i) {
-        case 'sort_by': arr.push('sort_by='+params[i]); break
-        case 'status': arr.push('status='+params[i]); break
-        case 'start_date': arr.push('start_date='+params[i]); break
-        case 'end_date': arr.push('end_date='+params[i]); break
-        case 'user_id': arr.push('user_id='+params[i]); break
-        default: arr.push(i+'='+params[i])
-      }
+      arr.push(i+'='+params[i])
     }
-
-    this.produceFilters(params)
 
     return arr.length > 0 ? pathname + '?' + arr.join('&') : pathname
   }
@@ -102,17 +75,24 @@ export class Comment extends React.Component {
   }
 
   valueOnChange(e, name) {
+
+    let { params } = this.state
+
     if (e.target.value) {
-      this.state.params[name] = e.target.value
+      params[name] = e.target.value
     } else {
-      delete this.state.params[name]
+      delete params[name]
     }
+
+    this.produceQuery(params)
   }
 
   render() {
 
     const { filters, params } = this.state
-    const { status, topic_id, _id, start_date, end_date, user_id, posts_id } = params
+    const { status, topic_id, _id, start_date, end_date, user_id, posts_id,
+      weaken, deleted, recommend
+    } = params
 
     return(<div>
       <Meta
@@ -129,12 +109,30 @@ export class Comment extends React.Component {
 
           <div className="col-sm-2 col-form-label">状态</div>
           <div className="col-sm-10">
+
+            <div className="form-check form-check-inline">
+              <input className="form-check-input" type="checkbox" id="weaken" checked={weaken ? true : false} defaultValue={weaken ? '' : 'true'} onChange={e=>this.valueOnChange(e, 'weaken')} />
+              <label className="form-check-label" htmlFor="weaken">弱化</label>
+            </div>
+
+            <div className="form-check form-check-inline">
+              <input className="form-check-input" type="checkbox" id="deleted" checked={deleted ? true : false} defaultValue={deleted ? '' : 'true'} onChange={e=>this.valueOnChange(e, 'deleted')} />
+              <label className="form-check-label" htmlFor="deleted">删除</label>
+            </div>
+
+            <div className="form-check form-check-inline">
+              <input className="form-check-input" type="checkbox" id="recommend" checked={recommend ? true : false} defaultValue={recommend ? '' : 'true'} onChange={e=>this.valueOnChange(e, 'recommend')} />
+              <label className="form-check-label" htmlFor="recommend">推荐</label>
+            </div>
+
+            {/*
             <select className="form-control" onChange={e=>this.valueOnChange(e, 'status')} defaultValue={status}>
               <option value="">所有</option>
               <option value="weaken">弱化</option>
               <option value="deleted">删除</option>
               <option value="recommend">推荐</option>
             </select>
+            */}
           </div>
 
           <div className="col-sm-2 col-form-label">ID</div>
@@ -288,10 +286,12 @@ export class Comment extends React.Component {
         */}
 
       </form>
-
+      
       <CommentList
         name={this.props.location.pathname + this.props.location.search}
-        filters={params}
+        filters={{
+          variables: params
+        }}
         />
     </div>)
   }

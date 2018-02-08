@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
 import { getCommentListByName } from '../../../reducers/comment'
 import { loadCommentList } from '../../../actions/comment'
 
-// import ListLoading from '../list-loading'
+import ListLoading from '../../list-loading'
 import CommentItem from '../list-item'
 
 import connectReudx from '../../../common/connect-redux'
@@ -63,10 +63,13 @@ export class CommentList extends Component {
 
     if (!list.data) return null
 
+    const { data, loading, more } = list
+
     return (
       <div>
+        <div>
           {/* <div className={styles.comments}> */}
-            {list.data.map((comment)=>{
+            {data.map((comment)=>{
               return (<div key={comment._id}><CommentItem comment={comment} /></div>)
             })}
             {/*commentList.data.length == 0 ?
@@ -79,6 +82,8 @@ export class CommentList extends Component {
           {/*<div className={styles.nothing}>目前尚无回复</div>*/}
 
         {/* </div> */}
+        </div>
+        <ListLoading loading={loading} more={more} handleLoad={this.load} />
       </div>
     )
   }

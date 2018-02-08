@@ -58,12 +58,8 @@ export class CommentItem extends PureComponent {
   updateComment(e, data) {
     this.stopPropagation(e)
     const { comment, updateComment } = this.props
-    updateComment({
-      query: {
-        _id: comment._id
-      },
-      update: data
-    })
+    data._id = comment._id
+    updateComment(data)
   }
 
   // 用户的dom
@@ -107,11 +103,11 @@ export class CommentItem extends PureComponent {
                   {comment._create_at}
                 </td>
                 <td width="200">
-                  <a href="javascript:void(0)" onClick={updateComment({ weaken: comment.weaken ? false : true })}>弱化</a>
+                  <a href="javascript:void(0)" onClick={updateComment({ weaken: comment.weaken ? false : true })}>{comment.weaken ? '已弱化' : '弱化'}</a>
                   {' '}
-                  <a href="javascript:void(0)" onClick={updateComment({ recommend: comment.recommend ? false : true })}>推荐</a>
+                  <a href="javascript:void(0)" onClick={updateComment({ recommend: comment.recommend ? false : true })}>{comment.recommend ? '已推荐' : '推荐'}</a>
                   {' '}
-                  <a href="javascript:void(0)" onClick={updateComment({ deleted: comment.deleted ? false : true })}>删除</a>
+                  <a href="javascript:void(0)" onClick={updateComment({ deleted: comment.deleted ? false : true })}>{comment.deleted ? '已删除' : '删除'}</a>
                 </td>
               </tr>
             </tbody>

@@ -205,7 +205,7 @@ export class NotificationList extends Component {
               }
 
               if (content) {
-                
+
                 let backgroundColor = ''
                 if (notice.deleted) {
                   backgroundColor = '#ffe3e3'

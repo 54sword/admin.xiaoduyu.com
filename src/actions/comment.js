@@ -1,3 +1,5 @@
+import grapgQLClient from '../common/grapgql-client'
+
 
 import Ajax from '../common/ajax'
 import { DateDiff } from '../common/date'
@@ -246,7 +248,7 @@ export function loadCommentList({ name, filters = {}, restart = false }) {
       name,
       restart,
       filters,
-
+      
       processList: processCommentList,
 
       schemaName: 'comments',
@@ -257,6 +259,66 @@ export function loadCommentList({ name, filters = {}, restart = false }) {
   }
 }
 
+
+export function updateComment(filters) {
+  return async (dispatch, getState) => {
+
+    let accessToken = getState().user.accessToken
+
+    let variables = []
+
+    for (let i in filters) {
+
+      let v = ''
+
+      switch (typeof filters[i]) {
+        case 'string':
+          v = '"'+filters[i]+'"'
+          break
+        case 'number':
+          v = filters[i]
+          break
+        default:
+          v = filters[i]
+          break
+      }
+
+      variables.push(i+':'+v)
+    }
+
+    let sql = `
+      mutation {
+      	updateComment(${variables}){
+          success
+        }
+      }
+    `
+
+    let [ err, res ] = await grapgQLClient({
+      mutation:sql,
+      headers: accessToken ? { 'AccessToken': accessToken } : null
+    })
+
+    if (err) return alert('提交失败')
+
+    let _id = filters._id
+
+    delete filters._id
+
+    dispatch({ type: 'UPDATE_COMMENT', id: _id, update: filters })
+    let list = getState().comment
+
+    for (let i in list) {
+      if (list[i].data) {
+        list[i].data = processPostsList(list[i].data)
+      }
+    }
+
+    dispatch({ type: 'UPDATE_COMMENT', state: list })
+  }
+}
+
+/*
 export function updateComment({ query = {}, update = {}, options = {} }) {
   return (dispatch, getState) => {
 
@@ -287,6 +349,7 @@ export function updateComment({ query = {}, update = {}, options = {} }) {
     })
   }
 }
+*/
 
 /*
 export function loadCommentList({ name, filters = {}, callback = ()=>{} }) {
