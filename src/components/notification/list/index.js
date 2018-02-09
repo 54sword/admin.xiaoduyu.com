@@ -54,10 +54,8 @@ export class NotificationList extends Component {
 
   updateNotification(id, data) {
     const { updateNotification } = this.props
-    updateNotification({
-      query: { _id: id },
-      update: data
-    })
+    data._id = id
+    updateNotification(data)
   }
 
   handleLoad() {

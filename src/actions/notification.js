@@ -1,3 +1,5 @@
+import grapgQLClient from '../common/grapgql-client'
+
 import Ajax from '../common/ajax'
 import merge from 'lodash/merge'
 
@@ -105,6 +107,56 @@ export function loadNotifications({ name, filters = {}, restart = false }) {
   }
 }
 
+export function updateNotification(filters) {
+  return async (dispatch, getState) => {
+
+    let accessToken = getState().user.accessToken
+
+    let variables = []
+
+    for (let i in filters) {
+
+      let v = ''
+
+      switch (typeof filters[i]) {
+        case 'string':
+          v = '"'+filters[i]+'"'
+          break
+        case 'number':
+          v = filters[i]
+          break
+        default:
+          v = filters[i]
+          break
+      }
+
+      variables.push(i+':'+v)
+    }
+
+    let sql = `
+      mutation {
+      	updateUserNotifaction(${variables}){
+          success
+        }
+      }
+    `
+
+    let [ err, res ] = await grapgQLClient({
+      mutation:sql,
+      headers: accessToken ? { 'AccessToken': accessToken } : null
+    })
+
+    if (err) return alert('提交失败')
+
+    let _id = filters._id
+
+    delete filters._id
+
+    dispatch({ type: 'UPDATE_NOTIFICATION', id: _id, update: filters })
+  }
+}
+
+/*
 export function updateNotification({ query = {}, update = {}, options = {} }) {
   return (dispatch, getState) => {
 
@@ -124,6 +176,7 @@ export function updateNotification({ query = {}, update = {}, options = {} }) {
     })
   }
 }
+*/
 
 
 // 更新通知中的评论

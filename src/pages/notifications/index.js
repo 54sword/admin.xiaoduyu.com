@@ -119,7 +119,52 @@ export class Notification extends React.Component {
       <h1>广播通知</h1>
 
         <form className="form" onSubmit={this.submit}>
+        <div className="form-group row">
 
+          <label className="col-sm-2 col-form-label">类型</label>
+          <div className="col-sm-10">
+            <select className="form-control" onChange={e=>this.valueOnChange(e, 'type')} defaultValue={type}>
+              <option value="">所有</option>
+              <option value="new-comment">新评论通知</option>
+            </select>
+          </div>
+
+          <label className="col-sm-2 col-form-label">状态</label>
+          <div className="col-sm-10">
+            <select className="form-control" onChange={e=>this.valueOnChange(e, 'status')} defaultValue={status}>
+              <option value="">所有</option>
+              <option value="deleted">删除</option>
+            </select>
+          </div>
+
+          <label className="col-sm-2 col-form-label">日期筛选</label>
+          <div className="col-sm-10">
+            <div className="row">
+              <div className="col">
+                <input className="form-control"  ref="start_date" type="text" placeholder="创建日期小于该日期（如：2018/01/01）" onChange={e=>this.valueOnChange(e, 'start_date')} />
+              </div>
+              <div className="col">
+                <input className="form-control"  ref="end_date" type="text" placeholder="创建日期大于该日期（如：2018/01/01）" onChange={e=>this.valueOnChange(e, 'end_date')} />
+              </div>
+            </div>
+          </div>
+
+          <label className="col-sm-2 col-form-label">发件用户ID</label>
+          <div className="col-sm-10">
+            <input className="form-control" type="text" placeholder="请输入发件用户的id" defaultValue={sender_id} onChange={e=>this.valueOnChange(e, 'sender_id')} />
+          </div>
+
+          <label className="col-sm-2 col-form-label">收件用户ID</label>
+          <div className="col-sm-10">
+            <input className="form-control" type="text" placeholder="请输入收件用户的id" defaultValue={addressee_id} onChange={e=>this.valueOnChange(e, 'addressee_id')} />
+          </div>
+
+          <label className="col-sm-2 col-form-label"></label>
+          <div className="col-sm-10">
+            <button type="submit" className="btn btn-primary">搜索</button>
+          </div>
+
+          {/*
           <div className="flex-left units-gap">
             <label className="unit-0 text-right" style={{width:'85px'}}>类型</label>
             <div className="unit">
@@ -130,51 +175,60 @@ export class Notification extends React.Component {
             </div>
           </div>
 
-        <div className="flex-left units-gap">
-          <label className="unit-0 text-right" style={{width:'85px'}}>状态</label>
-          <div className="unit">
-            <select onChange={e=>this.valueOnChange(e, 'status')} defaultValue={status}>
-              <option value="">所有</option>
-              <option value="deleted">删除</option>
-            </select>
-          </div>
-        </div>
 
-        <div className="flex-left units-gap">
-          <label className="unit-0 text-right" style={{width:'85px'}}>日期筛选</label>
-          <div className="unit">
-            <input ref="start_date" type="text" placeholder="创建日期小于该日期（如：2018/01/01）" onChange={e=>this.valueOnChange(e, 'start_date')} />
-            <input ref="end_date" type="text" placeholder="创建日期大于该日期（如：2018/01/01）" onChange={e=>this.valueOnChange(e, 'end_date')} />
+          <div className="flex-left units-gap">
+            <label className="unit-0 text-right" style={{width:'85px'}}>状态</label>
+            <div className="unit">
+              <select onChange={e=>this.valueOnChange(e, 'status')} defaultValue={status}>
+                <option value="">所有</option>
+                <option value="deleted">删除</option>
+              </select>
+            </div>
           </div>
-        </div>
 
-        <div className="flex-left units-gap">
-          <label className="unit-0 text-right" style={{width:'85px'}}>发件用户ID</label>
-          <div className="unit">
-            <input type="text" placeholder="请输入发件用户的id" defaultValue={sender_id} onChange={e=>this.valueOnChange(e, 'sender_id')} />
+
+          <div className="flex-left units-gap">
+            <label className="unit-0 text-right" style={{width:'85px'}}>日期筛选</label>
+            <div className="unit">
+              <input ref="start_date" type="text" placeholder="创建日期小于该日期（如：2018/01/01）" onChange={e=>this.valueOnChange(e, 'start_date')} />
+              <input ref="end_date" type="text" placeholder="创建日期大于该日期（如：2018/01/01）" onChange={e=>this.valueOnChange(e, 'end_date')} />
+            </div>
           </div>
-        </div>
 
-        <div className="flex-left units-gap">
-          <label className="unit-0 text-right" style={{width:'85px'}}>收件用户ID</label>
-          <div className="unit">
-            <input type="text" placeholder="请输入收件用户的id" defaultValue={addressee_id} onChange={e=>this.valueOnChange(e, 'addressee_id')} />
+
+          <div className="flex-left units-gap">
+            <label className="unit-0 text-right" style={{width:'85px'}}>发件用户ID</label>
+            <div className="unit">
+              <input type="text" placeholder="请输入发件用户的id" defaultValue={sender_id} onChange={e=>this.valueOnChange(e, 'sender_id')} />
+            </div>
           </div>
-        </div>
 
-        <div className="flex-left units-gap">
-          <label className="unit-0 text-right" style={{width:'85px'}}></label>
-          <div className="unit">
-            <button type="submit" className="btn btn-primary">搜索</button>
+          <div className="flex-left units-gap">
+            <label className="unit-0 text-right" style={{width:'85px'}}>收件用户ID</label>
+            <div className="unit">
+              <input type="text" placeholder="请输入收件用户的id" defaultValue={addressee_id} onChange={e=>this.valueOnChange(e, 'addressee_id')} />
+            </div>
           </div>
-        </div>
 
-      </form>
+
+          <div className="flex-left units-gap">
+            <label className="unit-0 text-right" style={{width:'85px'}}></label>
+            <div className="unit">
+              <button type="submit" className="btn btn-primary">搜索</button>
+            </div>
+          </div>
+          */}
+
+        </div>
+        </form>
 
       <BroadcastList
         name={this.props.location.pathname + this.props.location.search}
-        filters={filters} />
-        
+        filters={{
+          variables: params
+        }}
+        />
+
     </div>)
   }
 

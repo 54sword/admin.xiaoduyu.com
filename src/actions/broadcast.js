@@ -2,10 +2,30 @@ import Ajax from '../common/ajax'
 // import merge from 'lodash/merge'
 import { DateDiff } from '../common/date'
 
-import loadList from './common/load-list'
+import loadList from './common/new-load-list'
 
 export function loadBroadcastList({ name, filters = {}, restart = false }) {
   return (dispatch, getState) => {
+
+
+    if (!filters.select) {
+      filters.select = `
+        deleted
+        create_at
+        _id
+        type
+        sender_id {
+          avatar
+          _id
+          nickname
+          avatar_url
+          id
+        }
+        addressee_id
+      `
+    }
+
+
     return loadList({
       dispatch,
       getState,
@@ -16,13 +36,14 @@ export function loadBroadcastList({ name, filters = {}, restart = false }) {
 
       processList: processData,
 
+      schemaName: 'notifications',
       reducerName: 'broadcast',
       api: '/notifications',
       type: 'post',
       actionType: 'SET_BROADCAST_LIST_BY_NAME',
 
       callback: (res) =>{
-
+        
       }
     })
   }

@@ -8,12 +8,6 @@ import connectReudx from '../../../common/connect-redux'
 import { loadBroadcastList, updateBroadcast } from '../../../actions/broadcast'
 import { getBroadcastListByName } from '../../../reducers/broadcast'
 
-// import { DateDiff } from '../../../common/date'
-
-// import ListLoading from '../../list-loading'
-// import HTMLText from '../../html-text'
-
-
 export class NotificationList extends Component {
 
   static propTypes = {
