@@ -82,7 +82,7 @@ export default ({
     let [ err, res ] = await grapgQLClient({ query:sql, headers })
 
     if (err) return resolve(err)
-
+    
     let data = res.data[schemaName]
 
     list.more = data.length < list.filters.page_size ? false : true

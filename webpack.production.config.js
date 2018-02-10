@@ -122,12 +122,12 @@ module.exports = {
       filename: 'common.[hash].bundle.js'
     }),
 
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'common-child',
-      filename: 'common-child.[hash].bundle.js',
-      children: true,
-      deepChildren: true
-    }),
+    // new webpack.optimize.CommonsChunkPlugin({
+    //   name: 'common-child',
+    //   filename: 'common-child.[hash].bundle.js',
+    //   children: true,
+    //   deepChildren: true
+    // }),
 
     new webpack.optimize.UglifyJsPlugin({
       output: {
@@ -138,7 +138,7 @@ module.exports = {
         warnings: false
       }
     }),
-    
+
     new HtmlwebpackPlugin({
       filename: path.resolve(__dirname, 'dist/index.ejs'),
       template: 'src/view/index.html',

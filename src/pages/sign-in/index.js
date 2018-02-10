@@ -47,7 +47,8 @@ export class SignIn extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      captchaId: ''
+      captchaId: '',
+      captchaUrl: ''
     }
     this.submit = this.submit.bind(this)
     this.getCaptcha = this.getCaptcha.bind(this)
@@ -59,9 +60,10 @@ export class SignIn extends React.Component {
 
   async getCaptcha() {
     const { getCaptchaId } = this.props
-    let result = await getCaptchaId()
-    if (result && result.success && result.data) {
-      this.setState({ captchaId: result.data })
+    let [ err, res ] = await getCaptchaId()
+
+    if (!err && res._id) {
+      this.setState({ captchaId: res._id, captchaUrl: res.url })
     }
   }
 
@@ -75,7 +77,7 @@ export class SignIn extends React.Component {
 
     if (!account.value) return account.focus()
     if (!password.value) return password.focus()
-    
+
     submit.value = '登录中...'
     submit.disabled = true
 
@@ -123,7 +125,7 @@ export class SignIn extends React.Component {
 
   render() {
 
-    const { captchaId } = this.state
+    const { captchaId, captchaUrl } = this.state
 
     return(<div styleName="container">
 
@@ -134,7 +136,7 @@ export class SignIn extends React.Component {
         <input ref="password" type="password" placeholder="Password"/>
         {captchaId ? <div>
             <input type="text" className="input" placeholder="请输入验证码" ref="captcha" />
-            <img className={styles['captcha-image']} onClick={this.getCaptcha} src={`${config.api_url}/${config.api_verstion}/captcha-image/${captchaId}`} />
+            <img className={styles['captcha-image']} onClick={this.getCaptcha} src={`${captchaUrl}`} />
           </div> : null}
         <input ref="submit" className="btn" type="submit" value="登录"/>
       </form>

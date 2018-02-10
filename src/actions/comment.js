@@ -248,7 +248,7 @@ export function loadCommentList({ name, filters = {}, restart = false }) {
       name,
       restart,
       filters,
-      
+
       processList: processCommentList,
 
       schemaName: 'comments',

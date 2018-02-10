@@ -48,10 +48,8 @@ export class NotificationList extends Component {
 
   updateBroadcast(id, data) {
     const { updateBroadcast } = this.props
-    updateBroadcast({
-      query: { _id: id },
-      update: data
-    })
+    data._id = id
+    updateBroadcast(data)
   }
 
   handleLoad() {

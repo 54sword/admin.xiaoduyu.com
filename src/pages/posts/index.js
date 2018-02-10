@@ -134,7 +134,6 @@ export class Posts extends React.Component {
         <form className="form collapse" onSubmit={this.submit} id="collapseFrom">
 
         <div className="form-group row">
-
           <label className="col-sm-2 col-form-label">排序</label>
           <div className="col-sm-10">
             <select className="form-control" onChange={e=>this.valueOnChange(e, 'sort_by')} defaultValue={sort_by}>
@@ -142,15 +141,6 @@ export class Posts extends React.Component {
               <option value="create_at">按创建日期</option>
             </select>
           </div>
-          {/*
-          <label className="unit-0 text-right" style={{width:'85px'}}>排序</label>
-          <div className="unit">
-            <select onChange={e=>this.valueOnChange(e, 'sort_by')} defaultValue={sort_by}>
-              <option value="sort_by_date">按排序日期</option>
-              <option value="create_at">按创建日期</option>
-            </select>
-          </div>
-          */}
         </div>
 
         <div className="form-group row">
@@ -175,32 +165,12 @@ export class Posts extends React.Component {
           </div>
         </div>
 
-        {/*
-        <div className="flex-left units-gap">
-          <label className="unit-0 text-right" style={{width:'85px'}}>状态</label>
-          <div className="unit">
-            <label><input type="checkbox" checked={weaken ? true : false} defaultValue={weaken ? '' : 'true'} onChange={e=>this.valueOnChange(e, 'weaken')} /> 弱化</label>
-            <label><input type="checkbox" checked={deleted ? true : false} defaultValue={deleted ? '' : 'true'} onChange={e=>this.valueOnChange(e, 'deleted')} /> 删除</label>
-            <label><input type="checkbox" checked={recommend ? true : false} defaultValue={recommend ? '' : 'true'} onChange={e=>this.valueOnChange(e, 'recommend')} /> 推荐</label>
-          </div>
-        </div>
-        */}
-
         <div className="form-group row">
           <label className="col-sm-2 col-form-label">ID</label>
           <div className="col-sm-10">
             <input type="text" className="form-control" placeholder="请输入id" onChange={e=>this.valueOnChange(e, '_id')} />
           </div>
         </div>
-
-        {/*
-        <div className="flex-left units-gap">
-          <label className="unit-0 text-right" style={{width:'85px'}}>ID</label>
-          <div className="unit">
-            <input type="text" placeholder="请输入id" onChange={e=>this.valueOnChange(e, '_id')} />
-          </div>
-        </div>
-        */}
 
         <div className="form-group row">
           <label className="col-sm-2 col-form-label">日期筛选</label>
@@ -216,16 +186,6 @@ export class Posts extends React.Component {
           </div>
         </div>
 
-        {/*
-        <div className="flex-left units-gap">
-          <label className="unit-0 text-right" style={{width:'85px'}}>日期筛选</label>
-          <div className="unit">
-            <input ref="end_create_at" type="text" placeholder="创建日期小于该日期（如：2018/01/01）" onChange={e=>this.valueOnChange(e, 'end_create_at')} />
-            <input ref="start_create_at" type="text" placeholder="创建日期大于该日期（如：2018/01/01）" onChange={e=>this.valueOnChange(e, 'start_create_at')} />
-          </div>
-        </div>
-        */}
-
         <div className="form-group row">
           <label className="col-sm-2 col-form-label">话题</label>
           <div className="col-sm-10">
@@ -240,39 +200,12 @@ export class Posts extends React.Component {
           </div>
         </div>
 
-        {/*
-        <div className="flex-left units-gap">
-          <label className="unit-0 text-right" style={{width:'85px'}}>话题</label>
-          <div className="unit">
-
-            {topicList.data && topicList.data.length > 0 ?
-              <select onChange={e=>this.valueOnChange(e, 'topic_id')} defaultValue={topic_id}>
-                <option value="">所有</option>
-                {topicList.data.map(item=>{
-                  return (<option value={item._id} key={item._id}>{item.name}</option>)
-                })}
-              </select>
-            : null}
-
-          </div>
-        </div>
-        */}
-
         <div className="form-group row">
           <label className="col-sm-2 col-form-label">用户ID</label>
           <div className="col-sm-10">
             <input className="form-control" type="text" placeholder="请输入用户的id" defaultValue={user_id} onChange={e=>this.valueOnChange(e, 'user_id')} />
           </div>
         </div>
-
-        {/*
-        <div className="flex-left units-gap">
-          <label className="unit-0 text-right" style={{width:'85px'}}>用户ID</label>
-          <div className="unit">
-            <input type="text" placeholder="请输入用户的id" defaultValue={user_id} onChange={e=>this.valueOnChange(e, 'user_id')} />
-          </div>
-        </div>
-        */}
 
         <div className="form-group row">
           <label className="col-sm-2 col-form-label"></label>

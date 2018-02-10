@@ -1,3 +1,5 @@
+import grapgQLClient from '../common/grapgql-client'
+
 import Ajax from '../common/ajax'
 // import merge from 'lodash/merge'
 import { DateDiff } from '../common/date'
@@ -43,12 +45,63 @@ export function loadBroadcastList({ name, filters = {}, restart = false }) {
       actionType: 'SET_BROADCAST_LIST_BY_NAME',
 
       callback: (res) =>{
-        
+
       }
     })
   }
 }
 
+
+export function updateBroadcast(filters) {
+  return async (dispatch, getState) => {
+
+    let accessToken = getState().user.accessToken
+
+    let variables = []
+
+    for (let i in filters) {
+
+      let v = ''
+
+      switch (typeof filters[i]) {
+        case 'string':
+          v = '"'+filters[i]+'"'
+          break
+        case 'number':
+          v = filters[i]
+          break
+        default:
+          v = filters[i]
+          break
+      }
+
+      variables.push(i+':'+v)
+    }
+
+    let sql = `
+      mutation {
+      	updateNotifaction(${variables}){
+          success
+        }
+      }
+    `
+
+    let [ err, res ] = await grapgQLClient({
+      mutation:sql,
+      headers: accessToken ? { 'AccessToken': accessToken } : null
+    })
+
+    if (err) return alert('提交失败')
+
+    let _id = filters._id
+
+    delete filters._id
+
+    dispatch({ type: 'UPDATE_BROADCAST', id: _id, update: filters })
+  }
+}
+
+/*
 export function updateBroadcast({ query = {}, update = {}, options = {} }) {
   return (dispatch, getState) => {
     let accessToken = getState().user.accessToken
@@ -64,6 +117,7 @@ export function updateBroadcast({ query = {}, update = {}, options = {} }) {
     })
   }
 }
+*/
 
 
 // 加工问题列表

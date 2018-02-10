@@ -1,6 +1,9 @@
 import Ajax from '../common/ajax'
-// import Keydown from '../common/keydown'
-// import cookie from 'react-cookie'
+
+// import grapgQLClient from '../common/grapgql-client'
+
+import loadList from './common/new-load-list'
+
 import { domain_name, auth_cookie_name } from '../../config'
 
 
@@ -44,6 +47,12 @@ export const saveSignInCookie = () => {
 // 登录
 export const signIn = ({ data }) => {
   return dispatch => {
+
+    // grapgQLClient({
+    //   mutation: ``,
+    //   headers: null
+    // })
+
     return new Promise(async (resolve, reject) => {
       Ajax({ url: '/signin', type: 'post', data })
       .then(res => {

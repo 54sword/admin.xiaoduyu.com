@@ -1,12 +1,12 @@
 {
-  "name": "react-starter",
-  "version": "0.1.0",
-  "description": "react-starter",
+  "name": "admin.xiaoduyu.com",
+  "version": "1.0.0",
+  "description": "小度鱼后台管理",
   "scripts": {
-    "dev": "NODE_ENV=development __NODE__=false webpack --progress --colors --config webpack.development.config.js && NODE_ENV=development __NODE__=true node server ",
-    "pro": "NODE_ENV=production __NODE__=false webpack --progress --colors --config webpack.production.config.js && NODE_ENV=production __NODE__=true node server",
-    "dev1": "NODE_ENV=development __NODE__=false BABEL_ENV=client webpack --progress --colors --config webpack.development.config.js && NODE_ENV=development __NODE__=true BABEL_ENV=server node server",
-    "pro1": "NODE_ENV=production __NODE__=false BABEL_ENV=client webpack --progress --colors --config webpack.production.config.js && NODE_ENV=production __NODE__=true BABEL_ENV=server node server"
+    "dev": "NODE_ENV=development __NODE__=false BABEL_ENV=client webpack --progress --colors --config webpack.development.config.js && NODE_ENV=development __NODE__=true BABEL_ENV=server node server",
+    "pro": "NODE_ENV=production __NODE__=false BABEL_ENV=client webpack --progress --colors --config webpack.production.config.js && NODE_ENV=production __NODE__=true BABEL_ENV=server node server",
+    "dist": "NODE_ENV=production __NODE__=false BABEL_ENV=client webpack --progress --colors --config webpack.production.config.js",
+    "server": "NODE_ENV=production __NODE__=true BABEL_ENV=server node server"
   },
   "engines": {
     "node": ">=8.6.0"

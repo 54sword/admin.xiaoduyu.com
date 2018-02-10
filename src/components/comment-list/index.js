@@ -33,16 +33,12 @@ export class CommentList extends Component {
 
   componentDidMount() {
 
-    // console.log('21333');
-
     const self = this
     const { loadCommentList, commentList } = this.props
 
     if (!commentList.data || commentList.data.length == 0) {
       self.triggerLoad()
     }
-
-    console.log(ArriveFooter);
 
     ArriveFooter.add(this.state.name, ()=>{
       console.log('12313');

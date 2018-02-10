@@ -20,7 +20,6 @@ export class PostsDetail extends React.Component {
         filters: {
           variables: { _id: id }
         }
-        // filters: { query: { _id: id } }
       })(store.dispatch, store.getState)
       resolve({ code:200, resr: '123' });
     })
@@ -39,14 +38,10 @@ export class PostsDetail extends React.Component {
       <CommentList
         name={id}
         filters={{
-          query: {
+          variables: {
             posts_id: id,
-            parent_id: {
-              '$exists': false
-            }
-          },
-          options: {
-            limit: 100
+            parent_id: false,
+            page_size: 100
           }
         }}
         />
