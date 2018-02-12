@@ -1,6 +1,6 @@
 import Ajax from '../common/ajax'
 
-// import grapgQLClient from '../common/grapgql-client'
+import grapgQLClient from '../common/grapgql-client'
 
 import loadList from './common/new-load-list'
 
@@ -48,20 +48,49 @@ export const saveSignInCookie = () => {
 export const signIn = ({ data }) => {
   return dispatch => {
 
-    // grapgQLClient({
-    //   mutation: ``,
-    //   headers: null
-    // })
-
     return new Promise(async (resolve, reject) => {
-      Ajax({ url: '/signin', type: 'post', data })
-      .then(res => {
-        if (res && res.success) {
-          dispatch(addAccessToken({ access_token: res.data.access_token }))
+
+      let variables = []
+
+      for (let i in data) {
+
+        let v = ''
+
+        switch (typeof data[i]) {
+          case 'string':
+            v = '"'+data[i]+'"'
+            break
+          case 'number':
+            v = data[i]
+            break
+          default:
+            v = data[i]
+            break
         }
-        resolve(res)
+
+        variables.push(i+':'+v)
+      }
+
+      let sql = `
+        {
+        	signIn(${variables}){
+            user_id
+            access_token
+          }
+        }
+      `
+
+      let [ err, res ] = await grapgQLClient({
+        query:sql
       })
-      .catch(reject)
+
+      if (err || res && res.errors && res.errors.length > 0) {
+        return resolve(res ? res.errors[0].message : '账号或密码错误')
+      }
+
+      dispatch(addAccessToken({ access_token: res.data.signIn.access_token }))
+      resolve()
+
     })
   }
 }

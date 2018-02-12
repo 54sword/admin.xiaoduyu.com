@@ -4,29 +4,27 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import gql from 'graphql-tag';
 import fetch from "node-fetch";
 
+
 const client = new ApolloClient({
-  ssrMode: true,
+  // 如果开启ssrMode, fetchPolicy: 'network-only' 则会无效
+  ssrMode: process && process.env && process.env.__NODE__ ? process.env.__NODE__ : false,
   link: new HttpLink({
     uri: 'http://localhost:3000/graphql',
     fetch: fetch
   }),
-  cache: new InMemoryCache()
-});
+  cache: new InMemoryCache({
+    addTypename: false
+  })
+})
 
-export default ({ query, mutation, headers }) => {
+export default ({ query, mutation, headers, fetchPolicy }) => {
 
-  let options = {
-    context: {}
-  }
+  let options = { context: {} }
 
-  if (query) {
-    options.query = gql`${query}`
-  }
-
-  if (mutation) {
-    options.mutation = gql`${mutation}`
-  }
-
+  // network-only 不缓存
+  if (fetchPolicy) options.fetchPolicy = fetchPolicy;
+  if (query) options.query = gql`${query}`;
+  if (mutation) options.mutation = gql`${mutation}`;
   if (headers) options.context.headers = headers
 
   let fn = query ? client.query : client.mutate
@@ -35,6 +33,5 @@ export default ({ query, mutation, headers }) => {
     return [null, res]
   }).catch(res=>{
     return [res.graphQLErrors]
-    // console.log(Reflect.ownKeys(e));
   });
 }

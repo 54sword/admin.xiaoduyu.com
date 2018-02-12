@@ -33,7 +33,8 @@ export const getCaptchaId = () => {
 
       let [ err, res ] = await grapgQLClient({
         query:sql,
-        headers: accessToken ? { 'AccessToken': accessToken } : null
+        headers: accessToken ? { 'AccessToken': accessToken } : null,
+        fetchPolicy: 'network-only'
       })
 
       if (err) {
@@ -44,18 +45,10 @@ export const getCaptchaId = () => {
 
     })
 
-    /*
-    return new Promise(async (resolve, reject) => {
-      Ajax({
-        url: '/get-captcha-id',
-        headers: { AccessToken: getState().user.accessToken }
-      }).then(resolve).catch(reject)
-    })
-    */
-
   }
 }
 
+/*
 export function addCaptchaByIP(callback) {
   return (dispatch, getState) => {
     return Ajax({
@@ -65,3 +58,4 @@ export function addCaptchaByIP(callback) {
     })
   }
 }
+*/

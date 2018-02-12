@@ -59,6 +59,9 @@ export class SignIn extends React.Component {
   }
 
   async getCaptcha() {
+
+    // console.log('123');
+
     const { getCaptchaId } = this.props
     let [ err, res ] = await getCaptchaId()
 
@@ -89,15 +92,15 @@ export class SignIn extends React.Component {
       captcha_id: captchaId || ''
     }
 
-    let result = await signIn({ data })
+    let err = await signIn({ data })
 
     submit.value = '登录'
     submit.disabled = false
 
-    if (!result.success && result.error) {
+    if (err) {
 
       Toastify({
-        text: result.error,
+        text: err,
         duration: 3000,
         backgroundColor: 'linear-gradient(to right, #ff6c6c, #f66262)'
       }).showToast();
@@ -105,8 +108,8 @@ export class SignIn extends React.Component {
       this.getCaptcha()
 
       // toast.warn(result.error)
-    } else if (result && result.success) {
-      result = await saveSignInCookie()
+    } else {
+      let result = await saveSignInCookie()
       if (result.success) {
         location.reload()
       } else {
