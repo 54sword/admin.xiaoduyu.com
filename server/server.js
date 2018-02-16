@@ -14,6 +14,7 @@ import { matchPath } from 'react-router-dom'
 import { Provider } from 'react-redux'
 
 import configureStore from '../src/store'
+
 import { loadUserInfo } from '../src/actions/user'
 import { addAccessToken } from '../src/actions/sign'
 
@@ -115,17 +116,14 @@ app.get('*', async (req, res)=>{
         // expires = req.cookies['expires'] || 0
 
   let context = {}
-  let userinfo = null
+  let userinfo, err
 
   // 验证 token 是否有效
   if (accessToken) {
-    let result = await loadUserInfo({ accessToken })(store.dispatch, store.getState)
-    if (result.success) {
-      store.dispatch(addAccessToken({ access_token: accessToken }))
-      userinfo = result.data
-    }
+    [ err, userinfo ] = await loadUserInfo({ accessToken })(store.dispatch, store.getState)
+    if (userinfo) store.dispatch(addAccessToken({ access_token: accessToken }))
   }
-
+  
   let _route = null,
       _match = null
 
@@ -148,8 +146,6 @@ app.get('*', async (req, res)=>{
   if (!context) {
     context = {}
   }
-
-  // console.log(context);
 
   const _Router = Router({ userinfo })
 

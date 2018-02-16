@@ -30,7 +30,7 @@ export function loadPeopleById({ id, callback = ()=>{} }) {
   }
 }
 
-export function loadPeopleList({ name, filters = {}, restart = false }) {
+export function loadPeopleList({ name, filters = {}, restart = false, accessToken = '' }) {
   return (dispatch, getState) => {
 
     let _filters = Object.assign(filters, {})
@@ -66,6 +66,8 @@ export function loadPeopleList({ name, filters = {}, restart = false }) {
     return loadList({
       dispatch,
       getState,
+
+      accessToken,
 
       name,
       restart,

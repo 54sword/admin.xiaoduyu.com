@@ -130,18 +130,35 @@ export class SignIn extends React.Component {
 
     const { captchaId, captchaUrl } = this.state
 
-    return(<div styleName="container">
+    return(<div className="text-center" styleName="container">
 
-      <h2>登陆小度鱼后台</h2>
+      <form className="form-signin" onSubmit={this.submit}>
 
-      <form className="form" onSubmit={this.submit}>
-        <input ref="account" type="text" placeholder="Email or Phone"/>
-        <input ref="password" type="password" placeholder="Password"/>
-        {captchaId ? <div>
-            <input type="text" className="input" placeholder="请输入验证码" ref="captcha" />
-            <img className={styles['captcha-image']} onClick={this.getCaptcha} src={`${captchaUrl}`} />
-          </div> : null}
-        <input ref="submit" className="btn" type="submit" value="登录"/>
+        <h1 className="h3 mb-3 font-weight-normal">登陆小度鱼后台</h1>
+
+        <div className="form-group">
+          <input ref="account" type="text" className="form-control" placeholder="邮箱或手机号" />
+        </div>
+
+        <div className="form-group">
+          <input ref="password" type="password" className="form-control" placeholder="密码" />
+        </div>
+
+        {captchaId ?
+          <div className="input-group mb-3">
+            <input type="text" className="form-control" placeholder="请输入验证码" ref="captcha" />
+            <div className="input-group-append" styleName="captcha">
+              <span className="input-group-text">
+                <img onClick={this.getCaptcha} src={`${captchaUrl}`} />
+              </span>
+            </div>
+          </div>
+          : null}
+
+        <div className="form-group">
+          <button ref="submit" type="submit" className="btn btn-lg btn-primary btn-block">登录</button>
+        </div>
+
       </form>
 
     </div>)

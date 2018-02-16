@@ -7,8 +7,6 @@ import { setScrollPosition, saveScrollPosition } from '../actions/scroll'
 import parseUrl from '../common/parse-url'
 import connectReudx from '../common/connect-redux'
 
-import Meta from '../components/meta'
-
 export default (Component) => {
 
   Component = connectReudx(Component)
@@ -53,7 +51,7 @@ export default (Component) => {
       // console.log('组件加载完成');
       this.props.setScrollPosition(this.props.location ? this.props.location.pathname : '')
     }
-    
+
     // 更新组件
     componentDidUpdate() {
       // console.log('组件加载更新了');

@@ -11,7 +11,8 @@ export default ({
   type = 'get',
   schemaName = '',
   processList = data => data,
-  callback = ()=>{}
+  callback = ()=>{},
+  accessToken = ''
 }) => {
   return new Promise(async (resolve, reject) => {
 
@@ -19,8 +20,9 @@ export default ({
     filters = filters.variables || {}
 
     let state = getState(),
-        accessToken = state.user.accessToken,
-        list = state[reducerName][name] || {}
+        list = state[reducerName][name] || {};
+        
+    accessToken = accessToken || state.user.accessToken || ''
 
     // 让列表重新开始
     if (restart) list = {}
@@ -79,10 +81,14 @@ export default ({
       ${schemaName}(${variables}){ ${select} }
     }`
 
-    let [ err, res ] = await grapgQLClient({ query:sql, headers })
+    let [ err, res ] = await grapgQLClient({
+      query:sql,
+      headers
+      // fetchPolicy: 'network-only'
+    })
 
     if (err) return resolve(err)
-    
+
     let data = res.data[schemaName]
 
     list.more = data.length < list.filters.page_size ? false : true

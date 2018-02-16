@@ -24,7 +24,8 @@ export class Home extends React.Component {
   componentDidMount() {
 
     this.props.loadSummary({
-      name: 'all'
+      name: 'all',
+      filters: {}
     })
 
     let date = new Date()
@@ -36,16 +37,12 @@ export class Home extends React.Component {
     if (month < 10) month = '0' + month
     if (day < 10) day = '0'+ day
 
-    this.props.loadSummary({
-      name: 'today',
-      filters: {
-        query: {
-          create_at: {
-            '$gte': new Date(year+'/'+month+'/'+day).getTime()
-          }
-        }
-      }
-    })
+    // this.props.loadSummary({
+    //   name: 'today',
+    //   filters: {
+    //     start_create_at: new Date(year+'/'+month+'/'+day).getTime() + ""
+    //   }
+    // })
 
   }
 
@@ -53,7 +50,7 @@ export class Home extends React.Component {
 
     let all = this.props.analysis['all'] || {}
     let today = this.props.analysis['today'] || {}
-    
+
     return(<div>
         <Meta
           meta={{

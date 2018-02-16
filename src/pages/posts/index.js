@@ -28,6 +28,7 @@ export class Posts extends React.Component {
     this.state = {
       params: {}
     }
+
     this.submit = this.submit.bind(this)
     this.valueOnChange = this.valueOnChange.bind(this)
     this.produceUrl = this.produceUrl.bind(this)
