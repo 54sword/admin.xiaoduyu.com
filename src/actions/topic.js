@@ -1,22 +1,51 @@
 
 import Ajax from '../common/ajax'
-import Promise from 'promise'
+// import Promise from 'promise'
+import grapgQLClient from '../common/grapgql-client'
 
 // import loadList from './common/load-list'
 import loadList from './common/new-load-list'
 
-export function addTopic({ data = {}, callback = ()=>{} }) {
-  return (dispatch, getState) => {
-    const accessToken = getState().user.accessToken
-    return new Promise(async (resolve, reject) => {
-      Ajax({
-        url: '/add-topic',
-        type: 'post',
-        data,
-        headers: { AccessToken: accessToken },
-        callback
-      }).then(resolve).catch(reject)
+export function addTopic({ filters, callback = ()=>{} }) {
+  return async (dispatch, getState) => {
+
+    let accessToken = getState().user.accessToken
+
+    let variables = []
+
+    for (let i in filters) {
+
+      let v = ''
+
+      switch (typeof filters[i]) {
+        case 'string':
+          v = '"'+filters[i]+'"'
+          break
+        case 'number':
+          v = filters[i]
+          break
+        default:
+          v = filters[i]
+          break
+      }
+
+      variables.push(i+':'+v)
+    }
+
+    let sql = `
+      mutation {
+      	addTopic(${variables}){
+          success
+        }
+      }
+    `
+    
+    let [ err, res ] = await grapgQLClient({
+      mutation:sql,
+      headers: accessToken ? { 'AccessToken': accessToken, role: 'admin' } : null
     })
+
+    if (err) return alert('提交失败')
   }
 }
 

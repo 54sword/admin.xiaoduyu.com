@@ -134,7 +134,7 @@ export class SignIn extends React.Component {
 
       <form className="form-signin" onSubmit={this.submit}>
 
-        <h1 className="h3 mb-3 font-weight-normal">登陆小度鱼后台</h1>
+        <h1 className="h3 mb-3 font-weight-normal">小度鱼管理后台</h1>
 
         <div className="form-group">
           <input ref="account" type="text" className="form-control" placeholder="邮箱或手机号" />

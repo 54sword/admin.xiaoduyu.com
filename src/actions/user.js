@@ -12,17 +12,16 @@ export function removeAccessToken() {
   return { type: 'REMOVE_ACCESS_TOKEN' }
 }
 
-
 export const loadUserInfo = ({ accessToken = null }) => {
   return (dispatch, getState) => {
 
     return new Promise(async (resolve, reject) => {
 
       accessToken = accessToken || getState().user.accessToken
-
+      // (randomString:"${new Date().getTime()+accessToken}")
       let sql = `
       {
-        selfInfo(randomString:"${new Date().getTime()+accessToken}"){
+        selfInfo{
           _id
           nickname_reset_at
           create_at

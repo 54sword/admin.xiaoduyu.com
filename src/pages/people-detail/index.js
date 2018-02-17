@@ -1,16 +1,13 @@
 import React from 'react'
-import CSSModules from 'react-css-modules'
 import { Link, browserHistory } from 'react-router-dom'
-// import styles from './style.scss'
+import CSSModules from 'react-css-modules'
+import styles from './style.scss'
 
 import { loadPeopleList } from '../../actions/people'
 import { getPeopleListByName } from '../../reducers/people'
-// import connectReudx from '../../common/connect-redux'
-
 
 import Shell from '../shell'
 import Actions from '../../components/people/actions'
-// import PeopleList from '../../components/people/list'
 
 export class PeopleDetail extends React.Component {
 
@@ -35,7 +32,7 @@ export class PeopleDetail extends React.Component {
       let result = await loadPeopleList({
         name:id,
         filters: {
-          query: {
+          variables: {
             _id: id
           }
         }
@@ -53,20 +50,20 @@ export class PeopleDetail extends React.Component {
     const { peopleList } = this.props
 
     if (!peopleList.data || peopleList.data.length == 0) {
-      return <div>Loading...</div>
+      return (<div>Loading...</div>)
     }
 
     const people = peopleList.data[0]
-
+    
     return(<div>
       <div>
         <h1>{people.nickname}</h1>
         <div>{people.brief}</div>
         <div><img src={people.avatar_url.replace('quality/90', 'quality/200')} width="200" height="200" /></div>
         <div>id：{people._id}</div>
-        <div>gender：{people.gender}</div>
-        <div>禁言时间：{people.banned_to_post}</div>
-        <div>blocked：{people.blocked}</div>
+        <div>gender：{people.gender == 1 ? '男' : '女'}</div>
+        <div>禁言时间：{people.banned_to_post ? people.banned_to_post : '正常'}</div>
+        <div>blocked：{people.blocked ? '屏蔽' : '正常'}</div>
         <div>last_sign_at：{people.last_sign_at}</div>
         <div>nickname_reset_at：{people.nickname_reset_at}</div>
         <div>role：{people.role}</div>
@@ -75,18 +72,18 @@ export class PeopleDetail extends React.Component {
         <div>fans_count：{people.fans_count}</div>
         <div>like_count：{people.like_count}</div>
         <div>posts_count：{people.posts_count}</div>
-        <div>
+        <div styleName="actions">
           <Link to={`/posts?people_id=${people._id}`}>ta的帖子</Link>
           <Link to={`/comments?people_id=${people._id}`}>ta的评论</Link>
           <Link to={`/notifications?people_id=${people._id}`}>ta的通知</Link>
+          <Actions people={people} />
         </div>
-        <Actions people={people} />
       </div>
     </div>)
   }
 
 }
 
-// People = CSSModules(People, styles)
+PeopleDetail = CSSModules(PeopleDetail, styles)
 
 export default Shell(PeopleDetail)

@@ -4,11 +4,10 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import gql from 'graphql-tag';
 import fetch from "node-fetch";
 
-
 const client = new ApolloClient({
   // 如果开启ssrMode, fetchPolicy: 'network-only' 则会无效
-  // ssrMode: false,
-  ssrMode: process && process.env && process.env.__NODE__ ? process.env.__NODE__ : false,
+  ssrMode: false,
+  // ssrMode: process && process.env && process.env.__NODE__ ? process.env.__NODE__ : false,
   link: new HttpLink({
     uri: 'http://localhost:3000/graphql',
     fetch: fetch

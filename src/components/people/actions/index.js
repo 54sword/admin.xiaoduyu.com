@@ -1,8 +1,4 @@
 import React, { Component } from 'react'
-// import { Link } from 'react-router-dom'
-
-// import CSSModules from 'react-css-modules'
-// import styles from './style.scss'
 
 import { updatePeople } from '../../../actions/people'
 import connectRedux from '../../../common/connect-redux'
@@ -23,7 +19,7 @@ class PeopleActions extends Component {
   }
 
   render () {
-
+    
     const { people } = this.props
     const updatePeople = (data) => e => this.updatePeople(e, data)
 
@@ -34,25 +30,20 @@ class PeopleActions extends Component {
       time = 0
     }
 
-    return (<div>
-      <div>
+    return ([
         <a href="javascript:void(0)"
+          key="1"
           onClick={updatePeople({
             banned_to_post: (time ? new Date() : new Date(new Date().getTime() + 1000*60*60*24*3))+''
           })}>
           {time ? '已禁言 ' + time + '分钟' : '禁言'}
-        </a>
-      </div>
-      <div>
-        <a href="javascript:void(0)" onClick={updatePeople({ blocked: people.blocked ? false : true })}>{people.blocked ? '已拉黑' : '拉黑'}</a>
-      </div>
-    </div>)
+        </a>,
+        <a key="2" href="javascript:void(0)" onClick={updatePeople({ blocked: people.blocked ? false : true })}>{people.blocked ? '已拉黑' : '拉黑'}</a>
+    ])
 
 
   }
 
 }
-
-// PeopleActions = CSSModules(PeopleActions, styles)
 
 export default connectRedux(PeopleActions)

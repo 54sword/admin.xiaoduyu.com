@@ -61,7 +61,7 @@ export class Head extends React.Component {
           <span className="mt-2 mt-md-0">
             <ul className="navbar-nav mr-auto">
               <li className="nav-item">
-                <a className="nav-link" href="#">{me.nickname}</a>
+                <Link to={`/people/${me._id}`} className="nav-link" href="#">{me.nickname}</Link>
               </li>
               <li className="nav-item">
                 <a className="nav-link" href="javascript:void(0)" onClick={this.signOut}>退出</a>

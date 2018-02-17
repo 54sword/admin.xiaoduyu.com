@@ -8,9 +8,27 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { getQiNiuToken } from '../../actions/qiniu'
 
+
+import connectReudx from '../../common/connect-redux'
+
 import Loading from '../../components/loading'
 
 export class QiniuUploadImage extends React.Component {
+
+  static defaultProps = {
+    displayLoading: true,
+    name: "上传图片",
+    multiple: true,
+    upload: (s)=>{},
+    onDrop: (files)=>{},
+    onUpload: (file)=>{}
+  }
+
+  static propTypes = {
+    getQiNiuToken: PropTypes.func.isRequired
+  }
+
+  static mapDispatchToProps = { getQiNiuToken }
 
   constructor (props) {
     super(props)
@@ -31,10 +49,10 @@ export class QiniuUploadImage extends React.Component {
 
     const { getQiNiuToken } = this.props
 
-    let result = await getQiNiuToken()
+    let [err, result] = await getQiNiuToken()
 
     if (result) {
-      this.setState({ token: result.data.token, url: result.data.url })
+      this.setState({ token: result.token, url: result.url })
     }
 
   }
@@ -87,7 +105,7 @@ export class QiniuUploadImage extends React.Component {
   render() {
 
     // console.log(this.state.token);
-    
+
     if (!this.state.token) {
       return (<span></span>)
     }
@@ -114,6 +132,7 @@ export class QiniuUploadImage extends React.Component {
   }
 }
 
+/*
 QiniuUploadImage.defaultProps = {
   displayLoading: true,
   name: '上传图片',
@@ -139,6 +158,6 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 QiniuUploadImage = connect(mapStateToProps,mapDispatchToProps)(QiniuUploadImage)
+*/
 
-
-export default QiniuUploadImage
+export default connectReudx(QiniuUploadImage)

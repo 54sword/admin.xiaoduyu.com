@@ -20,7 +20,7 @@ export const getCaptchaId = () => {
 
     return new Promise(async (resolve, reject) => {
 
-      let accessToken = getState().user.accessToken
+      // let accessToken = getState().user.accessToken
 
       let sql = `
       {
@@ -31,9 +31,11 @@ export const getCaptchaId = () => {
       }
       `
 
+      // console.log({ 'Test': new Date().getTime() });
+
       let [ err, res ] = await grapgQLClient({
         query:sql,
-        headers: accessToken ? { 'AccessToken': accessToken } : null,
+        // headers: { 'Test': new Date().getTime() },
         fetchPolicy: 'network-only'
       })
 
