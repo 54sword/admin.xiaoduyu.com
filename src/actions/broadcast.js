@@ -24,6 +24,7 @@ export function loadBroadcastList({ name, filters = {}, restart = false }) {
           id
         }
         addressee_id
+        target
       `
     }
 

@@ -1,16 +1,16 @@
 import React from 'react'
 import CSSModules from 'react-css-modules'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 
 import styles from './style.scss'
 
 import Shell from '../shell'
 import PostsList from '../../components/posts/list'
+import Meta from '../../components/meta'
+import Modal from '../../components/bootstrap/modal'
 
 import { loadTopics } from '../../actions/topic'
 import { getTopicListByName } from '../../reducers/topic'
-
-import Meta from '../../components/meta'
 
 export class Posts extends React.Component {
 
@@ -52,6 +52,23 @@ export class Posts extends React.Component {
       }
     })
 
+  }
+
+  componentWillReceiveProps(props) {
+    if (props.location.search != this.props.location.search) {
+
+      let { search }  = props.location
+
+      search = search.split('?')[1] || '';
+
+      let searchArr = {};
+      search.split('&').map(item=>{
+        let s = item.split('=');
+        searchArr[s[0]] = s[1];
+      })
+
+      this.produceQuery(searchArr)
+    }
   }
 
   // 根据生成查询sql
@@ -122,103 +139,110 @@ export class Posts extends React.Component {
       sort_by, status, topic_id, user_id, weaken, deleted, recommend,
       end_create_at, start_create_at
     } = params
-    const { topicList } = this.props
+    const { topicList, location } = this.props
 
     return(<div>
 
-        <Meta
-          meta={{ title: '帖子' }}
-          />
+      <Meta meta={{ title: '帖子' }} />
 
-        <h1 data-toggle="collapse" href="#collapseFrom">帖子</h1>
-
-        <form className="form collapse" onSubmit={this.submit} id="collapseFrom">
-
-        <div className="form-group row">
-          <label className="col-sm-2 col-form-label">排序</label>
-          <div className="col-sm-10">
-            <select className="form-control" onChange={e=>this.valueOnChange(e, 'sort_by')} defaultValue={sort_by}>
-              <option value="sort_by_date">按排序日期</option>
-              <option value="create_at">按创建日期</option>
-            </select>
-          </div>
+      <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mt-3 mb-2">
+        <h2>帖子</h2>
+        <div className="btn-toolbar mb-2 mb-md-0">
+          <button type="button" className="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModalCenter">筛选</button>
+          {location.search ? <Link className="btn btn-primary btn-sm mr-2" to="/posts">清空筛选条件</Link> : null}
         </div>
+      </div>
 
-        <div className="form-group row">
-          <label className="col-sm-2 col-form-label">状态</label>
-          <div className="col-sm-10">
+      <Modal
+        id="exampleModalCenter"
+        title="帖子筛选"
+        body={(
+          <div className="form">
 
-            <div className="form-check form-check-inline">
-              <input className="form-check-input" type="checkbox" id="weaken" checked={weaken ? true : false} defaultValue={weaken ? '' : 'true'} onChange={e=>this.valueOnChange(e, 'weaken')} />
-              <label className="form-check-label" htmlFor="weaken">弱化</label>
-            </div>
-
-            <div className="form-check form-check-inline">
-              <input className="form-check-input" type="checkbox" id="deleted" checked={deleted ? true : false} defaultValue={deleted ? '' : 'true'} onChange={e=>this.valueOnChange(e, 'deleted')} />
-              <label className="form-check-label" htmlFor="deleted">删除</label>
-            </div>
-
-            <div className="form-check form-check-inline">
-              <input className="form-check-input" type="checkbox" id="recommend" checked={recommend ? true : false} defaultValue={recommend ? '' : 'true'} onChange={e=>this.valueOnChange(e, 'recommend')} />
-              <label className="form-check-label" htmlFor="recommend">推荐</label>
-            </div>
-
-          </div>
-        </div>
-
-        <div className="form-group row">
-          <label className="col-sm-2 col-form-label">ID</label>
-          <div className="col-sm-10">
-            <input type="text" className="form-control" placeholder="请输入id" onChange={e=>this.valueOnChange(e, '_id')} />
-          </div>
-        </div>
-
-        <div className="form-group row">
-          <label className="col-sm-2 col-form-label">日期筛选</label>
-          <div className="col-sm-10">
-            <div className="form-row">
-              <div className="col">
-                <input className="form-control" ref="end_create_at" type="text" placeholder="创建日期小于该日期（如：2018/01/01）" onChange={e=>this.valueOnChange(e, 'end_create_at')} />
-              </div>
-              <div className="col">
-                <input className="form-control" ref="start_create_at" type="text" placeholder="创建日期大于该日期（如：2018/01/01）" onChange={e=>this.valueOnChange(e, 'start_create_at')} />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="form-group row">
-          <label className="col-sm-2 col-form-label">话题</label>
-          <div className="col-sm-10">
-            {topicList.data && topicList.data.length > 0 ?
-              <select className="form-control" onChange={e=>this.valueOnChange(e, 'topic_id')} defaultValue={topic_id}>
-                <option value="">所有</option>
-                {topicList.data.map(item=>{
-                  return (<option value={item._id} key={item._id}>{item.name}</option>)
-                })}
+          <div className="form-group row">
+            <label className="col-sm-3 col-form-label">排序</label>
+            <div className="col-sm-9">
+              <select className="form-control" onChange={e=>this.valueOnChange(e, 'sort_by')} defaultValue={sort_by}>
+                <option value="sort_by_date">按排序日期</option>
+                <option value="create_at">按创建日期</option>
               </select>
-            : null}
+            </div>
           </div>
-        </div>
 
-        <div className="form-group row">
-          <label className="col-sm-2 col-form-label">用户ID</label>
-          <div className="col-sm-10">
-            <input className="form-control" type="text" placeholder="请输入用户的id" defaultValue={user_id} onChange={e=>this.valueOnChange(e, 'user_id')} />
+          <div className="form-group row">
+            <label className="col-sm-3 col-form-label">状态</label>
+            <div className="col-sm-9">
+
+              <div className="form-check form-check-inline">
+                <input className="form-check-input" type="checkbox" id="weaken" checked={weaken ? true : false} defaultValue={weaken ? '' : 'true'} onChange={e=>this.valueOnChange(e, 'weaken')} />
+                <label className="form-check-label" htmlFor="weaken">弱化</label>
+              </div>
+
+              <div className="form-check form-check-inline">
+                <input className="form-check-input" type="checkbox" id="deleted" checked={deleted ? true : false} defaultValue={deleted ? '' : 'true'} onChange={e=>this.valueOnChange(e, 'deleted')} />
+                <label className="form-check-label" htmlFor="deleted">删除</label>
+              </div>
+
+              <div className="form-check form-check-inline">
+                <input className="form-check-input" type="checkbox" id="recommend" checked={recommend ? true : false} defaultValue={recommend ? '' : 'true'} onChange={e=>this.valueOnChange(e, 'recommend')} />
+                <label className="form-check-label" htmlFor="recommend">推荐</label>
+              </div>
+
+            </div>
           </div>
-        </div>
 
-        <div className="form-group row">
-          <label className="col-sm-2 col-form-label"></label>
-          <div className="col-sm-10">
-            <button type="submit" className="btn btn-primary">搜索</button>
+          <div className="form-group row">
+            <label className="col-sm-3 col-form-label">ID</label>
+            <div className="col-sm-9">
+              <input type="text" className="form-control" placeholder="请输入id" onChange={e=>this.valueOnChange(e, '_id')} />
+            </div>
           </div>
-        </div>
 
-      </form>
+          <div className="form-group row">
+            <label className="col-sm-3 col-form-label">创建日期</label>
+            <div className="col-sm-9">
+              <div className="form-row">
+                <div className="col">
+                  <input className="form-control" ref="end_create_at" type="text" placeholder="小于该日期（如：2018/01/01）" onChange={e=>this.valueOnChange(e, 'end_create_at')} />
+                </div>
+                <div className="col">
+                  <input className="form-control" ref="start_create_at" type="text" placeholder="大于该日期（如：2018/01/01）" onChange={e=>this.valueOnChange(e, 'start_create_at')} />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="form-group row">
+            <label className="col-sm-3 col-form-label">话题</label>
+            <div className="col-sm-9">
+              {topicList.data && topicList.data.length > 0 ?
+                <select className="form-control" onChange={e=>this.valueOnChange(e, 'topic_id')} defaultValue={topic_id}>
+                  <option value="">所有</option>
+                  {topicList.data.map(item=>{
+                    return (<option value={item._id} key={item._id}>{item.name}</option>)
+                  })}
+                </select>
+              : null}
+            </div>
+          </div>
+
+          <div className="form-group row">
+            <label className="col-sm-3 col-form-label">用户ID</label>
+            <div className="col-sm-9">
+              <input className="form-control" type="text" placeholder="请输入用户的id" defaultValue={user_id} onChange={e=>this.valueOnChange(e, 'user_id')} />
+            </div>
+          </div>
+
+          </div>
+        )}
+        footer={(
+          <button type="submit" className="btn btn-primary" data-dismiss="modal" onClick={this.submit}>搜索</button>
+        )}
+        />
 
       <PostsList
         name={this.props.location.pathname + this.props.location.search}
+        location={this.props.location}
         filters={{
           variables: params
         }}

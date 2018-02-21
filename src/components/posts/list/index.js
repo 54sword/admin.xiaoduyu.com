@@ -1,21 +1,27 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router'
 
 // 依赖的外部功能
-// import arriveFooter from '../../common/arrive-footer'
 import connectReudx from '../../../common/connect-redux'
 
-// actions and reducers
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
 import { loadPostsList } from '../../../actions/posts'
 import { getPostsListByName } from '../../../reducers/posts'
 
-// import ListLoading from '../list-loading'
+// 依赖组件
 import PostsItem from '../../posts/posts-item'
+import ListLoading from '../../list-loading'
+import Pagination from '../../pagination'
 
 export class PostsList extends Component {
+
+  static propTypes = {
+    // 列表名称
+    name: PropTypes.string.isRequired,
+    // 列表的筛选条件
+    filters: PropTypes.object.isRequired,
+    // 获取当前页的 pathname、search
+    location: PropTypes.object.isRequired
+  }
 
   static mapStateToProps = (state, props) => {
     const { name } = props
@@ -32,17 +38,14 @@ export class PostsList extends Component {
   }
 
   componentDidMount() {
-
     const { postsList, loadPostsList, name } = this.props
-
     if (!postsList.data) this.loadDate()
-
-    ArriveFooter.add(name, this.loadDate)
+    // ArriveFooter.add(name, this.loadDate)
   }
 
   componentWillUnmount() {
     const { name } = this.props
-    ArriveFooter.remove(name)
+    // ArriveFooter.remove(name)
   }
 
   async loadDate() {
@@ -58,43 +61,28 @@ export class PostsList extends Component {
   }
 
   render () {
-    const { displayFollow = false, displayDate = true, postsList, loadPostsList, commentOption = {} } = this.props
 
-    // 当没有数据的情况
-    if (typeof postsList.data == "undefined") {
-      return (<div></div>)
-    }
+    const { postsList, location } = this.props
+    const { data, loading, more, count, filters = {} } = postsList
 
-    const { data, loading, more } = postsList
+    return (<div>
 
-    return (
-      <div>
-        {data.map(posts=>{
-          return (<div key={posts._id}>
-              <PostsItem
-              posts={posts}
-              displayFollow={displayFollow}
-              displayDate={displayDate}
-              commentOption={commentOption}
-              />
-            </div>)
-        })}
-        {/*
-        <ListLoading
-          loading={loading}
-          more={more}
-          handleLoad={loadPostsList}
-          />
-        */}
+      <div className="list-group">
+        {data && data.map(posts=>(<PostsItem key={posts._id} posts={posts} />))}
       </div>
-    )
+
+      <ListLoading loading={loading} />
+
+      <Pagination
+        location={location}
+        count={count || 0}
+        pageSize={filters.page_size || 0}
+        pageNumber={filters.page_number || 0}
+        />
+
+    </div>)
   }
 
-}
-
-PostsList.propTypes = {
-  name: PropTypes.string.isRequired,
-  filters: PropTypes.object.isRequired
 }
 
 export default connectReudx(PostsList)

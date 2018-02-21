@@ -67,18 +67,56 @@ export class CommentItem extends PureComponent {
 
     let self = this
     let { me, showSign,
-      summary, displayLike, displayReply, displayDate, displayEdit
+      summary, displayLike, displayReply, displayDate, displayEdit,
+      key
     } = this.props
 
     const updateComment = (data) => e => this.updateComment(e, data)
 
-    let background = '#fff'
+    let background = ''
 
-    if (comment.weaken) background = '#efefef'
-    if (comment.deleted) background = '#ffe3e3'
-    if (comment.recommend) background = '#d6fee4'
+    if (comment.weaken) background = 'list-group-item-secondary'
+    if (comment.deleted) background = 'list-group-item-danger'
+    if (comment.recommend) background = 'list-group-item-success'
 
-    return (<div key={comment._id}>
+    return (<div key={key} className={`list-group-item ${background}`}>
+      <div className="row">
+        <div className="col-sm-2">
+          <Link to={`/people?_id=${comment.user_id._id}`}>
+            <i styleName="avatar" className="load-demand" data-load-demand={`<img width="40" height="40" src="${comment.user_id.avatar_url}" />`}></i>
+            <b>{comment.user_id.nickname}</b>
+          </Link>
+          <div>
+            {comment.reply_id ? ` 回复了${comment.reply_id.user_id._id == comment.user_id._id ? '自己' : ' '}` : null}
+            {comment.reply_id && comment.reply_id.user_id._id != comment.user_id._id ? <Link to={`/people?_id=${comment.reply_id.user_id._id}`} onClick={this.stopPropagation}><b>{comment.reply_id.user_id.nickname}</b></Link> : null}
+            {comment._create_at}
+          </div>
+        </div>
+
+        <div className="col-sm-2">
+          <Link to={`/posts/${comment.posts_id._id}`}>{comment.posts_id.title}</Link>
+        </div>
+        <div className="col-sm-4">
+          <HTMLText content={comment.content_html} />
+        </div>
+        <div className="col-sm-2">
+          {comment.ip}
+        </div>
+        <div className="col-sm-2">
+          <a
+            className="btn btn-light btn-sm mb-2 mr-2"
+            href="javascript:void(0)" onClick={updateComment({ weaken: comment.weaken ? false : true })}>{comment.weaken ? '已弱化' : '弱化'}</a>
+          <a
+            className="btn btn-light btn-sm mb-2 mr-2"
+            href="javascript:void(0)" onClick={updateComment({ recommend: comment.recommend ? false : true })}>{comment.recommend ? '已推荐' : '推荐'}</a>
+          <a
+            className="btn btn-light btn-sm mb-2 mr-2"
+            href="javascript:void(0)" onClick={updateComment({ deleted: comment.deleted ? false : true })}>{comment.deleted ? '已删除' : '删除'}</a>
+        </div>
+      </div>
+    </div>)
+
+    return (<div key={key}>
       <table styleName="table" style={{backgroundColor:background}}>
             <tbody>
               <tr>

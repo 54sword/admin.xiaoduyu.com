@@ -7,10 +7,18 @@ import { getPeopleListByName } from '../../../reducers/people'
 
 import PeopleItem from '../list-item'
 import ListLoading from '../../list-loading'
+import Pagination from '../../pagination'
 
 export class PeopleList extends Component{
 
   static propTypes = {
+    // 列表名称
+    name: PropTypes.string.isRequired,
+    // 列表的筛选条件
+    filters: PropTypes.object.isRequired,
+    // 获取当前页的 pathname、search
+    location: PropTypes.object.isRequired,
+
     loadPeopleList: PropTypes.func.isRequired,
     peopleList: PropTypes.object.isRequired
   }
@@ -32,12 +40,12 @@ export class PeopleList extends Component{
   componentDidMount() {
     const { peopleList } = this.props
     if (!peopleList.data) this.load()
-    ArriveFooter.add(name, this.load)
+    // ArriveFooter.add(name, this.load)
   }
 
   componentWillUnmount() {
     const { name, type } = this.props
-    ArriveFooter.remove(name)
+    // ArriveFooter.remove(name)
   }
 
   componentWillReceiveProps(props) {
@@ -55,21 +63,26 @@ export class PeopleList extends Component{
 
   render () {
 
-    const { peopleList } = this.props
-
-    if (!peopleList.data) return ''
-
-    const { data, loading, more } = peopleList
-
-    // console.log(loading);
+    const { peopleList, location } = this.props
+    const { data, loading, more, count, filters = {} } = peopleList
 
     return (<div>
-      {data.map(people=>{
-        return (<div key={people._id}>
-            <PeopleItem people={people} />
-          </div>)
-      })}
-      <ListLoading loading={loading} more={more} handleLoad={this.load} />
+
+      <div className="list-group">
+        {data && data.map(people=>{
+          return (<PeopleItem people={people} key={people._id} />)
+        })}
+      </div>
+
+      <ListLoading loading={loading} />
+
+      <Pagination
+        location={location}
+        count={count || 0}
+        pageSize={filters.page_size || 0}
+        pageNumber={filters.page_number || 0}
+        />
+
     </div>)
 
   }

@@ -2,10 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Route, Switch, Redirect } from 'react-router-dom'
 
-
-// import '../common/mobi.min.css'
-// import '../pages/global.scss'
-// import '../common/load-demand'
+import '../pages/global.scss'
 
 /*** 非npm安装的依赖，使用在浏览器客户端上 ***/
 
@@ -27,32 +24,8 @@ import '../vendors/load-demand'
 
 import { generateAsyncRouteComponent } from '../pages/generateAsyncComponent.js';
 
-// pages
-// import Home from '../pages/home'
-// import Posts from '../pages/posts'
-// import PostsDetail from '../pages/posts-detail'
-// import Topics from '../pages/topics'
-// import FormTopic from '../pages/form-topic'
-// import SignIn from '../pages/sign-in'
-// import People from '../pages/people'
-// import Comment from '../pages/comment'
-// import Notification from '../pages/notification'
-// import NotFound from '../pages/not-found'
-
 // components
 import Head from '../components/head'
-import Sidebar from '../components/sidebar'
-
-// const Head = generateAsyncRouteComponent({
-//   loader: () => import('../components/head')
-// })
-//
-// const Sidebar = generateAsyncRouteComponent({
-//   loader: () => import('../components/sidebar')
-// })
-
-// import CSSModules from 'react-css-modules'
-// import styles from './style.scss'
 
 let signIn = false
 
@@ -81,86 +54,119 @@ const triggerEnter = (Layout, props) => {
 
 
 const routeArr = [
-  { path: '/',               exact: true,
-    // component: Home,
+  {
+    path: '/',
+    exact: true,
     component: generateAsyncRouteComponent({
       loader: () => import('../pages/home')
     }),
-    head: Head, sidebar: Sidebar, enter: requireAuth },
+    head: Head,
+    enter: requireAuth
+  },
   {
-    path: '/posts',          exact: true,
-    // component: Posts,
+    path: '/posts',
+    exact: true,
     component: generateAsyncRouteComponent({
       loader: () => import('../pages/posts')
     }),
-    head: Head, sidebar: Sidebar, enter: requireAuth },
+    head: Head,
+    enter: requireAuth
+  },
   {
-    path: '/posts/:id',      exact: true,
-    // component: PostsDetail,
+    path: '/posts/:id',
+    exact: true,
     component: generateAsyncRouteComponent({
       loader: () => import('../pages/posts-detail')
     }),
-    head: Head, sidebar: Sidebar, enter: requireAuth },
+    head: Head,
+    enter: requireAuth
+  },
   {
-    path: '/topics',         exact: true,
-    // component: Topics,
+    path: '/topics',
+    exact: true,
     component: generateAsyncRouteComponent({
       loader: () => import('../pages/topics')
     }),
-    head: Head, sidebar: Sidebar, enter: requireAuth },
-  { path: '/add-topic',      exact: true,
-    // component: FormTopic,
+    head: Head,
+    enter: requireAuth
+  },
+  {
+    path: '/add-topic',
+    exact: true,
     component: generateAsyncRouteComponent({
       loader: () => import('../pages/topic-form')
     }),
-    head: Head, sidebar: Sidebar, enter: requireAuth },
-  { path: '/edit-topic/:id', exact: true,
-    // component: FormTopic,
+    head: Head,
+    enter: requireAuth
+  },
+  {
+    path: '/edit-topic/:id',
+    exact: true,
     component: generateAsyncRouteComponent({
       loader: () => import('../pages/topic-form')
     }),
-    head: Head, sidebar: Sidebar, enter: requireAuth },
-  { path: '/peoples',         exact: true,
-    // component: People,
+    head: Head,
+    enter: requireAuth
+  },
+  {
+    path: '/peoples',
+    exact: true,
     component: generateAsyncRouteComponent({
       loader: () => import('../pages/peoples')
     }),
-    head: Head, sidebar: Sidebar, enter: requireAuth },
-  { path: '/people/:id',         exact: true,
-    // component: People,
+    head: Head,
+    enter: requireAuth
+  },
+  {
+    path: '/people/:id',
+    exact: true,
     component: generateAsyncRouteComponent({
       loader: () => import('../pages/people-detail')
     }),
-    head: Head, sidebar: Sidebar, enter: requireAuth },
-  { path: '/comments',        exact: true,
+    head: Head,
+    enter: requireAuth
+  },
+  {
+    path: '/comments',
+    exact: true,
     component: generateAsyncRouteComponent({
       loader: () => import('../pages/comments')
     }),
-    head: Head, sidebar: Sidebar, enter: requireAuth },
-
-  { path: '/user-notifications',   exact: true,
-    // component: Notification,
+    head: Head,
+    enter: requireAuth
+  },
+  { path: '/user-notifications',
+    exact: true,
     component: generateAsyncRouteComponent({
       loader: () => import('../pages/user-notifications')
-    }),    head: Head, sidebar: Sidebar, enter: requireAuth },
-
-  { path: '/notifications',   exact: true,
+    }),
+    head: Head,
+    enter: requireAuth
+  },
+  {
+    path: '/notifications',
+    exact: true,
     component: generateAsyncRouteComponent({
       loader: () => import('../pages/notifications')
     }),
-    head: Head, sidebar: Sidebar, enter: requireAuth },
-  { path: '/sign-in',        exact: true,
-    // component: SignIn,
+    head: Head,
+    enter: requireAuth
+  },
+  {
+    path: '/sign-in',
+    exact: true,
     component: generateAsyncRouteComponent({
       loader: () => import('../pages/sign-in')
     }),
-    enter: requireTourists },
-  { path: '**',
-    // component: NotFound,
+    enter: requireTourists
+  },
+  {
+    path: '**',
     component: generateAsyncRouteComponent({
       loader: () => import('../pages/not-found')
     }),
-    enter: triggerEnter }
+    enter: triggerEnter
+  }
 ]
 
 let router = ({ userinfo }) => {
@@ -186,29 +192,6 @@ let router = ({ userinfo }) => {
             })}
           </Switch>
         </main>
-
-        {/*
-        <div className="flex-center">
-          <div className="container-fluid">
-            <div className="flex-left flex-wrap units-gap-big top-gap">
-
-              <Switch>
-                {routeArr.map((route, index) => (
-                  <Route key={index} path={route.path} exact={route.exact} component={route.sidebar} />
-                ))}
-              </Switch>
-
-              <div className="unit">
-                <Switch>
-                  {routeArr.map((route, index) => {
-                    if (route.component) return <Route key={index} path={route.path} exact={route.exact} component={props => route.enter(route.component, props)} />
-                  })}
-                </Switch>
-              </div>
-            </div>
-          </div>
-        </div>
-        */}
 
     </div>)
 

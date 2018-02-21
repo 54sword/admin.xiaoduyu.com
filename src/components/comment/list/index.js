@@ -1,33 +1,34 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-// import CSSModules from 'react-css-modules'
-// import styles from './style.scss'
-
+import connectReudx from '../../../common/connect-redux'
 import { getCommentListByName } from '../../../reducers/comment'
 import { loadCommentList } from '../../../actions/comment'
 
 import ListLoading from '../../list-loading'
 import CommentItem from '../list-item'
-
-import connectReudx from '../../../common/connect-redux'
+import Pagination from '../../pagination'
 
 export class CommentList extends Component {
 
+  static propTypes = {
+    // 列表名称
+    name: PropTypes.string.isRequired,
+    // 列表的筛选条件
+    filters: PropTypes.object.isRequired,
+    // 获取当前页的 pathname、search
+    location: PropTypes.object.isRequired
+  }
+
   static mapStateToProps = (state, props) => {
-    const name = props.name
+    // const name = props.name
+    const { name } = props
     return {
       list: getCommentListByName(state, name)
     }
   }
 
   static mapDispatchToProps = { loadCommentList }
-
-  static propTypes = {
-    // 在redux创建的名称
-    name: PropTypes.string.isRequired,
-    filters: PropTypes.object.isRequired
-  }
 
   constructor(props) {
     super(props)
@@ -38,11 +39,11 @@ export class CommentList extends Component {
   componentDidMount() {
     const { list } = this.props
     if (!list.data || list.data.length == 0) this.loadList()
-    ArriveFooter.add(this.state.name, this.loadList)
+    // ArriveFooter.add(this.state.name, this.loadList)
   }
 
   componentWillUnmount() {
-    ArriveFooter.remove(this.state.name)
+    // ArriveFooter.remove(this.state.name)
   }
 
   loadList(callback) {
@@ -59,36 +60,30 @@ export class CommentList extends Component {
 
   render () {
 
-    let { list } = this.props
-
-    if (!list.data) return null
-
-    const { data, loading, more } = list
+    const { list, location } = this.props
+    const { data, loading, more, filters = {}, count } = list
 
     return (
       <div>
-        <div>
-          {/* <div className={styles.comments}> */}
-            {data.map((comment)=>{
-              return (<div key={comment._id}><CommentItem comment={comment} /></div>)
-            })}
-            {/*commentList.data.length == 0 ?
-              null
-            : <ListLoading
-                loading={commentList.loading}
-                more={commentList.more}
-                handleLoad={this.triggerLoad}
-                />*/}
-          {/*<div className={styles.nothing}>目前尚无回复</div>*/}
 
-        {/* </div> */}
+        <div className="list-group">
+          {data && data.map((comment)=>{
+            return (<CommentItem comment={comment} key={comment._id} />)
+          })}
         </div>
-        <ListLoading loading={loading} more={more} handleLoad={this.load} />
+
+        <ListLoading loading={loading} />
+
+        <Pagination
+          location={location}
+          count={count || 0}
+          pageSize={filters.page_size || 0}
+          pageNumber={filters.page_number || 0}
+          />
+
       </div>
     )
   }
 }
-
-// CommentList = CSSModules(CommentList, styles)
 
 export default connectReudx(CommentList)

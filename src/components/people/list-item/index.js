@@ -4,13 +4,9 @@ import { Link } from 'react-router-dom'
 import CSSModules from 'react-css-modules'
 import styles from './style.scss'
 
-// import { updatePeople } from '../../../actions/people'
-// import connectRedux from '../../../common/connect-redux'
 import Actions from '../actions'
 
 class PeopleItem extends Component {
-
-  // static mapDispatchToProps = { updatePeople }
 
   constructor(props) {
     super(props)
@@ -18,7 +14,7 @@ class PeopleItem extends Component {
 
   render () {
 
-    const { people } = this.props
+    const { people, key } = this.props
 
     let time = new Date(people.banned_to_post).getTime() - new Date().getTime()
     if (time > 0) {
@@ -36,40 +32,43 @@ class PeopleItem extends Component {
       5: 'iOS'
     }
 
-    let background = '#fff'
+    let background = ''
+    
+    if (time > 0) background = 'list-group-item-secondary'
+    if (people.blocked) background = 'list-group-item-danger'
 
-    if (time > 0) background = '#efefef'
-    if (people.blocked) background = '#ffe3e3'
+    return (<div key={key} className={`list-group-item ${background}`}>
+      <div className="row">
+        <div className="col-sm-4">
+          <i className="load-demand" data-load-demand={`<img class=${styles.avatar} src=${people.avatar_url} />`}></i>
+          <div><Link to={`/people/${people._id}`}>{people.nickname}</Link></div>
+          <div>{people.brief}</div>
+        </div>
 
-    return (<table styleName="table" style={{backgroundColor:background}}>
-      <tbody>
-        <tr>
-          <td width="200">
-            <i className="load-demand" data-load-demand={`<img class=${styles.avatar} src=${people.avatar_url} />`}></i>
-            <div><Link to={`/people/${people._id}`}>{people.nickname}</Link></div>
-            <div>{people.brief}</div>
-          </td>
-          <td width="200">
-            {people.block_posts_count ? <span>屏蔽了 {people.block_posts_count} 个帖子</span> : null}
-            {people.block_people_count ? <span>屏蔽了 {people.block_people_count} 个用户</span> : null}
-            {people.follow_posts_count ? <span>关注了 {people.follow_posts_count} 个帖子</span> : null}
-            {people.follow_topic_count ? <span>关注了 {people.follow_topic_count} 个话题</span> : null}
-            {people.follow_people_count ? <span>关注了 {people.follow_people_count} 个话题</span> : null}
-          </td>
-          <td>
-            创建日期：{people.create_at}<br />
-            最近一次登陆：{people.last_sign_at}<br />
-          </td>
-          <td width="200">
-            注册来源：{source[people.source]}
-          </td>
-          <td width="200">
-            <Actions people={people} />
-          </td>
-        </tr>
-      </tbody>
-    </table>)
+        <div className="col-sm-2">
+          {people.block_posts_count ? <p>屏蔽了 {people.block_posts_count} 个帖子</p> : null}
+          {people.block_people_count ? <p>屏蔽了 {people.block_people_count} 个用户</p> : null}
+          {people.follow_posts_count ? <p>关注了 {people.follow_posts_count} 个帖子</p> : null}
+          {people.follow_topic_count ? <p>关注了 {people.follow_topic_count} 个话题</p> : null}
+          {people.follow_people_count ? <p>关注了 {people.follow_people_count} 个用户</p> : null}
+        </div>
 
+        <div className="col-sm-2">
+          最近一次登陆：{people._last_sign_at}<br />
+          创建日期：{people._create_at}<br />
+          修改昵称：{people._nickname_reset_at}<br />
+        </div>
+
+        <div className="col-sm-2">
+          {source[people.source]}
+        </div>
+
+        <div className="col-sm-2">
+          <Actions people={people} />
+        </div>
+
+      </div>
+    </div>)
   }
 
 }

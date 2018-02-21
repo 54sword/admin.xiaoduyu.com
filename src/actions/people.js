@@ -3,6 +3,7 @@ import grapgQLClient from '../common/grapgql-client'
 import Ajax from '../common/ajax'
 // import merge from 'lodash/merge'
 
+import { DateDiff } from '../common/date'
 // import loadList from './common/load-list'
 import loadList from './common/new-load-list'
 
@@ -73,7 +74,18 @@ export function loadPeopleList({ name, filters = {}, restart = false, accessToke
       restart,
       filters: _filters,
 
-      // processList: processPostsList,
+      processList: (list)=>{
+
+        // console.log(list);
+
+        list.map((posts)=>{
+          posts._last_sign_at = DateDiff(posts.last_sign_at)
+          posts._create_at = DateDiff(posts.create_at)
+          posts._nickname_reset_at = DateDiff(posts.nickname_reset_at)
+        })
+
+        return list
+      },
 
       schemaName: 'users',
       reducerName: 'people',

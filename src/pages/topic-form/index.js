@@ -74,8 +74,9 @@ class TopicForm extends Component {
     // 编辑状态，加载id
     if (id) {
       let res = await loadTopicById({ id })
-      if (res && res.success) {
-        this.state.avatar = res.data[0].avatar
+      if (res && res.data && res.data.topics && res.data.topics[0]) {
+        this.state.avatar = res.data.topics[0].avatar
+
       }
     }
 
@@ -118,26 +119,31 @@ class TopicForm extends Component {
     if (!description.value) return description.focus()
     if (parentId && parentId.value == -1) return alert('请选择分类')
 
-    let content = {
+    let data = {
       avatar: avatar,
       name: name.value,
       brief: brief.value,
       description: description.value,
       sort: parseInt(sort.value),
-      recommend: recommend.value ? true : false
+      recommend: recommend.value ? true : false,
+      parent_id: parentId.value
     }
 
-    if (topic && topic.parent_id) {
-      if (!parentId.value) return alert('请选择分类')
-      content.parent_id = parentId.value
-    }
+    // if (topic && topic.parent_id) {
+      // if (!parentId.value) return alert('请选择分类')
+      // data.parent_id = parentId.value
+    // } else {
+      // data.parent_id = parentId.value
+    // }
 
     // 更新
     if (topic) {
 
-      let res = await updateTopic({ data: { query: { _id: id }, update: content } })
+      data._id = id
 
-      if (res && res.success) {
+      let [ err, res ] = await updateTopic({ data })
+
+      if (res && res.data.updateTopic.success) {
 
         Toastify({
           text: "更新成功",
@@ -147,7 +153,7 @@ class TopicForm extends Component {
 
         this.context.router.history.goBack()
 
-      } else if (res && res.error) {
+      } else if (err) {
 
         Toastify({
           text: res.error,
@@ -156,7 +162,7 @@ class TopicForm extends Component {
 
       }
     } else {
-      await addTopic({ filters: content })
+      await addTopic({ filters: data })
     }
 
     return false
@@ -179,7 +185,7 @@ class TopicForm extends Component {
 
     if (id && !topic) return (<div>加载中</div>)
 
-    console.log(updateButton);
+    console.log(topic);
 
     return (<div>
       <Meta meta={{title:topic ? '编辑话题' : '添加话题'}} />
@@ -190,7 +196,8 @@ class TopicForm extends Component {
           <div className="col-sm-10">
             <div styleName="avatar">
               {updateButton}
-              {topic && topic.avatar ? <img src={topic.avatar} /> : (avatar ? <img src={avatar} /> : null)}
+              {avatar ? <img src={avatar} /> : null}
+              {/*topic && topic.avatar ? <img src={topic.avatar} /> : (avatar ? <img src={avatar} /> : null)*/}
             </div>
           </div>
         </div>
@@ -220,7 +227,7 @@ class TopicForm extends Component {
           <div className="form-group row">
             <label className="col-sm-2 col-form-label">分类</label>
             <div className="col-sm-10">
-              <select className="form-control" ref="parentId" defaultValue={topic ? (topic.parent_id._id || '') : '-1'}>
+              <select className="form-control" ref="parentId" defaultValue={topic ? (topic.parent_id || '') : '-1'}>
                 <option value="-1">请选择分类</option>
                 {topic ? null : <option value="">无父类</option>}
                 {topicList.data && topicList.data.map(item=>{

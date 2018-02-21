@@ -1,11 +1,10 @@
 import React from 'react'
-import CSSModules from 'react-css-modules'
-
-import styles from './style.scss'
+import { Link } from 'react-router-dom'
 
 import Shell from '../shell'
 import PeopleList from '../../components/people/list'
 import Meta from '../../components/meta'
+import Modal from '../../components/bootstrap/modal'
 
 export class People extends React.Component {
 
@@ -23,6 +22,23 @@ export class People extends React.Component {
   componentWillMount() {
     if (typeof window == 'undefined') return
     this.produceQuery()
+  }
+
+  componentWillReceiveProps(props) {
+    if (props.location.search != this.props.location.search) {
+
+      let { search }  = props.location
+
+      search = search.split('?')[1] || '';
+
+      let searchArr = {};
+      search.split('&').map(item=>{
+        let s = item.split('=');
+        searchArr[s[0]] = s[1];
+      })
+
+      this.produceQuery(searchArr)
+    }
   }
 
   // 根据生成查询sql
@@ -88,100 +104,106 @@ export class People extends React.Component {
 
     const { params } = this.state
     const { blocked, _id, start_create_at, end_create_at, sort_by, banned_to_post } = params
+    const { location } = this.props
 
     return(<div>
 
-      <Meta meta={{
-        title: '用户'
-        }} />
+      <Meta meta={{ title: '用户' }} />
 
-      <div>
+      <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mt-3 mb-2">
+        <h2>用户</h2>
+        <div className="btn-toolbar mb-2 mb-md-0">
+          <button type="button" className="btn btn-primary btn-sm ml-2" data-toggle="modal" data-target="#PeopleModal">筛选</button>
+          {location.search ? <Link className="btn btn-primary btn-sm ml-2" to="/peoples">清空筛选条件</Link> : null}
+        </div>
+      </div>
 
-        <h1 data-toggle="collapse" data-toggle="collapse" href="#collapseFrom">用户</h1>
+      <Modal
+        id="PeopleModal"
+        title="用户筛选"
+        body={(
+          <div className="form">
 
-        <form className="form collapse" onSubmit={this.submit} id="collapseFrom">
-
-          <div className="form-group row">
-            <label className="col-sm-2 col-form-label">排序</label>
-            <div className="col-sm-10">
-              <select className="form-control" onChange={e=>this.valueOnChange(e, 'sort_by')} defaultValue={sort_by}>
-                <option value="last_sign_at">最近登录日期</option>
-                <option value="create_at">创建日期</option>
-              </select>
+            <div className="form-group row">
+              <label className="col-sm-2 col-form-label">排序</label>
+              <div className="col-sm-10">
+                <select className="form-control" onChange={e=>this.valueOnChange(e, 'sort_by')} defaultValue={sort_by}>
+                  <option value="last_sign_at">最近登录日期</option>
+                  <option value="create_at">创建日期</option>
+                  <option value="last_sign_at">最近登录</option>
+                </select>
+              </div>
             </div>
-          </div>
 
-          <div className="form-group row">
-            <label className="col-sm-2 col-form-label">屏蔽</label>
-            <div className="col-sm-10">
-              <select className="form-control" onChange={e=>this.valueOnChange(e, 'blocked')} defaultValue={blocked}>
-                <option value="">无</option>
-                <option value="true">有</option>
-              </select>
+            <div className="form-group row">
+              <label className="col-sm-2 col-form-label">屏蔽</label>
+              <div className="col-sm-10">
+                <select className="form-control" onChange={e=>this.valueOnChange(e, 'blocked')} defaultValue={blocked}>
+                  <option value="">无</option>
+                  <option value="true">有</option>
+                </select>
+              </div>
             </div>
-          </div>
 
-          <div className="form-group row">
-            <label className="col-sm-2 col-form-label">禁言</label>
-            <div className="col-sm-10">
-              <select className="form-control" onChange={e=>this.valueOnChange(e, 'banned_to_post')} defaultValue={banned_to_post}>
-                <option value="">无</option>
-                <option value="true">有</option>
-              </select>
+            <div className="form-group row">
+              <label className="col-sm-2 col-form-label">禁言</label>
+              <div className="col-sm-10">
+                <select className="form-control" onChange={e=>this.valueOnChange(e, 'banned_to_post')} defaultValue={banned_to_post}>
+                  <option value="">无</option>
+                  <option value="true">有</option>
+                </select>
+              </div>
             </div>
-          </div>
 
-          <div className="form-group row">
-            <label className="col-sm-2 col-form-label">ID</label>
-            <div className="col-sm-10">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="请输入id"
-                defaultValue={_id}
-                onChange={e=>this.valueOnChange(e, '_id')}
-                />
+            <div className="form-group row">
+              <label className="col-sm-2 col-form-label">ID</label>
+              <div className="col-sm-10">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="请输入id"
+                  defaultValue={_id}
+                  onChange={e=>this.valueOnChange(e, '_id')}
+                  />
+              </div>
             </div>
-          </div>
 
-          <div className="form-group row">
-            <label className="col-sm-2 col-form-label">日期筛选</label>
-            <div className="col-sm-10">
-              <div className="form-row">
-                <div className="col">
-                  <input
-                    className="form-control"
-                    type="text"
-                    placeholder="创建日期小于该日期（如：2018/01/01）"
-                    defaultValue={start_create_at}
-                    onChange={e=>this.valueOnChange(e, 'start_create_at')}
-                    />
-                </div>
-                <div className="col">
-                  <input
-                    className="form-control"
-                    type="text"
-                    placeholder="创建日期大于该日期（如：2018/01/01）"
-                    defaultValue={end_create_at}
-                    onChange={e=>this.valueOnChange(e, 'end_create_at')}
-                    />
+            <div className="form-group row">
+              <label className="col-sm-2 col-form-label">日期筛选</label>
+              <div className="col-sm-10">
+                <div className="form-row">
+                  <div className="col">
+                    <input
+                      className="form-control"
+                      type="text"
+                      placeholder="创建日期小于该日期（如：2018/01/01）"
+                      defaultValue={start_create_at}
+                      onChange={e=>this.valueOnChange(e, 'start_create_at')}
+                      />
+                  </div>
+                  <div className="col">
+                    <input
+                      className="form-control"
+                      type="text"
+                      placeholder="创建日期大于该日期（如：2018/01/01）"
+                      defaultValue={end_create_at}
+                      onChange={e=>this.valueOnChange(e, 'end_create_at')}
+                      />
+                  </div>
                 </div>
               </div>
             </div>
+
           </div>
+        )}
+        footer={(
+          <button type="submit" className="btn btn-primary" data-dismiss="modal" onClick={this.submit}>提交</button>
+        )}
+        />
 
-          <div className="form-group row">
-            <label className="col-sm-2 col-form-label"></label>
-            <div className="col-sm-10">
-              <button type="submit" className="btn btn-primary">搜索</button>
-            </div>
-          </div>
-
-        </form>
-
-      </div>
       <PeopleList
         name={this.props.location.pathname + this.props.location.search}
+        location={location}
         filters={{
           variables: params
         }}
@@ -190,7 +212,5 @@ export class People extends React.Component {
   }
 
 }
-
-People = CSSModules(People, styles)
 
 export default Shell(People)

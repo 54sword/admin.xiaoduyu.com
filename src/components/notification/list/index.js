@@ -5,228 +5,136 @@ import CSSModules from 'react-css-modules'
 import styles from './style.scss'
 
 import connectReudx from '../../../common/connect-redux'
-import { loadNotifications, updateNotification } from '../../../actions/notification'
-import { getNotificationByName } from '../../../reducers/notification'
-
-import { DateDiff } from '../../../common/date'
+import { loadBroadcastList, updateBroadcast } from '../../../actions/broadcast'
+import { getBroadcastListByName } from '../../../reducers/broadcast'
 
 import ListLoading from '../../list-loading'
-import HTMLText from '../../html-text'
+import Pagination from '../../pagination'
 
 
 export class NotificationList extends Component {
 
   static propTypes = {
+    // 列表名称
+    name: PropTypes.string.isRequired,
+    // 列表的筛选条件
+    filters: PropTypes.object.isRequired,
+    // 获取当前页的 pathname、search
+    location: PropTypes.object.isRequired,
+
     notification: PropTypes.object.isRequired,
-    loadNotifications: PropTypes.func.isRequired
+    loadBroadcastList: PropTypes.func.isRequired
   }
 
   static mapStateToProps = (state, props) => {
     return {
-      notification: getNotificationByName(state, props.name)
+      notification: getBroadcastListByName(state, props.name)
     }
   }
 
-  static mapDispatchToProps = { loadNotifications, updateNotification }
+  static mapDispatchToProps = { loadBroadcastList, updateBroadcast }
 
   constructor(props) {
     super(props)
     this.handleLoad = this.handleLoad.bind(this)
-    this.updateNotification = this.updateNotification.bind(this)
+    this.updateBroadcast = this.updateBroadcast.bind(this)
   }
 
   componentDidMount() {
     const { notification } = this.props
     if (!notification.data) this.handleLoad()
-    ArriveFooter.add('notification', this.handleLoad)
+    // ArriveFooter.add('notification', this.handleLoad)
   }
 
   componentWillUnmount() {
-    ArriveFooter.remove('index')
+    // ArriveFooter.remove('index')
   }
 
   componentWillReceiveProps(props) {
     if (props.name != this.props.name) {
-      const { loadNotifications } = this.props
-      loadNotifications({ name: props.name, filters: props.filters, restart: true })
+      const { loadBroadcastList } = this.props
+      loadBroadcastList({ name: props.name, filters: props.filters, restart: true })
     }
   }
 
-  updateNotification(id, data) {
-    const { updateNotification } = this.props
+  updateBroadcast(id, data) {
+    const { updateBroadcast } = this.props
     data._id = id
-    updateNotification(data)
+    updateBroadcast(data)
   }
 
   handleLoad() {
-    const { name, filters, loadNotifications } = this.props
-    loadNotifications({ name, filters })
+    const { name, filters, loadBroadcastList } = this.props
+    loadBroadcastList({ name, filters })
   }
 
   render() {
 
-    const { notification, loadNewNotifications } = this.props
+    const { notification, location } = this.props
+    const { data, loading, more, count, filters = {} } = notification
 
-    if (!notification.data) {
-      return (<div></div>)
-    }
+    return (<div>
+      <div className="list-group">
+        {data && data.map(item=>{
+          return (<div className="list-group-item" key={item._id}>
+            <div className="row">
+              <div className="col-sm-2">
+                <Link to={`/people/${item.sender_id._id}`}>{item.sender_id.nickname}</Link>
+              </div>
+              <div className="col-sm-1">{item._create_at}</div>
+              <div className="col-sm-4">{item.type} - 广播人数{item.addressee_id.length} </div>
+              <div className="col-sm-3">{item.type == 'new-comment' ? <Link to={`/comments?_id=${item.target}`}>{item.target}</Link> : ''}</div>
+              <div className="col-sm-2">
+                <a
+                  className="btn btn-light btn-sm mb-2 mr-2"
+                  href="javascript:void(0)" onClick={()=>{ this.updateBroadcast(item._id, { deleted: item.deleted ? false : true }) }}>
+                  {item.deleted ? '已删除' : '删除'}
+                </a>
+              </div>
+            </div>
+          </div>)
+        })}
+      </div>
 
-    if (notification.data && notification.data.length == 0) {
-      return (<div styleName="nothing">没有通知</div>)
-    }
+      <ListLoading loading={loading} />
 
-    const { data, loading, more } = notification
+      <Pagination
+        location={location}
+        count={count || 0}
+        pageSize={filters.page_size || 0}
+        pageNumber={filters.page_number || 0}
+        />
 
-    return (
-        <div>
-          <div styleName="item">
-            {notification.data.map(notice => {
+    </div>)
 
-              let content = null
-              let avatar = null
+    return (<div>
+        <table styleName="table">
+          <tbody>
+          {notification.data.map(item=>{
 
-              if (notice.sender_id && notice.sender_id.avatar_url) {
-                avatar = <i className="load-demand" data-load-demand={`<img class=${styles.avatar} src=${notice.sender_id.avatar_url} />`}></i>
-              } else {
-                console.log(notice);
-              }
+            let backgroundColor = '#fff'
 
-              switch (notice.type) {
+            if (item.deleted) {
+              backgroundColor = '#ffe3e3'
+            }
 
-                case 'follow-you':
-                  content = (<div>
-                      <div styleName="header">
-                        <Link to={`/people/${notice.sender_id._id}`}>{avatar}{notice.sender_id.nickname}</Link>
-                        {DateDiff(notice.create_at)} 关注了你
-                      </div>
-                    </div>)
-                  break
-
-                case 'follow-posts':
-                  content = (<div>
-                      <div styleName="header">
-                        <Link to={`/people/${notice.sender_id._id}`}>{avatar}{notice.sender_id.nickname}</Link>
-                        {DateDiff(notice.create_at)} 关注了你的
-                        <Link to={`/posts/${notice.posts_id._id}`}>{notice.posts_id.title}</Link>
-                        {notice.posts_id.type == 1 ?  '分享' : '提问'}
-                      </div>
-                    </div>)
-                  break
-
-                case 'like-posts':
-                  content = (<div>
-                      <div styleName="header">
-                        <Link to={`/people/${notice.sender_id._id}`}>{avatar}{notice.sender_id.nickname}</Link>
-                        {DateDiff(notice.create_at)} 赞了你的
-                        <Link to={`/posts/${notice.posts_id._id}`}>{notice.posts_id.title}</Link>
-                        {notice.posts_id.type == 1 ?  '分享' : '提问'}
-                      </div>
-                    </div>)
-                  break
-
-                case 'reply':
-                  content = (<div>
-                    <div styleName="header">
-                      {/*
-                      <div className={styles.actions}>
-                        <Link to={`/write-comment?posts_id=${notice.comment_id.posts_id._id}&parent_id=${notice.comment_id.parent_id._id}&reply_id=${notice.comment_id._id}`}>回复</Link>
-                      </div>
-                      */}
-                      <Link to={`/people/${notice.sender_id._id}`}>{avatar}{notice.sender_id.nickname}</Link>
-                      {DateDiff(notice.create_at)} 回复了你的
-                      <Link to={`/comment/${notice.comment_id.parent_id._id}`}>
-                        {notice.comment_id.reply_id ? notice.comment_id.reply_id.content_trim : notice.comment_id.parent_id.content_trim}
-                      </Link>
-                      {notice.comment_id.reply_id ? '回复' : '评论'}
-                    </div>
-                    <div styleName="content">
-                      <HTMLText content={notice.comment_id.content_html} />
-                    </div>
-                  </div>)
-                  break
-
-                case 'comment':
-                  content = (<div>
-                    <div styleName="header">
-                      {/*
-                      <div className={styles.actions}>
-                        <Link to={`/write-comment?posts_id=${notice.comment_id.posts_id._id}&parent_id=${notice.comment_id._id}`}>回复</Link>
-                      </div>
-                      */}
-                      <Link to={`/people/${notice.sender_id._id}`}>{avatar}{notice.sender_id.nickname}</Link>
-                      {DateDiff(notice.create_at)} 评论了你的
-                      <Link to={`/posts/${notice.comment_id.posts_id._id}`}>{notice.comment_id.posts_id.title}</Link>
-                      {notice.comment_id.posts_id.type == 1 ?  '分享' : '提问'}
-                    </div>
-                    <div styleName="content">
-                      <HTMLText content={notice.comment_id.content_html} />
-                    </div>
-                  </div>)
-                  break
-
-                case 'like-reply':
-                  content = (<div>
-                    <div styleName="header">
-                      <Link to={`/people/${notice.sender_id._id}`}>{avatar}{notice.sender_id.nickname}</Link>
-                      {DateDiff(notice.create_at)} 赞了你的
-                      <Link to={`/comment/${notice.comment_id.parent_id._id}`}>{notice.comment_id.content_trim}</Link>
-                      回复
-                    </div>
-                  </div>)
-                  break
-
-                case 'like-comment':
-                  content = (<div>
-                    <div styleName="header">
-                      <Link to={`/people/${notice.sender_id._id}`}>{avatar}{notice.sender_id.nickname}</Link>
-                      {DateDiff(notice.create_at)} 赞了你的
-                      <Link to={`/comment/${notice.comment_id._id}`}>{notice.comment_id.content_trim}</Link>
-                      评论
-                    </div>
-                  </div>)
-                  break
-
-                // 新的回答通知
-                case 'new-comment':
-                  content = (<div>
-                    <div styleName="header">
-                      <Link to={`/people/${notice.sender_id._id}`}>{avatar}{notice.sender_id.nickname}</Link>
-                      {DateDiff(notice.create_at)} 评论了
-                      <Link to={`/posts/${notice.comment_id.posts_id._id}`}>{notice.comment_id.posts_id.title}</Link>
-                      {notice.comment_id.posts_id.type == 1 ?  '分享' : '提问'}
-                    </div>
-                    <div styleName="content">
-                      <Link to={`/comment/${notice.comment_id._id}`}>{notice.comment_id.content_trim}</Link>
-                    </div>
-                  </div>)
-                  break
-              }
-
-              if (content) {
-
-                let backgroundColor = ''
-                if (notice.deleted) {
-                  backgroundColor = '#ffe3e3'
-                }
-
-                return (<div key={notice._id} styleName={notice.has_read ? "" : "new"} style={{backgroundColor}}>
-                    <div styleName="create-at"></div>
-                    {content}
-                    <div>
-                      <a
-                        href="javascript:void(0)"
-                        onClick={(e)=>{ this.updateNotification(notice._id, { deleted: notice.deleted ? false : true }) }}>
-                        {notice.deleted ? '已删除' : '删除'}
-                      </a>
-                    </div>
-                  </div>)
-              }
-
-            })}
-          </div>
-
-          <ListLoading loading={loading} more={more} handleLoad={this.handleLoad} />
-
+            return (<tr key={item._id} style={{backgroundColor}}>
+              <td>{item.sender_id.nickname}</td>
+              <td>{item.type}</td>
+              <td>{item._create_at}</td>
+              <td>
+                {item.type == 'new-comment' ? <Link to={`/comments?_id=${item.target}`}>{item.target}</Link> : ''}
+              </td>
+              <td>通知人数:{item.addressee_id ? item.addressee_id.length : 0}</td>
+              <td>
+                <a href="javascript:void(0)" onClick={()=>{ this.updateBroadcast(item._id, { deleted: item.deleted ? false : true }) }}>
+                  {item.deleted ? '已删除' : '删除'}
+                </a>
+              </td>
+            </tr>)
+          })}
+        </tbody>
+        </table>
       </div>
     )
   }

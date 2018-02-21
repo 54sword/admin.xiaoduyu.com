@@ -49,15 +49,11 @@ export class Home extends React.Component {
   render() {
 
     let all = this.props.analysis['all'] || {}
-    let today = this.props.analysis['today'] || {}
+    // let today = this.props.analysis['today'] || {}
 
     return(<div>
-        <Meta
-          meta={{
-            title: '首页'
-          }}
-          />
-        <h1>首页</h1>
+        <Meta meta={{ title: '首页' }} />
+        <h1>网站运营状态</h1>
 
         {all ?
           <div>
@@ -69,9 +65,9 @@ export class Home extends React.Component {
           </div>
         : null}
 
-        <h1>今天</h1>
+        {/*<h1>今天</h1>*/}
 
-        {today ?
+        {/*today ?
           <div>
             <div>注册用户：{today.user_count || 0}</div>
             <div>帖子总数：{today.posts_count || 0}</div>
@@ -79,7 +75,7 @@ export class Home extends React.Component {
             <div>广播通知：{today.notification_count || 0}</div>
             <div>用户通知：{today.userNotification_count || 0}</div>
           </div>
-        : null}
+        : null*/}
     </div>)
   }
 

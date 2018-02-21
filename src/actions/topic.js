@@ -39,7 +39,7 @@ export function addTopic({ filters, callback = ()=>{} }) {
         }
       }
     `
-    
+
     let [ err, res ] = await grapgQLClient({
       mutation:sql,
       headers: accessToken ? { 'AccessToken': accessToken, role: 'admin' } : null
@@ -51,7 +51,55 @@ export function addTopic({ filters, callback = ()=>{} }) {
 
 // 更新topic
 export const updateTopic = ({ data = {} }) => {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
+    return new Promise(async (resolve, reject) => {
+
+    let accessToken = getState().user.accessToken
+
+    let variables = []
+
+    for (let i in data) {
+
+      let v = ''
+
+      switch (typeof data[i]) {
+        case 'string':
+          v = '"'+data[i]+'"'
+          break
+        case 'number':
+          v = data[i]
+          break
+        default:
+          v = data[i]
+          break
+      }
+
+      variables.push(i+':'+v)
+    }
+
+    let sql = `
+      mutation {
+      	updateTopic(${variables}){
+          success
+        }
+      }
+    `
+
+    let [ err, res ] = await grapgQLClient({
+      mutation:sql,
+      headers: accessToken ? { 'AccessToken': accessToken, role: 'admin' } : null
+    })
+
+    if (err) {
+      reject([ err, res ])
+    } else {
+      resolve([ err, res ])
+      console.log(err);
+      console.log(res);
+      dispatch({ type: 'UPDATE_TOPIC', id: data._id, update: data })
+    }
+
+    /*
     const accessToken = getState().user.accessToken
     return new Promise(async (resolve, reject) => {
       Ajax({
@@ -67,6 +115,9 @@ export const updateTopic = ({ data = {} }) => {
         }
         resolve(res)
       }).catch(reject)
+    })
+    */
+
     })
   }
 }
@@ -161,7 +212,7 @@ export function loadTopicById({ id, callback = ()=>{} }) {
     return loadTopics({
       name: id,
       filters: {
-        query: { _id: id }
+        variables: { _id: id }
       },
       callback,
       restart: true

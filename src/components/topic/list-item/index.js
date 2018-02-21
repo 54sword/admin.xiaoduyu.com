@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
-
 import CSSModules from 'react-css-modules'
 import styles from './style.scss'
 
@@ -10,8 +9,6 @@ import { getProfile } from '../../../reducers/user'
 import { showSign } from '../../../actions/sign'
 
 import connectReudx from '../../../common/connect-redux'
-
-// import FollowTopic from './components/follow'
 
 // 样式1
 const medium = ({ topic, me, isSignin, showSign }) => {
@@ -22,13 +19,12 @@ const medium = ({ topic, me, isSignin, showSign }) => {
                 <span className="load-demand" data-load-demand={`<img class=${styles.avatar} src=${topic.avatar} />`}></span>
                 {topic.recommend ? '[推荐]': null} {topic.parent_id ? null : '[父]'} {topic.name}
               </Link>
-              {topic.brief}
-              
-              排序 {topic.sort}
+              <div>{topic.brief}</div>
+              <div>排序 {topic.sort}</div>
             </div>
 
             <div styleName="right">
-              <Link to={`/edit-topic/${topic._id}`}>编辑</Link>
+              <Link className="btn btn-light btn-sm mb-2 mr-2" to={`/edit-topic/${topic._id}`}>编辑</Link>
             </div>
 
           </div>)

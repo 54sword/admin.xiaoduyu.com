@@ -107,7 +107,6 @@ export class SignIn extends React.Component {
 
       this.getCaptcha()
 
-      // toast.warn(result.error)
     } else {
       let result = await saveSignInCookie()
       if (result.success) {

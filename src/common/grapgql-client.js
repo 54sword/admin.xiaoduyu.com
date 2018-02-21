@@ -17,15 +17,24 @@ const client = new ApolloClient({
   })
 })
 
-export default ({ query, mutation, headers, fetchPolicy }) => {
+export default ({ query, mutation, headers = {}, fetchPolicy }) => {
 
   let options = { context: {} }
-
+  
   // network-only 不缓存
-  if (fetchPolicy) options.fetchPolicy = fetchPolicy;
+  if (fetchPolicy) {
+    options.fetchPolicy = fetchPolicy;
+  } else {
+    options.fetchPolicy = "network-only";
+  }
+
+  if (!headers.role) headers.role = 'admin';
+
   if (query) options.query = gql`${query}`;
   if (mutation) options.mutation = gql`${mutation}`;
   if (headers) options.context.headers = headers
+
+  // console.log(options);
 
   let fn = query ? client.query : client.mutate
 

@@ -240,7 +240,7 @@ export function updatePosts(filters) {
 
     let sql = `
       mutation {
-      	editPosts(${variables}){
+      	updatePosts(${variables}){
           success
         }
       }
@@ -320,6 +320,8 @@ const abstractImages = (str) => {
 
 // 加工问题列表
 const processPostsList = (list) => {
+
+  // console.log(list);
 
   list.map(function(posts){
 

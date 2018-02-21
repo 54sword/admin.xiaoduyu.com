@@ -1,20 +1,28 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router'
 
-import arriveFooter from '../../../common/arrive-footer'
+import connectReudx from '../../../common/connect-redux'
 
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
 import { loadTopics } from '../../../actions/topic'
 import { getTopicListByName } from '../../../reducers/topic'
 
 import TopicItem from '../list-item'
 import ListLoading from '../../list-loading'
-
-import connectReudx from '../../../common/connect-redux'
+import Pagination from '../../pagination'
 
 export class TopicList extends Component {
+
+  static propTypes = {
+    // 列表名称
+    name: PropTypes.string.isRequired,
+    // 列表的筛选条件
+    filters: PropTypes.object.isRequired,
+    // 获取当前页的 pathname、search
+    location: PropTypes.object.isRequired,
+
+    loadTopics: PropTypes.func.isRequired,
+    topicList: PropTypes.object.isRequired
+  }
 
   static mapStateToProps = (state, props) => {
     return {
@@ -31,29 +39,22 @@ export class TopicList extends Component {
 
   componentDidMount() {
 
-    // console.log(this);
-
     const self = this
-
     const { name, topicList } = this.props
-
-    // console.log(name);
-    // console.log(topicList);
 
     if (!topicList.data) {
       self.triggerLoad()
     }
 
-    arriveFooter.add(name, ()=>{
-      console.log('123');
-      self.triggerLoad()
-    })
+    // ArriveFooter.add(name, ()=>{
+    //   self.triggerLoad()
+    // })
 
   }
 
   componentWillUnmount() {
     const { name } = this.props
-    arriveFooter.remove(name)
+    // ArriveFooter.remove(name)
   }
 
   componentWillReceiveProps(props) {
@@ -83,23 +84,29 @@ export class TopicList extends Component {
   }
 
   render () {
-    const { topicList } = this.props
 
-    if (!topicList.data) {
-      return (<div></div>)
-    }
+    const { topicList, location } = this.props
+    const { data, loading, more, count, filters = {} } = topicList
 
     return (<div>
-      <ul>
-        {topicList.data.map((topic, index) => {
-          return(<li key={topic._id}><TopicItem topic={topic} /></li>)
+      
+      <ul className="list-group">
+        {data && data.map((topic, index) => {
+          return(<li key={topic._id} className="list-group-item">
+            <TopicItem topic={topic} />
+          </li>)
         })}
-        <ListLoading
-          loading={topicList.loading}
-          more={topicList.more}
-          handleLoad={this.triggerLoad}
-          />
       </ul>
+
+      <ListLoading loading={loading} />
+
+      <Pagination
+        location={location}
+        count={count || 0}
+        pageSize={filters.page_size || 0}
+        pageNumber={filters.page_number || 0}
+        />
+
     </div>)
   }
 
