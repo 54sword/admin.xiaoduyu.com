@@ -148,8 +148,8 @@ export class Posts extends React.Component {
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mt-3 mb-2">
         <h2>帖子</h2>
         <div className="btn-toolbar mb-2 mb-md-0">
-          <button type="button" className="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModalCenter">筛选</button>
-          {location.search ? <Link className="btn btn-primary btn-sm mr-2" to="/posts">清空筛选条件</Link> : null}
+          <button type="button" className="btn btn-primary btn-sm ml-2" data-toggle="modal" data-target="#exampleModalCenter">筛选</button>
+          {location.search ? <Link className="btn btn-primary btn-sm ml-2" to="/posts">清空筛选条件</Link> : null}
         </div>
       </div>
 

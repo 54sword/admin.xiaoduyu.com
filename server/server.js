@@ -116,14 +116,16 @@ app.get('*', async (req, res)=>{
         // expires = req.cookies['expires'] || 0
 
   let context = {}
-  let userinfo, err
+  let userinfo, err;
 
   // 验证 token 是否有效
   if (accessToken) {
+
     [ err, userinfo ] = await loadUserInfo({ accessToken })(store.dispatch, store.getState)
+
     if (userinfo) store.dispatch(addAccessToken({ access_token: accessToken }))
   }
-  
+
   let _route = null,
       _match = null
 

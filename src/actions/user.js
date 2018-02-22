@@ -52,7 +52,7 @@ export const loadUserInfo = ({ accessToken = null }) => {
         }
       }
       `
-
+      
       let [ err, res ] = await grapgQLClient({
         query:sql,
         headers: accessToken ? { 'AccessToken': accessToken } : null,
@@ -60,7 +60,7 @@ export const loadUserInfo = ({ accessToken = null }) => {
       })
 
       if (err) {
-        reject([err])
+        resolve([err[0]])
       } else {
         dispatch({ type: 'SET_USER', userinfo: res.data.selfInfo })
         resolve([null, res.data.selfInfo])

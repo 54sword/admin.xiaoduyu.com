@@ -98,7 +98,7 @@ export class Topics extends React.Component {
     const { params } = this.state
     const { type, sort_by, recommend } = params
     const { location } = this.props
-    
+
     return (<div>
       <Meta meta={{ title: '话题' }} />
 

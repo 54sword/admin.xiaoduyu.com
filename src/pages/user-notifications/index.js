@@ -118,6 +118,7 @@ export class Notification extends React.Component {
       deleted, topic_id, sender_id, addressee_id, has_read,
       posts_id, comment_id, type
     } = params
+    const { location } = this.props
 
     return(<div>
 

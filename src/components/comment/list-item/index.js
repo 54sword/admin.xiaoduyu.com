@@ -82,13 +82,13 @@ export class CommentItem extends PureComponent {
     return (<div key={key} className={`list-group-item ${background}`}>
       <div className="row">
         <div className="col-sm-2">
-          <Link to={`/people?_id=${comment.user_id._id}`}>
+          <Link to={`/people/${comment.user_id._id}`}>
             <i styleName="avatar" className="load-demand" data-load-demand={`<img width="40" height="40" src="${comment.user_id.avatar_url}" />`}></i>
             <b>{comment.user_id.nickname}</b>
           </Link>
           <div>
             {comment.reply_id ? ` 回复了${comment.reply_id.user_id._id == comment.user_id._id ? '自己' : ' '}` : null}
-            {comment.reply_id && comment.reply_id.user_id._id != comment.user_id._id ? <Link to={`/people?_id=${comment.reply_id.user_id._id}`} onClick={this.stopPropagation}><b>{comment.reply_id.user_id.nickname}</b></Link> : null}
+            {comment.reply_id && comment.reply_id.user_id._id != comment.user_id._id ? <Link to={`/people/${comment.reply_id.user_id._id}`} onClick={this.stopPropagation}><b>{comment.reply_id.user_id.nickname}</b></Link> : null}
             {comment._create_at}
           </div>
         </div>

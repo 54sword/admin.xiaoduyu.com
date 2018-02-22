@@ -67,7 +67,7 @@ export class PostsDetail extends React.Component {
               <b>{posts.user_id.nickname}</b>
             </Link>
           </span>
-          <span><Link to={`/topics/${posts.topic_id._id}`}>{posts.topic_id.name}</Link></span>
+          <span><Link to={`/posts?topic_id=${posts.topic_id._id}`}>{posts.topic_id.name}</Link></span>
           {posts.view_count ? <span>{posts.view_count} 浏览</span> : null}
           {posts.like_count ? <span>{posts.like_count} 个赞</span> : null}
           {posts.answers_count ? <span>{posts.answers_count} 个评论</span> : null}

@@ -50,7 +50,7 @@ class TopicForm extends Component {
         name: 'topic-form-page',
         filters: {
           variables: {
-            type: 'children',
+            type: 'parent',
             page_number: 1,
             page_size: 1000
           },
@@ -58,15 +58,6 @@ class TopicForm extends Component {
             _id
             name
           `
-          // select: {
-          //   _id:1, name:1
-          // },
-          // options: {
-          //   // limit: 1000,
-          //   sort: {
-          //     sort: -1
-          //   }
-          // }
         }
       })
     }
@@ -76,7 +67,6 @@ class TopicForm extends Component {
       let res = await loadTopicById({ id })
       if (res && res.data && res.data.topics && res.data.topics[0]) {
         this.state.avatar = res.data.topics[0].avatar
-
       }
     }
 
@@ -125,16 +115,12 @@ class TopicForm extends Component {
       brief: brief.value,
       description: description.value,
       sort: parseInt(sort.value),
-      recommend: recommend.value ? true : false,
-      parent_id: parentId.value
+      recommend: recommend.value ? true : false
     }
 
-    // if (topic && topic.parent_id) {
-      // if (!parentId.value) return alert('请选择分类')
-      // data.parent_id = parentId.value
-    // } else {
-      // data.parent_id = parentId.value
-    // }
+    if (parentId && parentId.value) {
+      data.parent_id = parentId.value
+    }
 
     // 更新
     if (topic) {
@@ -153,7 +139,9 @@ class TopicForm extends Component {
 
         this.context.router.history.goBack()
 
-      } else if (err) {
+      }
+      /*
+      else if (err) {
 
         Toastify({
           text: res.error,
@@ -161,6 +149,7 @@ class TopicForm extends Component {
         }).showToast();
 
       }
+      */
     } else {
       await addTopic({ filters: data })
     }
@@ -183,9 +172,9 @@ class TopicForm extends Component {
       topic = null
     }
 
-    if (id && !topic) return (<div>加载中</div>)
-
-    console.log(topic);
+    if (id && !topic) {
+      return '加载中'
+    }
 
     return (<div>
       <Meta meta={{title:topic ? '编辑话题' : '添加话题'}} />

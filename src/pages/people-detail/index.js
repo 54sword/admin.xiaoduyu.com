@@ -54,7 +54,7 @@ export class PeopleDetail extends React.Component {
     }
 
     const people = peopleList.data[0]
-    
+
     return(<div>
       <div>
         <h1>{people.nickname}</h1>
@@ -73,9 +73,9 @@ export class PeopleDetail extends React.Component {
         <div>like_count：{people.like_count}</div>
         <div>posts_count：{people.posts_count}</div>
         <div styleName="actions">
-          <Link to={`/posts?people_id=${people._id}`}>ta的帖子</Link>
-          <Link to={`/comments?people_id=${people._id}`}>ta的评论</Link>
-          <Link to={`/notifications?people_id=${people._id}`}>ta的通知</Link>
+          <Link to={`/posts?user_id=${people._id}`}>ta的帖子</Link>
+          <Link to={`/comments?user_id=${people._id}`}>ta的评论</Link>
+          <Link to={`/user-notifications?addressee_id=${people._id}`}>ta的通知</Link>
           <Actions people={people} />
         </div>
       </div>

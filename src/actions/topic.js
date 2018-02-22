@@ -45,7 +45,7 @@ export function addTopic({ filters, callback = ()=>{} }) {
       headers: accessToken ? { 'AccessToken': accessToken, role: 'admin' } : null
     })
 
-    if (err) return alert('提交失败')
+    // if (err) return alert('提交失败')
   }
 }
 
@@ -90,12 +90,10 @@ export const updateTopic = ({ data = {} }) => {
       headers: accessToken ? { 'AccessToken': accessToken, role: 'admin' } : null
     })
 
-    if (err) {
-      reject([ err, res ])
+    if (err && err[0]) {
+      resolve([ err[0] ])
     } else {
-      resolve([ err, res ])
-      console.log(err);
-      console.log(res);
+      resolve([ null, res ])
       dispatch({ type: 'UPDATE_TOPIC', id: data._id, update: data })
     }
 

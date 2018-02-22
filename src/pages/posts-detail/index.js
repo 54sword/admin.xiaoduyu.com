@@ -37,6 +37,7 @@ export class PostsDetail extends React.Component {
       <Detail id={id} Meta={Meta} />
       <CommentList
         name={id}
+        location={this.props.location}
         filters={{
           variables: {
             posts_id: id,

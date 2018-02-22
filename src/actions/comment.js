@@ -299,7 +299,7 @@ export function updateComment(filters) {
       headers: accessToken ? { 'AccessToken': accessToken } : null
     })
 
-    if (err) return alert('提交失败')
+    if (err) return
 
     let _id = filters._id
 

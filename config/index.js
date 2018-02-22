@@ -11,18 +11,18 @@ let config = {
   class_scoped_name: '[hash:base64:3]',
 
   // 静态资源路径
-  public_path: '//localhost:4000',
+  public_path: '//admin.xiaoduyu.com',
 
   // api
-  api_url: 'https://api.xiaoduyu.com',
-  api_verstion: 'api/v2'
+  api_url: 'http://admin.xiaoduyu.com'
 }
 
 // 开发环境配置
-// if (process.env.NODE_ENV == 'development') {
+if (process.env.NODE_ENV == 'development') {
   config.debug = true
-  // config.class_scoped_name = '[name]_[local]__[hash:base64:5]'
+  config.class_scoped_name = '[name]_[local]__[hash:base64:5]'
+  config.public_path = '//localhost:4000'
   config.api_url = 'http://localhost:3000'
-// }
+}
 
 module.exports = config
