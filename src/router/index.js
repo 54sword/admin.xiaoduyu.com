@@ -1,153 +1,202 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Route, Switch, Redirect } from 'react-router-dom'
-import Promise from 'promise'
 
-import '../common/mobi.min.css'
 import '../pages/global.scss'
 
+/*** 非npm安装的依赖，使用在浏览器客户端上 ***/
 
-// pages
-import Home from '../pages/home'
-import Posts from '../pages/posts'
-import PostsDetail from '../pages/posts-detail'
-import Topics from '../pages/topics'
-import SignIn from '../pages/sign-in'
-import NotFound from '../pages/not-found'
+// https://github.com/apvarun/toastify-js
+// Toastify 全局的轻消息
+import '../vendors/toastify-js/toastify.js'
+import '../vendors/toastify-js/toastify.css'
+
+// ArriveFooter 监听抵达页尾的事件
+import '../vendors/arrive-footer.js'
+
+/**
+ * 懒加载图片、Dom
+ * 使用方式
+ * 给dom添加class="load-demand"、data-load-demand="<div></div> or <img />"
+ **/
+import '../vendors/load-demand'
+
+
+import { generateAsyncRouteComponent } from '../pages/generateAsyncComponent.js';
 
 // components
 import Head from '../components/head'
 
-// actions
-// import { update } from '../actions/account'
+let signIn = false
 
-// 登录验证
+// 登录用户
 function requireAuth(Layout, props) {
-
-  // console.log(props);
-
-  if (true) { // 未登录
-    return <Redirect to="/sign-in" />;
+  if (!signIn) {
+    return <Redirect to="/sign-in" />
   } else {
     return <Layout {...props} />
   }
 }
 
+// 游客
+const requireTourists = (Layout, props) => {
+  if (signIn) {
+    return <Redirect to="/" />
+  } else {
+    return <Layout {...props} />
+  }
+}
+
+// 普通
+const triggerEnter = (Layout, props) => {
+  return <Layout {...props} />
+}
+
+
 const routeArr = [
   {
     path: '/',
     exact: true,
-    component: props => requireAuth(Home, props),
+    component: generateAsyncRouteComponent({
+      loader: () => import('../pages/home')
+    }),
     head: Head,
-    loadData: ({ store, match }) => {
-      console.log('首页');
-
-      return new Promise(function (resolve, reject) {
-        // setTimeout(function () {
-          // store.dispatch(update('777'))
-          resolve({ code:200, resr: '123' });
-        // }, 3000);
-      })
-
-    }
+    enter: requireAuth
   },
   {
     path: '/posts',
     exact: true,
-    component: props => requireAuth(Posts, props),
+    component: generateAsyncRouteComponent({
+      loader: () => import('../pages/posts')
+    }),
     head: Head,
-    loadData: ({ store, match }) => {
-      console.log('帖子');
-      return new Promise(function (resolve, reject) {
-        resolve({ code:200 });
-      })
-    }
+    enter: requireAuth
   },
-
   {
     path: '/posts/:id',
     exact: true,
-    component: props => requireAuth(PostsDetail, props),
+    component: generateAsyncRouteComponent({
+      loader: () => import('../pages/posts-detail')
+    }),
     head: Head,
-    loadData: ({ store, match }) => {
-      console.log('帖子详情');
-      return new Promise(function (resolve, reject) {
-        resolve({ code:200 });
-      })
-    }
+    enter: requireAuth
   },
-
   {
     path: '/topics',
     exact: true,
-    component: props => requireAuth(Topics, props),
+    component: generateAsyncRouteComponent({
+      loader: () => import('../pages/topics')
+    }),
     head: Head,
-    loadData: ({ store, match }) => {
-      console.log('话题');
-      return new Promise(function (resolve, reject) {
-        resolve({ code:200 });
-      })
-    }
+    enter: requireAuth
   },
-
+  {
+    path: '/add-topic',
+    exact: true,
+    component: generateAsyncRouteComponent({
+      loader: () => import('../pages/topic-form')
+    }),
+    head: Head,
+    enter: requireAuth
+  },
+  {
+    path: '/edit-topic/:id',
+    exact: true,
+    component: generateAsyncRouteComponent({
+      loader: () => import('../pages/topic-form')
+    }),
+    head: Head,
+    enter: requireAuth
+  },
+  {
+    path: '/peoples',
+    exact: true,
+    component: generateAsyncRouteComponent({
+      loader: () => import('../pages/peoples')
+    }),
+    head: Head,
+    enter: requireAuth
+  },
+  {
+    path: '/people/:id',
+    exact: true,
+    component: generateAsyncRouteComponent({
+      loader: () => import('../pages/people-detail')
+    }),
+    head: Head,
+    enter: requireAuth
+  },
+  {
+    path: '/comments',
+    exact: true,
+    component: generateAsyncRouteComponent({
+      loader: () => import('../pages/comments')
+    }),
+    head: Head,
+    enter: requireAuth
+  },
+  { path: '/user-notifications',
+    exact: true,
+    component: generateAsyncRouteComponent({
+      loader: () => import('../pages/user-notifications')
+    }),
+    head: Head,
+    enter: requireAuth
+  },
+  {
+    path: '/notifications',
+    exact: true,
+    component: generateAsyncRouteComponent({
+      loader: () => import('../pages/notifications')
+    }),
+    head: Head,
+    enter: requireAuth
+  },
   {
     path: '/sign-in',
     exact: true,
-    component: SignIn,
-    // head: Head,
-    loadData: ({ store, match }) => {
-      console.log('登陆');
-      return new Promise(function (resolve, reject) {
-        resolve({ code:200 });
-      })
-    }
+    component: generateAsyncRouteComponent({
+      loader: () => import('../pages/sign-in')
+    }),
+    enter: requireTourists
   },
-
   {
     path: '**',
-    component: NotFound,
-    // head: Head,
-    loadData: ({ store, match }) => {
-      console.log('页面不存在');
-      return new Promise(function (resolve, reject) {
-        resolve({ code:404 });
-      })
-    }
+    component: generateAsyncRouteComponent({
+      loader: () => import('../pages/not-found')
+    }),
+    enter: triggerEnter
   }
 ]
 
+let router = ({ userinfo }) => {
 
-let router = () => (
-  <div className="flex-center">
-    <div className="container-wider">
-      <div className="flex-left flex-wrap units-gap-big">
+  if (userinfo && userinfo._id) {
+    signIn = true
+  } else {
+    signIn = false
+  }
 
-        <Switch className="unit-1-4 unit-1-on-mobile">
+  let _router = (<div>
+
+        <Switch>
           {routeArr.map((route, index) => (
-            <Route
-              key={index}
-              path={route.path}
-              exact={route.exact}
-              component={route.head}
-              />
+            <Route key={index} path={route.path} exact={route.exact} component={route.head} />
           ))}
         </Switch>
 
-        <Switch className="unit-3-4 unit-1-on-mobile">
-          {routeArr.map((route, index) => (
-            <Route
-              key={index}
-              path={route.path}
-              exact={route.exact}
-              component={route.component}
-              />
-          ))}
-        </Switch>
+        <main className="container-fluid">
+          <Switch>
+            {routeArr.map((route, index) => {
+              if (route.component) return <Route key={index} path={route.path} exact={route.exact} component={props => route.enter(route.component, props)} />
+            })}
+          </Switch>
+        </main>
 
-      </div>
-    </div>
-  </div>
-)
+    </div>)
+
+  return () => _router
+}
 
 export const RouteArr = routeArr
 export const Router = router

@@ -1,48 +1,34 @@
+const path = require('path')
+
 import express from 'express'
 import bodyParser from 'body-parser'
+import cookieParser from 'cookie-parser'
 import compress from 'compression'
+import DocumentMeta from 'react-document-meta'
 
 // 服务端渲染依赖
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
-import { StaticRouter, matchPath } from 'react-router'
-// import { matchPath } from 'react-router-dom'
+import { StaticRouter } from 'react-router'
+import { matchPath } from 'react-router-dom'
 import { Provider } from 'react-redux'
 
 import configureStore from '../src/store'
+
+import { loadUserInfo } from '../src/actions/user'
+import { addAccessToken } from '../src/actions/sign'
+
 // 路由组件
 import { RouteArr, Router } from '../src/router'
+import { initialStateJSON } from '../src/reducers'
 
+
+// import { matchRoutes } from 'react-router-config'
 
 // 配置
 import config from '../config'
 
 const app = express()
-
-
-// https
-
-/*
-var fs = require('fs');
-var http = require('http');
-var https = require('https');
-var privateKey  = fs.readFileSync('./https/private.pem', 'utf8');
-var certificate = fs.readFileSync('./https/file.crt', 'utf8');
-var credentials = {key: privateKey, cert: certificate};
-var httpServer = http.createServer(app);
-var httpsServer = https.createServer(credentials, app);
-
-var PORT = 18080;
-var SSLPORT = config.port;
-
-httpServer.listen(PORT, function() {
-    console.log('HTTP Server is running on: http://localhost:%s', PORT);
-});
-httpsServer.listen(SSLPORT, function() {
-    console.log('HTTPS Server is running on: https://localhost:%s', SSLPORT);
-});
-*/
-
 
 // webpack热更新
 const runWebpack = ()=>{
@@ -50,10 +36,20 @@ const runWebpack = ()=>{
   // https://github.com/glenjamin/webpack-hot-middleware/blob/master/example/server.js
   const webpack = require('webpack')
   const webpackConfig = require('../webpack.development.config.js')
+
+  webpackConfig.module.loaders = [{
+    loader: 'babel-loader',
+    include: [path.resolve('./src')],
+    options: {
+      plugins: ['dynamic-import-webpack'],
+    }
+  }]
+
   const compiler = webpack(webpackConfig)
 
   app.use(require("webpack-dev-middleware")(compiler, {
-    noInfo: true, publicPath: webpackConfig.output.publicPath
+    noInfo: true,
+    publicPath: webpackConfig.output.publicPath
   }))
 
   app.use(require("webpack-hot-middleware")(compiler, {
@@ -66,10 +62,10 @@ if (process.env.NODE_ENV === 'development') runWebpack()
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(cookieParser(config.auth_cookie_name));
 app.use(compress())
 app.use(express.static(__dirname + '/../dist'))
 app.use(express.static(__dirname + '/../public'))
-
 
 app.use(function (req, res, next) {
   // 计算页面加载完成花费的时间
@@ -88,13 +84,47 @@ app.use(function (req, res, next) {
   next()
 })
 
-app.get('*', async function(req, res){
+// (安全实施) 服务端储存 token cookie 设置成httpOnly
+app.use('/sign', (function(){
 
-  const store = configureStore({})
+  var router = express.Router();
 
-  // const context = {
-  //   'test': 'test'
-  // }
+  router.post('/in', (req, res)=>{
+    let accessToken = req.body.access_token || null;
+
+    if (!accessToken) return res.send({ success: false })
+
+    // let expires = req.body.expires;
+    res.cookie(config.auth_cookie_name, accessToken, { path: '/', httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 30 })
+    res.send({ success: true })
+  })
+
+  router.post('/out', (req, res)=>{
+    res.clearCookie(config.auth_cookie_name)
+    res.send({ success: true })
+  })
+
+  return router
+
+}()))
+
+app.get('*', async (req, res)=>{
+
+  const store = configureStore(JSON.parse(initialStateJSON))
+
+  let accessToken = req.cookies[config.auth_cookie_name] || null
+        // expires = req.cookies['expires'] || 0
+
+  let context = {}
+  let userinfo, err;
+
+  // 验证 token 是否有效
+  if (accessToken) {
+
+    [ err, userinfo ] = await loadUserInfo({ accessToken })(store.dispatch, store.getState)
+
+    if (userinfo) store.dispatch(addAccessToken({ access_token: accessToken }))
+  }
 
   let _route = null,
       _match = null
@@ -108,48 +138,44 @@ app.get('*', async function(req, res){
     }
   })
 
-  // if (!_route || !_match) {
-  //   let reduxState = JSON.stringify(store.getState())
-  //   res.status(404)
-  //   res.render('../dist/index.ejs', { html: '', reduxState })
-  //   res.end()
-  //   return
-  // }
+  // 加载页面分片
+  context = await _route.component.load({ store, match: _match, userinfo }).
+  catch((e)=>{
+    console.log(e);
+    console.log('发生错误');
+  })
 
-  // let result = null
+  if (!context) {
+    context = {}
+  }
 
-  // if (_route && _match && _route.loadData) {
-  let context = await _route.loadData({ store, match: _match })
-  // }
+  const _Router = Router({ userinfo })
 
   let html = ReactDOMServer.renderToString(
     <Provider store={store}>
       <StaticRouter location={req.url} context={context}>
-        <Router />
+        <_Router />
       </StaticRouter>
     </Provider>
   )
 
-  // console.log(html);
-
+  // 获取redux
   let reduxState = JSON.stringify(store.getState()).replace(/</g, '\\x3c');
 
-  // if (context.url) {
-  //   res.writeHead(301, {
-  //     Location: context.url
-  //   })
-  //   res.end()
-  // } else {
-  //
-
-  // if (process.env.NODE_ENV === 'development') {
-  //   html = ''
-  // }
-
+  if (context.code) {
+    if (context.code == 301) {
+      res.writeHead(301, { Location: context.url })
+      res.end()
+      return
+    }
     res.status(context.code)
-    res.render('../dist/index.ejs', { html, reduxState })
-    res.end()
-  // }
+  }
+
+  // 获取页面的meta，嵌套到模版中
+  let meta = DocumentMeta.renderAsHTML()
+
+  res.render('../dist/index.ejs', { meta, html, reduxState })
+  res.end()
 })
 
 app.listen(config.port);

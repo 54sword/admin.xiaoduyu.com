@@ -1,85 +1,54 @@
 import React from 'react'
-import { Route, Link } from 'react-router-dom'
-import PropTypes from 'prop-types'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import { update } from '../../actions/account'
-// import { getAccessToken } from '../../reducers/account'
+import { Link } from 'react-router-dom'
 
-import CSSModules from 'react-css-modules'
-import styles from './style.scss'
+import Shell from '../shell'
+import Detail from '../../components/posts/detail'
+import CommentList from '../../components/comment/list'
 
+import { loadPostsList } from '../../actions/posts'
+
+import Meta from '../../components/meta'
 
 // 纯组件
 export class PostsDetail extends React.Component {
 
-  constructor(props) {
-    super(props)
-    this.state = {
-    }
+  static loadData({ store, match, userinfo }) {
+    const { id } = match.params
+    return new Promise(async function (resolve, reject) {
+      let res = await loadPostsList({
+        name: id,
+        filters: {
+          variables: { _id: id }
+        }
+      })(store.dispatch, store.getState)
+      resolve({ code:200, resr: '123' });
+    })
   }
 
-  componentDidMount() {
-    // this.props.update('ttt')
+  constructor(props) {
+    super(props)
   }
 
   render() {
-    return(<div>
 
-      <div>
+    const id = this.props.match.params.id
 
-      <div>
-        <h2 styleName="h2">PostsDetail</h2>
-        {/*
-        <ul>
-          <li>
-            <Link to={`${match.url}/rendering`}>
-              Rendering with React
-            </Link>
-          </li>
-          <li>
-            <Link to={`${match.url}/components`}>
-              Components
-            </Link>
-          </li>
-          <li>
-            <Link to={`${match.url}/props-v-state`}>
-              Props v. State
-            </Link>
-          </li>
-        </ul>
-
-        <Route path={`${match.url}/:topicId`} component={Topic}/>
-        <Route exact path={match.url} render={() => (
-          <h3>Please select a topic.</h3>
-        )}/>
-        */}
-      </div>
-
-
-      </div>
+    return (<div>
+      <Detail id={id} Meta={Meta} />
+      <CommentList
+        name={id}
+        location={this.props.location}
+        filters={{
+          variables: {
+            posts_id: id,
+            parent_id: false,
+            page_size: 100
+          }
+        }}
+        />
     </div>)
   }
 
 }
 
-PostsDetail = CSSModules(PostsDetail, styles)
-
-PostsDetail.propTypes = {
-  update: PropTypes.func.isRequired
-}
-
-const mapStateToProps = (state, props) => {
-  return {
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    update: bindActionCreators(update, dispatch)
-  }
-}
-
-PostsDetail = connect(mapStateToProps,mapDispatchToProps)(PostsDetail)
-
-export default PostsDetail
+export default Shell(PostsDetail)

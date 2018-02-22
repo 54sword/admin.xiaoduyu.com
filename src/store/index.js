@@ -9,12 +9,12 @@ let middleware = [ thunk ]
 if (!process.env.__NODE__ && __DEV__) middleware.push(createLogger())
 
 export default function configureStore(initialState) {
+
   const store = createStore(
     rootReducer,
+    // 初始state的数据
     initialState,
-    compose(
-      applyMiddleware(...middleware),
-    )
+    compose( applyMiddleware(...middleware) )
   )
   return store
 }

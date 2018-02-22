@@ -1,24 +1,6 @@
-.head{
-  background-color: yellow;
-  color:#fff;
 
-
-  ul {
-    margin:0 auto;
-    width: 800px;
+:global{
+  .navbar{
+    min-height: 56px;
   }
-
-  .nava{
-    margin:0 auto;
-    width: 800px;
-  }
-
-  :global .active{
-    background:green;
-  }
-
-}
-
-.ttt{
-  background-color: red;
 }

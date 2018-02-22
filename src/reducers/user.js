@@ -14,14 +14,14 @@ export default function user(state = initialState, action = {}) {
 
     case 'ADD_ACCESS_TOKEN':
       state.accessToken = action.access_token
-      state.expires = parseInt(action.expires)
+      // state.expires = parseInt(action.expires)
       return merge({}, state, {})
-
+      
     case 'REMOVE_ACCESS_TOKEN':
       state.accessToken = ''
       state.expires = 0
       return state
-      
+
     case 'SET_USER':
       state.profile = action.userinfo
       return merge({}, state, {})
@@ -39,10 +39,6 @@ export default function user(state = initialState, action = {}) {
       return state
   }
 
-}
-
-export function getUserInfo(state) {
-  return state.user.profile || {}
 }
 
 export function getProfile(state) {

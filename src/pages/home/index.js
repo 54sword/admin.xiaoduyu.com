@@ -1,62 +1,84 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-// import { update } from '../../actions/account'
-// import { getAccessToken } from '../../reducers/account'
-
-import { withRouter } from 'react-router-dom'
 
 import Shell from '../shell'
+import Meta from '../../components/meta'
+
+import { loadSummary } from '../../actions/analysis'
+import { getAllAnalysis } from '../../reducers/analysis'
 
 // 纯组件
 export class Home extends React.Component {
 
-  constructor(props) {
-    super(props)
-    this.state = {
+  static mapStateToProps = (state, props) => {
+    return {
+      analysis: getAllAnalysis(state, 'all')
     }
   }
 
-  componentWillMount() {
+  static mapDispatchToProps = { loadSummary }
 
+  constructor(props) {
+    super(props)
   }
 
   componentDidMount() {
+
+    this.props.loadSummary({
+      name: 'all',
+      filters: {}
+    })
+
+    let date = new Date()
+
+    let year = date.getFullYear(),
+        month = date.getMonth() + 1,
+        day = date.getDate()
+
+    if (month < 10) month = '0' + month
+    if (day < 10) day = '0'+ day
+
+    // this.props.loadSummary({
+    //   name: 'today',
+    //   filters: {
+    //     start_create_at: new Date(year+'/'+month+'/'+day).getTime() + ""
+    //   }
+    // })
 
   }
 
   render() {
 
-    // const { accessToken } = this.props.accessToken
+    let all = this.props.analysis['all'] || {}
+    // let today = this.props.analysis['today'] || {}
 
     return(<div>
-      <div>
-        <div>当前注册用户：</div>
-        <div>帖子总数1：</div>
-        <div>评论总数2：</div>
-        <div>恢复总数2：</div>
-      </div>
+        <Meta meta={{ title: '首页' }} />
+        <h1>网站运营状态</h1>
+
+        {all ?
+          <div>
+            <div>注册用户：{all.user_count || ''}</div>
+            <div>帖子总数：{all.posts_count || ''}</div>
+            <div>评论总数：{all.comment_count || ''}</div>
+            <div>广播通知：{all.notification_count || ''}</div>
+            <div>用户通知：{all.userNotification_count || ''}</div>
+          </div>
+        : null}
+
+        {/*<h1>今天</h1>*/}
+
+        {/*today ?
+          <div>
+            <div>注册用户：{today.user_count || 0}</div>
+            <div>帖子总数：{today.posts_count || 0}</div>
+            <div>评论总数：{today.comment_count || 0}</div>
+            <div>广播通知：{today.notification_count || 0}</div>
+            <div>用户通知：{today.userNotification_count || 0}</div>
+          </div>
+        : null*/}
     </div>)
   }
 
 }
-
-Home.propTypes = {
-  // accessToken: PropTypes.object.isRequired
-}
-
-const mapStateToProps = (state, props) => {
-  return {
-    // accessToken: getAccessToken(state)
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-  }
-}
-
-Home = withRouter(connect(mapStateToProps,mapDispatchToProps)(Home))
 
 export default Shell(Home)

@@ -16,6 +16,16 @@ module.exports = {
   entry: {
     app: [
       './client/index'
+    ],
+    vendors: [
+      'react',
+      'react-dom',
+      'react-router',
+      'babel-polyfill',
+      'redux',
+      'react-redux',
+      'react-document-meta',
+      'axios'
     ]
   },
 
@@ -32,64 +42,58 @@ module.exports = {
   module: {
 
     rules: [
+
+      // 支持解析js
       {
         test: /\.js$/i,
         exclude: /node_modules/,
         loader: 'babel?presets[]=es2015,presets[]=react,presets[]=stage-0',
       },
 
+      // 支持解析scss
       {
         test: /\.scss$/,
         use: extractSass.extract({
             use: [{
-                loader: `css-loader?modules&localIdentName=${config.class_scoped_name}`
+                loader: `css`,
+                options: {
+                  // css module
+                  modules: true,
+                  localIdentName: config.class_scoped_name,
+                  // If you are having trouble with urls not resolving add this setting.
+                  // See https://github.com/webpack-contrib/css-loader#url
+                  // url: false,
+                  // 压缩css
+                  minimize: true,
+                  // sourceMap: true
+                }
             }, {
-                loader: "sass-loader"
+                loader: "sass"
             }],
             // use style-loader in development
-            fallback: "style-loader"
+            fallback: "style"
         })
-      }
+      },
+
+      // 支持解析css
+      {
+        test: /\.css$/,
+        use: extractSass.extract({
+            use: [{
+              loader: `css`
+            }],
+            // use style-loader in development
+            // fallback: "style-loader"
+        })
+      },
+
+      // 支持解析图片
+      { test: /\.(png|jpg|gif)$/, loader: 'url?limit=40000' }
 
     ]
-
-
-    /*
-    loaders: [
-      {
-        test: /\.js$/i,
-        exclude: /node_modules/,
-        loader: 'babel?presets[]=es2015,presets[]=react,presets[]=stage-0',
-      },
-      {
-        test: /\.scss$/i,
-        loader: ExtractTextPlugin.extract('style',
-          `css?modules&importLoaders=1&localIdentName=${config.class_scoped_name}!resolve-url!sass`),
-        include: path.resolve(__dirname, 'src')
-      },
-      { test: /\.css$/, loader: ExtractTextPlugin.extract('style', 'css') },
-      { test: /\.(png|jpg|gif)$/, loader: 'url?limit=40000' },
-      { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "url-loader?limit=10000&minetype=application/font-woff" },
-      { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "file-loader" }
-    ]
-    */
   },
 
   plugins: [
-
-    // 清空打包目录
-    new CleanWebpackPlugin(['dist'], {
-      root: path.resolve(__dirname),
-      verbose: true,
-      dry: false
-    }),
-
-    extractSass,
-
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'common',
-      filename: 'common.bundle.js'
-    }),
 
     // 定义环境变量
     new webpack.DefinePlugin({
@@ -102,6 +106,28 @@ module.exports = {
       // 是否是开发环境
       '__DEV__': JSON.stringify(process.env.NODE_ENV == 'development')
     }),
+
+    // 清空打包目录
+    new CleanWebpackPlugin(['dist'], {
+      root: path.resolve(__dirname),
+      verbose: true,
+      dry: false
+    }),
+
+    extractSass,
+
+    // 将公共部分打包在一个文件里面
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'common',
+      filename: 'common.[hash].bundle.js'
+    }),
+
+    // new webpack.optimize.CommonsChunkPlugin({
+    //   name: 'common-child',
+    //   filename: 'common-child.[hash].bundle.js',
+    //   children: true,
+    //   deepChildren: true
+    // }),
 
     new webpack.optimize.UglifyJsPlugin({
       output: {
@@ -116,20 +142,17 @@ module.exports = {
     new HtmlwebpackPlugin({
       filename: path.resolve(__dirname, 'dist/index.ejs'),
       template: 'src/view/index.html',
+
+      meta: '<%- meta %>',
+      htmlDom: '<%- html %>',
+      reduxState: '<%- reduxState %>',
       // public_path: config.public_path + '/',
       // cdn: config.qiniu.url + '/',
-      // meta: '<%- meta %>',
-      htmlDom: '<%- html %>',
-      reduxState: '<%- reduxState %>'
     }),
 
-    // new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin(),
-
-    new ServiceWorkerWebpackPlugin({
-      entry: path.join(__dirname, 'client/sw.js'),
-    })
+    // new ServiceWorkerWebpackPlugin({
+    //   entry: path.join(__dirname, 'client/sw.js'),
+    // })
 
   ]
 }

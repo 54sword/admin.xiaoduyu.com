@@ -1,8 +1,16 @@
 
-
-
 :global{
+  img{
+    max-width: none;
+  }
 
+  body{
+    background-color: #f8f9fa;
+    padding-top:56px;
+  }
 
+  .toastify{
+    z-index: 1031 !important;
+  }
 
 }

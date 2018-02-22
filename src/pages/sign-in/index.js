@@ -1,26 +1,54 @@
 import React from 'react'
 import { Route, Link } from 'react-router-dom'
 
-import PropTypes from 'prop-types'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import { signIn } from '../../actions/account'
+import { signIn, saveSignInCookie } from '../../actions/sign'
 import { getCaptchaId } from '../../actions/captcha'
+import { getProfile } from '../../reducers/user'
 
 // import Promise from 'promise'
-//
+
 import CSSModules from 'react-css-modules'
 import styles from './style.scss'
 
 import config from '../../../config'
 
+import Shell from '../shell'
+
+
 // 纯组件
-export class SignIn extends React.PureComponent {
+export class SignIn extends React.Component {
+
+  /*
+  static loadData({ store, match, userinfo }) {
+
+    return new Promise(function (resolve, reject) {
+
+      // console.log(userinfo);
+
+      // setTimeout(function () {
+        // store.dispatch(update('777'))
+        resolve({ code:200, resr: '123' });
+      // }, 3000);
+    })
+
+  }
+  */
+
+  // 从 state 从获取数据到 props
+  static mapStateToProps(state, props) {
+    return {
+      profile: getProfile(state)
+    }
+  }
+
+  // 异步操作
+  static mapDispatchToProps = { signIn, getCaptchaId, saveSignInCookie }
 
   constructor(props) {
     super(props)
     this.state = {
-      captchaId: ''
+      captchaId: '',
+      captchaUrl: ''
     }
     this.submit = this.submit.bind(this)
     this.getCaptcha = this.getCaptcha.bind(this)
@@ -30,26 +58,23 @@ export class SignIn extends React.PureComponent {
     this.getCaptcha()
   }
 
-  getCaptcha() {
-    const self = this
+  async getCaptcha() {
+
+    // console.log('123');
+
     const { getCaptchaId } = this.props
-    getCaptchaId((res)=>{
+    let [ err, res ] = await getCaptchaId()
 
-      console.log(res);
-
-      if (res && res.success && res.data) {
-        self.setState({
-          captchaId: res.data
-        })
-      }
-    })
+    if (!err && res._id) {
+      this.setState({ captchaId: res._id, captchaUrl: res.url })
+    }
   }
 
-  submit(event) {
+  async submit(event) {
 
     event.preventDefault()
 
-    const { signIn } = this.props
+    const { signIn, saveSignInCookie } = this.props
     const { account, password, submit, captcha } = this.refs
     const { captchaId } = this.state
 
@@ -62,55 +87,78 @@ export class SignIn extends React.PureComponent {
     let data = {
       email: account.value.indexOf('@') != -1 ? account.value : '',
       phone: account.value.indexOf('@') == -1 ? account.value : '',
-      password: password.value
+      password: password.value,
+      captcha: captcha && captcha.value || '',
+      captcha_id: captchaId || ''
     }
 
-    if (captcha) data.captcha = captcha.value
-    if (captchaId) data.captcha_id = captchaId
+    let err = await signIn({ data })
 
-    signIn({
-      data,
-      callback: (result) => {
+    submit.value = '登录'
+    submit.disabled = false
 
-      submit.value = '登录'
-      submit.disabled = false
+    if (err) {
 
-      console.log(result);
+      Toastify({
+        text: err,
+        duration: 3000,
+        backgroundColor: 'linear-gradient(to right, #ff6c6c, #f66262)'
+      }).showToast();
 
-      // if (!result.success) {
-      //   _self.refreshCaptcha()
-      //   _self.setState({ error: result.error })
-      //   return;
-      // }
+      this.getCaptcha()
 
-      // setTimeout(()=>{
-      //   location.reload()
-      // }, 100)
+    } else {
+      let result = await saveSignInCookie()
+      if (result.success) {
+        location.reload()
+      } else {
 
-    }})
-
+        Toastify({
+          text: 'cookie 储存失败',
+          duration: 3000,
+          backgroundColor: 'linear-gradient(to right, #ff6c6c, #f66262)'
+        }).showToast();
+        // toast.warn('cookie 储存失败')
+      }
+    }
 
     return false
   }
 
   render() {
 
-    const { captchaId } = this.state
+    const { captchaId, captchaUrl } = this.state
 
-    return(<div styleName="container">
+    return(<div className="text-center" styleName="container">
 
-      <h2>登陆小度鱼后台</h2>
-      
-      <form className="form" onSubmit={this.submit}>
-        <input ref="account" type="text" placeholder="Email or Phone"/>
-        <input ref="password" type="password" placeholder="Password"/>
-        {captchaId ? <div>
-            <input type="text" className="input" placeholder="请输入验证码" ref="captcha" />
-            <img className={styles['captcha-image']} onClick={this.getCaptcha} src={`${config.api_url}/${config.api_verstion}/captcha-image/${captchaId}`} />
-          </div> : null}
-        <input ref="submit" className="btn" type="submit" value="登录"/>
+      <form className="form-signin" onSubmit={this.submit}>
+
+        <h1 className="h3 mb-3 font-weight-normal">小度鱼管理后台</h1>
+
+        <div className="form-group">
+          <input ref="account" type="text" className="form-control" placeholder="邮箱或手机号" />
+        </div>
+
+        <div className="form-group">
+          <input ref="password" type="password" className="form-control" placeholder="密码" />
+        </div>
+
+        {captchaId ?
+          <div className="input-group mb-3">
+            <input type="text" className="form-control" placeholder="请输入验证码" ref="captcha" />
+            <div className="input-group-append" styleName="captcha">
+              <span className="input-group-text">
+                <img onClick={this.getCaptcha} src={`${captchaUrl}`} />
+              </span>
+            </div>
+          </div>
+          : null}
+
+        <div className="form-group">
+          <button ref="submit" type="submit" className="btn btn-lg btn-primary btn-block">登录</button>
+        </div>
+
       </form>
-
 
     </div>)
   }
@@ -119,24 +167,4 @@ export class SignIn extends React.PureComponent {
 
 SignIn = CSSModules(SignIn, styles)
 
-
-SignIn.propTypes = {
-  signIn: PropTypes.func.isRequired,
-  getCaptchaId: PropTypes.func.isRequired
-}
-
-const mapStateToProps = (state, props) => {
-  return {
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    signIn: bindActionCreators(signIn, dispatch),
-    getCaptchaId: bindActionCreators(getCaptchaId, dispatch)
-  }
-}
-
-SignIn = connect(mapStateToProps,mapDispatchToProps)(SignIn)
-
-export default SignIn
+export default Shell(SignIn)

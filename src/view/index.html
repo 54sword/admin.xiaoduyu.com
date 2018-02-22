@@ -2,6 +2,19 @@
 <html>
 <head>
   <meta charset="utf-8" />
+  
+  <!-- 告诉 IE 用最新的渲染引擎 -->
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+  <%= htmlWebpackPlugin.options.meta %>
+  
+  <!-- 为响应式设计设置 viewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+  <!-- favicon -->
+  <link rel="icon" type="image/png" href="<%= htmlWebpackPlugin.options.public_path %>touch-icon-iphone-114.png">
+
+  <!-- apple图标 -->
   <link rel="apple-touch-icon" sizes="57x57" href="<%= htmlWebpackPlugin.options.public_path %>touch-icon-iphone-114.png" />
   <link rel="apple-touch-icon" sizes="114x114" href="<%= htmlWebpackPlugin.options.public_path %>touch-icon-iphone-114.png" />
   <link rel="apple-touch-icon" sizes="72x72" href="<%= htmlWebpackPlugin.options.public_path %>touch-icon-ipad-144.png" />
@@ -12,5 +25,15 @@
   <script>
     window.__initState__ = <%= htmlWebpackPlugin.options.reduxState %>
   </script>
+  <!--[if lt IE 8]>
+	<style type="text/css">
+		body{ padding:0; margin:0; }
+		.no-supper{ width:100%; min-height: 100px; text-align: center; line-height:100px; background-color:#FFBD91; color:#000; position: fixed; top:100%; margin-top:-100px; z-index: 999; }
+		.no-supper a{ color:#45a7ff; }
+	</style>
+	<div class="no-supper">
+		您的浏览器版本较低，可能存在安全风险，请升级到最新IE浏览器。亦可下载 <a href="http://se.360.cn/" target="_blank">360安全浏览器</a> 或 <a href="https://chrome.google.com/" target="_blank">Google Chrome</a>
+	</div>
+  <![endif]-->
 </body>
 </html>
