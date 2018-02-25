@@ -23,6 +23,7 @@ if (process.env.NODE_ENV == 'development') {
   config.class_scoped_name = '[name]_[local]__[hash:base64:5]'
   config.public_path = '//localhost:4000'
   config.api_url = 'http://localhost:3000'
+  // config.api_url = 'http://admin.xiaoduyu.com'
 }
 
 module.exports = config

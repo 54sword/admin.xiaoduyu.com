@@ -36,13 +36,22 @@ export function loadSummary({ name, filters = {} }) {
 
     let sql = `
       {
-      	analysis${variables}{
-          user_count
-          posts_count
-          comment_count
-          notification_count
-          userNotification_count
+        countPosts${variables}{
+          count
         }
+        countUsers${variables}{
+          count
+        }
+        countComments${variables}{
+          count
+        }
+        countUserNotifications${variables}{
+          count
+        }
+        countNotifications${variables}{
+          count
+        }
+
       }
     `
 
@@ -51,12 +60,12 @@ export function loadSummary({ name, filters = {} }) {
       headers: accessToken ? { 'AccessToken': accessToken } : null
     })
 
-    if (err) return alert('提交失败')
+    if (err) return
 
     dispatch({
       type: 'SET_ANALYSIS_LIST_BY_NAME',
       name,
-      data: res.data.analysis
+      data: res.data
     })
 
     /*
