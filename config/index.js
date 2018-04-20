@@ -20,8 +20,9 @@ let config = {
 // 开发环境配置
 if (process.env.NODE_ENV == 'development') {
   config.debug = true
+  config.port = 5000
   config.class_scoped_name = '[name]_[local]__[hash:base64:5]'
-  config.public_path = '//localhost:4000'
+  config.public_path = '//localhost:5000'
   config.api_url = 'http://localhost:3000'
   // config.api_url = 'http://admin.xiaoduyu.com'
 }

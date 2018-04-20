@@ -43,11 +43,19 @@ module.exports = {
 
     rules: [
 
-      // 支持解析js
+      // js 文件解析
       {
         test: /\.js$/i,
         exclude: /node_modules/,
-        loader: 'babel?presets[]=es2015,presets[]=react,presets[]=stage-0',
+        loader: 'babel',
+        query: {
+          cacheDirectory: true,
+          plugins: [
+            // http://technologyadvice.github.io/es7-decorators-babel6/
+            'transform-decorators-legacy'
+          ],
+          presets: ['es2015', 'react', 'stage-0']
+        }
       },
 
       // 支持解析scss
