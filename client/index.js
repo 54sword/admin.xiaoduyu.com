@@ -33,8 +33,6 @@ if (__DEV__) {
 
 const me = getProfile(store.getState())
 
-// console.log(me);
-
 const _Router = Router({ userinfo: me })
 
 ReactDOM.hydrate((

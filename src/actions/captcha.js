@@ -23,8 +23,8 @@ export const getCaptchaId = () => {
       // let accessToken = getState().user.accessToken
 
       let sql = `
-      {
-        captcha{
+      mutation {
+        addCaptcha(type:"sign-in"){
           _id
           url
         }

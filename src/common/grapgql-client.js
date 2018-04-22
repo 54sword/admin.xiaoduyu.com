@@ -43,7 +43,7 @@ export default ({ query, mutation, headers = {}, fetchPolicy }) => {
   return fn(options).then(res=>{
     return [null, res]
   }).catch(res=>{
-
+    // console.log(res);
     /*
     if (!process.env.__NODE__) {
 
