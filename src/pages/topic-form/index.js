@@ -151,7 +151,13 @@ class TopicForm extends Component {
       }
       */
     } else {
-      await addTopic({ filters: data })
+      await addTopic({ filters: data });
+      Toastify({
+        text: "更新成功",
+        duration: 6000,
+        backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)"
+      }).showToast();
+      this.context.router.history.goBack()
     }
 
     return false
