@@ -114,7 +114,7 @@ app.get('*', async (req, res)=>{
 
   let accessToken = req.cookies[config.auth_cookie_name] || null
         // expires = req.cookies['expires'] || 0
-  
+
   let context = {}
   let userinfo, err;
 
