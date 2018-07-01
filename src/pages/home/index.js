@@ -28,54 +28,114 @@ export class Home extends React.Component {
       filters: {}
     })
 
-    let date = new Date()
-
-    let year = date.getFullYear(),
+    let date = new Date(),
+        year = date.getFullYear(),
         month = date.getMonth() + 1,
-        day = date.getDate()
+        day = date.getDate();
 
-    if (month < 10) month = '0' + month
-    if (day < 10) day = '0'+ day
+    date = new Date(year+'/'+month+'/'+day);
 
-    // this.props.loadSummary({
-    //   name: 'today',
-    //   filters: {
-    //     start_create_at: new Date(year+'/'+month+'/'+day).getTime() + ""
-    //   }
-    // })
+    const load = (name, start, end) => {
 
+      let _startDate = new Date(start);
+
+      let startDate = {
+        year: _startDate.getFullYear(),
+        month: _startDate.getMonth() + 1,
+        day: _startDate.getDate()
+      }
+
+      let _endDate = new Date(end);
+
+      let endDate = {
+        year: _endDate.getFullYear(),
+        month: _endDate.getMonth() + 1,
+        day: _endDate.getDate()
+      }
+
+      this.props.loadSummary({
+        name: name,
+        filters: {
+          start_create_at: startDate.year+'/'+startDate.month+'/'+startDate.day,
+          end_create_at: endDate.year+'/'+endDate.month+'/'+endDate.day
+        }
+      })
+
+    }
+
+    load('today', date, new Date(date.getTime()+1000*60*60*24))
+    load('yesterday', new Date(date.getTime()-1000*60*60*24), date)
+    load('week', new Date(date.getTime()-1000*60*60*24*7), date)
+    load('month', new Date(date.getTime()-1000*60*60*24*30), date)
   }
 
   render() {
 
     let all = this.props.analysis['all'] || {}
-    // let today = this.props.analysis['today'] || {}
+    let today = this.props.analysis['today'] || {}
+    let yesterday = this.props.analysis['yesterday'] || {}
+    let week = this.props.analysis['week'] || {}
+    let month = this.props.analysis['month'] || {}
 
     return(<div>
-        <Meta meta={{ title: '首页' }} />
-        <h1>网站运营状态</h1>
+      <Meta meta={{ title: '首页' }} />
 
-        {all ?
-          <div>
-            <div>注册用户：{all.user_count || ''}</div>
-            <div>帖子总数：{all.posts_count || ''}</div>
-            <div>评论总数：{all.comment_count || ''}</div>
-            <div>广播通知：{all.notification_count || ''}</div>
-            <div>用户通知：{all.userNotification_count || ''}</div>
-          </div>
-        : null}
+      <table className="table">
+        <thead>
+          <tr>
+            <th>日期</th>
+            <th scope="col">注册用户</th>
+            <th scope="col">帖子总数</th>
+            <th scope="col">评论总数</th>
+            <th scope="col">广播通知</th>
+            <th scope="col">用户通知</th>
+          </tr>
+        </thead>
+        <tbody>
 
-        {/*<h1>今天</h1>*/}
+          <tr>
+            <th>今日</th>
+            <th scope="row">{today.countUsers ? today.countUsers.count : ''}</th>
+            <td>{today.countPosts ? today.countPosts.count : ''}</td>
+            <td>{today.countComments ? today.countComments.count : ''}</td>
+            <td>{today.countNotifications ? today.countNotifications.count : ''}</td>
+            <td>{today.countUserNotifications ? today.countUserNotifications.count : ''}</td>
+          </tr>
+          <tr>
+            <th>昨天</th>
+            <th scope="row">{yesterday.countUsers ? yesterday.countUsers.count : ''}</th>
+            <td>{yesterday.countPosts ? yesterday.countPosts.count : ''}</td>
+            <td>{yesterday.countComments ? yesterday.countComments.count : ''}</td>
+            <td>{yesterday.countNotifications ? yesterday.countNotifications.count : ''}</td>
+            <td>{yesterday.countUserNotifications ? yesterday.countUserNotifications.count : ''}</td>
+          </tr>
+          <tr>
+            <th>过去7天</th>
+            <th scope="row">{week.countUsers ? week.countUsers.count : ''}</th>
+            <td>{week.countPosts ? week.countPosts.count : ''}</td>
+            <td>{week.countComments ? week.countComments.count : ''}</td>
+            <td>{week.countNotifications ? week.countNotifications.count : ''}</td>
+            <td>{week.countUserNotifications ? week.countUserNotifications.count : ''}</td>
+          </tr>
+          <tr>
+            <th>过去30天</th>
+            <th scope="row">{month.countUsers ? month.countUsers.count : ''}</th>
+            <td>{month.countPosts ? month.countPosts.count : ''}</td>
+            <td>{month.countComments ? month.countComments.count : ''}</td>
+            <td>{month.countNotifications ? month.countNotifications.count : ''}</td>
+            <td>{month.countUserNotifications ? month.countUserNotifications.count : ''}</td>
+          </tr>
+          <tr>
+            <th>全部</th>
+            <th scope="row">{all.countUsers ? all.countUsers.count : ''}</th>
+            <td>{all.countPosts ? all.countPosts.count : ''}</td>
+            <td>{all.countComments ? all.countComments.count : ''}</td>
+            <td>{all.countNotifications ? all.countNotifications.count : ''}</td>
+            <td>{all.countUserNotifications ? all.countUserNotifications.count : ''}</td>
+          </tr>
+        </tbody>
+      </table>
 
-        {/*today ?
-          <div>
-            <div>注册用户：{today.user_count || 0}</div>
-            <div>帖子总数：{today.posts_count || 0}</div>
-            <div>评论总数：{today.comment_count || 0}</div>
-            <div>广播通知：{today.notification_count || 0}</div>
-            <div>用户通知：{today.userNotification_count || 0}</div>
-          </div>
-        : null*/}
     </div>)
   }
 

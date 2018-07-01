@@ -167,22 +167,33 @@ export function loadTopics({ name, filters = {}, callback = ()=>{}, restart = fa
 
     if (!filters.select) {
       filters.select = `
+      _id
+      name
+      brief
+      description
+      avatar
+      background
+      follow_count
+      posts_count
+      comment_count
+      sort
+      create_at
+      language
+      recommend
+      user_id
+      follow
+      parent_id {
         _id
         name
         brief
-        description
         avatar
-        background
-        follow_count
-        posts_count
-        comment_count
-        sort
-        create_at
-        language
-        recommend
-        user_id
-        follow
-        parent_id
+      }
+      children {
+        _id
+        name
+        brief
+        avatar
+      }
       `
     }
 

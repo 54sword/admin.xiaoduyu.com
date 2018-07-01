@@ -40,7 +40,6 @@ export const loadUserInfo = ({ accessToken = null }) => {
           follow_posts_count
           block_people_count
           block_posts_count
-          access_token
           gender
           nickname
           banned_to_post
@@ -49,10 +48,13 @@ export const loadUserInfo = ({ accessToken = null }) => {
           weibo
           qq
           github
+          phone
+          find_notification_at
+          last_find_posts_at
         }
       }
       `
-      
+
       let [ err, res ] = await grapgQLClient({
         query:sql,
         headers: accessToken ? { 'AccessToken': accessToken } : null,
@@ -69,6 +71,12 @@ export const loadUserInfo = ({ accessToken = null }) => {
     })
 
 
+  }
+}
+
+export const removeUserInfo = () => {
+  return (dispatch, getState) => {
+    dispatch({ type: 'SET_USER', userinfo: {} })
   }
 }
 

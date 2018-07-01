@@ -3,7 +3,7 @@
 let config = {
   debug: false,
   host: 'localhost',
-  port: 4000,
+  port: 9001,
 
   auth_cookie_name: 'admin.xiaoduyu.com',
 
@@ -14,15 +14,20 @@ let config = {
   public_path: '//admin.xiaoduyu.com',
 
   // api
-  api_url: 'http://admin.xiaoduyu.com'
+  api_url: 'http://admin.xiaoduyu.com',
+
+  graphql_url: 'http://admin.xiaoduyu.com/graphql'
 }
 
 // 开发环境配置
 if (process.env.NODE_ENV == 'development') {
   config.debug = true
+  config.port = 5000
   config.class_scoped_name = '[name]_[local]__[hash:base64:5]'
-  config.public_path = '//localhost:4000'
+  config.public_path = '//localhost:5000'
   config.api_url = 'http://localhost:3000'
+  // config.api_url = 'http://admin.xiaoduyu.com'
+  config.graphql_url = 'http://localhost:3000/graphql'
 }
 
 module.exports = config

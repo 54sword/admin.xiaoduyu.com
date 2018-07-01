@@ -15,7 +15,7 @@ import { Provider } from 'react-redux'
 
 import configureStore from '../src/store'
 
-import { loadUserInfo } from '../src/actions/user'
+import { loadUserInfo, removeUserInfo } from '../src/actions/user'
 import { addAccessToken } from '../src/actions/sign'
 
 // 路由组件
@@ -121,9 +121,17 @@ app.get('*', async (req, res)=>{
   // 验证 token 是否有效
   if (accessToken) {
 
-    [ err, userinfo ] = await loadUserInfo({ accessToken })(store.dispatch, store.getState)
+    [ err, userinfo ] = await loadUserInfo({ accessToken })(store.dispatch, store.getState);
 
-    if (userinfo) store.dispatch(addAccessToken({ access_token: accessToken }))
+    if (userinfo && userinfo.role != 100) {
+      userinfo = null;
+      store.dispatch(removeUserInfo());
+    }
+
+    if (userinfo) {
+      store.dispatch(addAccessToken({ access_token: accessToken }))
+    }
+
   }
 
   let _route = null,

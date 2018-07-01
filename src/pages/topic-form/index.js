@@ -151,7 +151,13 @@ class TopicForm extends Component {
       }
       */
     } else {
-      await addTopic({ filters: data })
+      await addTopic({ filters: data });
+      Toastify({
+        text: "更新成功",
+        duration: 6000,
+        backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)"
+      }).showToast();
+      this.context.router.history.goBack()
     }
 
     return false
@@ -175,6 +181,8 @@ class TopicForm extends Component {
     if (id && !topic) {
       return '加载中'
     }
+
+    console.log(topic);
 
     return (<div>
       <Meta meta={{title:topic ? '编辑话题' : '添加话题'}} />
@@ -216,7 +224,7 @@ class TopicForm extends Component {
           <div className="form-group row">
             <label className="col-sm-2 col-form-label">分类</label>
             <div className="col-sm-10">
-              <select className="form-control" ref="parentId" defaultValue={topic ? (topic.parent_id || '') : '-1'}>
+              <select className="form-control" ref="parentId" defaultValue={topic ? (topic.parent_id ? topic.parent_id._id : '') : '-1'}>
                 <option value="-1">请选择分类</option>
                 {topic ? null : <option value="">无父类</option>}
                 {topicList.data && topicList.data.map(item=>{

@@ -21,7 +21,9 @@ const client = new ApolloClient({
 
 export default ({ query, mutation, headers = {}, fetchPolicy }) => {
 
-  let options = { context: {} }
+  let options = {
+    context: {}
+  }
 
   // network-only 不缓存
   if (fetchPolicy) {
@@ -36,14 +38,13 @@ export default ({ query, mutation, headers = {}, fetchPolicy }) => {
   if (mutation) options.mutation = gql`${mutation}`;
   if (headers) options.context.headers = headers
 
-  // console.log(options);
-
   let fn = query ? client.query : client.mutate
 
   return fn(options).then(res=>{
     return [null, res]
   }).catch(res=>{
-
+    // console.log(res);
+    /*
     if (!process.env.__NODE__) {
 
       Toastify({
@@ -53,6 +54,7 @@ export default ({ query, mutation, headers = {}, fetchPolicy }) => {
       }).showToast();
 
     }
+    */
 
     return [res.graphQLErrors]
   });

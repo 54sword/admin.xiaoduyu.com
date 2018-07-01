@@ -46,7 +46,7 @@ export class People extends React.Component {
     if (!params) params = this.props.location.params || {}
 
     if (!Reflect.has(params, 'sort_by')) params.sort_by = 'create_at'
-
+    
     let newParams = {}
 
     let whiteList = {

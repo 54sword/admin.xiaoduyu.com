@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import { Route, Switch, Redirect } from 'react-router-dom'
 
 import '../pages/global.scss'
+import '../theme/style.scss'
 
 /*** 非npm安装的依赖，使用在浏览器客户端上 ***/
 

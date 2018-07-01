@@ -52,7 +52,7 @@ exports.generateAsyncRouteComponent = ({ loader, Placeholder }) => {
       this.state = { Component }
     }
 
-    componentWillMount() {
+    componentDidMount() {
       AsyncRouteComponent.load({}).then(this.updateState);
     }
 

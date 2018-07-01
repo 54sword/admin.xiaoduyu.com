@@ -2,7 +2,7 @@ import React from 'react'
 import { Route, Link } from 'react-router-dom'
 
 import { signIn, saveSignInCookie } from '../../actions/sign'
-import { getCaptchaId } from '../../actions/captcha'
+import { addCaptcha } from '../../actions/captcha'
 import { getProfile } from '../../reducers/user'
 
 // import Promise from 'promise'
@@ -42,7 +42,7 @@ export class SignIn extends React.Component {
   }
 
   // 异步操作
-  static mapDispatchToProps = { signIn, getCaptchaId, saveSignInCookie }
+  static mapDispatchToProps = { signIn, addCaptcha, saveSignInCookie }
 
   constructor(props) {
     super(props)
@@ -62,8 +62,19 @@ export class SignIn extends React.Component {
 
     // console.log('123');
 
-    const { getCaptchaId } = this.props
-    let [ err, res ] = await getCaptchaId()
+    const { addCaptcha } = this.props
+    let [ err, res ] = await addCaptcha({
+      id: 'sign-in',
+      args: {
+        type: 'sign-in'
+      },
+      fields: `
+        success
+        _id
+        url
+      `
+    });
+
 
     if (!err && res._id) {
       this.setState({ captchaId: res._id, captchaUrl: res.url })

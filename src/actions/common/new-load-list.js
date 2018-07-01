@@ -14,7 +14,7 @@ const convertParamsFormat = (params) => {
     }
     arr.push(i+':'+v)
   }
-  return arr
+  return arr.join(',');
 }
 
 export default ({
@@ -101,10 +101,15 @@ export default ({
       let s = Object.assign({}, filters);
       delete s.page_size;
       delete s.page_number;
+      delete s.sort_by;
       variables = convertParamsFormat(s);
 
+      if (variables) variables = '('+variables+')';
+
+      let countName = 'count' + schemaName.charAt(0).toUpperCase() + schemaName.slice(1);
+
       sql = `{
-        ${schemaName}Count(${variables}){
+        ${countName}${variables}{
           count
         }
       }`

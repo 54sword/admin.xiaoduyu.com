@@ -240,7 +240,7 @@ export function updatePosts(filters) {
 
     let sql = `
       mutation {
-      	updatePosts(${variables}){
+        updatePosts(${variables.join(',')}){
           success
         }
       }
