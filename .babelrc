@@ -1,5 +1,5 @@
 {
-  "presets": ["react", "es2015", "stage-2"],
+  "presets": ["react", "es2015", "stage-0"],
   "env": {
     "server": {
       "plugins": ["transform-decorators-legacy","syntax-dynamic-import", "dynamic-import-node"]

@@ -15,6 +15,8 @@ module.exports = {
 
   entry: {
     app: [
+      'babel-polyfill',
+      'bootstrap/dist/css/bootstrap.min.css',
       './client/index'
     ],
     vendors: [

@@ -30,3 +30,5 @@ dist
 package-lock.json
 config/index.js
 config/index_*.js
+/install-and-startup.sh
+/update.sh

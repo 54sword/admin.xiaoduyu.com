@@ -9,7 +9,9 @@ var config = require('./config')
 
 const extractSass = new ExtractTextPlugin({
   filename: "[name].css",
-  disable: true
+  disable: true,
+  allChunks: true,
+  ignoreOrder: true
 })
 
 module.exports = {
@@ -20,6 +22,7 @@ module.exports = {
     app: [
       // 让客户端支持 async 和 await
       'babel-polyfill',
+      'bootstrap/dist/css/bootstrap.min.css',
       './client/index',
       // 热更新
       'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true'
@@ -28,11 +31,13 @@ module.exports = {
       'react',
       'react-dom',
       'react-router',
-      'babel-polyfill',
       'redux',
       'react-redux',
       'react-document-meta',
-      'axios'
+      'axios',
+      'jquery',
+      'popper.js',
+      'bootstrap/dist/js/bootstrap.min.js'
     ]
   },
 
@@ -65,7 +70,7 @@ module.exports = {
           presets: ['es2015', 'react', 'stage-0']
         }
       },
-      
+
       {
         test: /\.scss$/,
         use: extractSass.extract({
