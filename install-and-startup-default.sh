@@ -24,6 +24,10 @@ COMMAND="
 
 ####################
 
+echo "打包项目"
+npm run dist
+echo "打包项目完成"
+
 echo "创建项目文件夹"
 ssh ${SERVER} "mkdir $UPLOAD_TO_SERVER_DIR"
 

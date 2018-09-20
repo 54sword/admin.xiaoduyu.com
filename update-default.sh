@@ -20,6 +20,10 @@ UPLOAD_TO_SERVER_DIR="/home/app/$PM2_NAME"
 # 服务器运行命令
 COMMAND="pm2 restart $PM2_NAME"
 
+echo "打包项目"
+npm run dist
+echo "打包项目完成"
+
 echo "上传项目文件中..."
 scp -r ${LOCAL_DIR} ${SERVER}:${UPLOAD_TO_SERVER_DIR}
 

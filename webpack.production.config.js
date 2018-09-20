@@ -23,11 +23,13 @@ module.exports = {
       'react',
       'react-dom',
       'react-router',
-      'babel-polyfill',
       'redux',
       'react-redux',
       'react-document-meta',
-      'axios'
+      'axios',
+      'jquery',
+      'popper.js',
+      'bootstrap/dist/js/bootstrap.min.js'
     ]
   },
 
@@ -152,7 +154,7 @@ module.exports = {
     new HtmlwebpackPlugin({
       filename: path.resolve(__dirname, 'dist/index.ejs'),
       template: 'src/view/index.html',
-
+      public_path: config.public_path + '/',
       meta: '<%- meta %>',
       htmlDom: '<%- html %>',
       reduxState: '<%- reduxState %>',
