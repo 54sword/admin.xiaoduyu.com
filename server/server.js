@@ -64,8 +64,13 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser(config.auth_cookie_name));
 app.use(compress())
-app.use(express.static(__dirname + '/../dist'))
-app.use(express.static(__dirname + '/../public'))
+
+// console.log(__dirname + '/../dist/');
+
+// app.use(express.static('../dist'))
+// app.use(express.static('../public'))
+// app.use(express.static(__dirname + '/../dist'))
+// app.use(express.static(__dirname + '/../public'))
 
 app.use(function (req, res, next) {
   // 计算页面加载完成花费的时间
